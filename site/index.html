@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Augure — Weather prediction markets + parametric insurance</title>
-  <meta name="description" content="DAO building weather prediction markets and parametric insurance. Currently in Kalshi POC phase. Open to contributors.">
-  <meta property="og:title" content="Augure — DAO météo + assurance paramétrique">
-  <meta property="og:description" content="Marchés prédictifs météo et assurance paramétrique on-chain. Phase 1 : POC Kalshi. Open to contributors.">
+  <title>Augure — Weather prediction markets + decentralized parametric mutual</title>
+  <meta name="description" content="DAO building weather prediction markets and decentralized parametric mutual coverage. Currently in Kalshi POC phase. Open to contributors.">
+  <meta property="og:title" content="Augure — DAO météo + mutuelle paramétrique décentralisée">
+  <meta property="og:description" content="Marchés prédictifs météo et mutuelle paramétrique on-chain. Phase 1 : POC Kalshi. Open to contributors.">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -247,11 +247,11 @@
     <div class="status"><span class="dot"></span><span data-i18n="status">Phase 1 — POC Kalshi</span></div>
 
     <h1 data-i18n="hero_title">Marchés prédictifs météo<span class="blink">_</span></h1>
-    <p class="tagline" data-i18n="hero_tagline">Une <span class="accent">DAO</span> qui combine prédiction de marché et assurance paramétrique décentralisée.</p>
+    <p class="tagline" data-i18n="hero_tagline">Une <span class="accent">DAO</span> qui combine prédiction de marché et mutuelle paramétrique décentralisée.</p>
 
     <section>
       <h2 data-i18n="s1_h">le projet</h2>
-      <p data-i18n="s1_p1">Augure construit une infrastructure on-chain pour les marchés prédictifs météo et l'assurance paramétrique. Quand le climat devient un marché, la couverture devient programmable.</p>
+      <p data-i18n="s1_p1">Augure construit une infrastructure on-chain pour les marchés prédictifs météo et la mutuelle paramétrique. Quand le climat devient un marché, la couverture devient programmable.</p>
     </section>
 
     <section>
@@ -294,7 +294,10 @@
     const LINKS = {
       discord: 'https://discord.gg/YZ2wnDM9dQ',
       github:  'https://github.com/Elladriel80/augure',
-      notion:  'https://www.notion.so/White-Papper-Augure-35a472ba28fa80f6829ff8b921083d9a'
+      notion: {
+        fr: 'https://www.notion.so/White-Papper-Augure-35a472ba28fa80f6829ff8b921083d9a',
+        en: 'https://www.notion.so/35a472ba28fa810fa1f5e1447235be41'
+      }
     };
 
     /* ============================================================
@@ -305,9 +308,9 @@
         topbar: 'session initialisée',
         status: 'Phase 1 — POC Kalshi',
         hero_title: 'Marchés prédictifs météo<span class="blink">_</span>',
-        hero_tagline: 'Une <span class="accent">DAO</span> qui combine prédiction de marché et assurance paramétrique décentralisée.',
+        hero_tagline: 'Une <span class="accent">DAO</span> qui combine prédiction de marché et mutuelle paramétrique décentralisée.',
         s1_h: 'le projet',
-        s1_p1: "Augure construit une infrastructure on-chain pour les marchés prédictifs météo et l'assurance paramétrique. Quand le climat devient un marché, la couverture devient programmable.",
+        s1_p1: "Augure construit une infrastructure on-chain pour les marchés prédictifs météo et la mutuelle paramétrique. Quand le climat devient un marché, la couverture devient programmable.",
         s2_h: 'phase 1 — POC kalshi',
         s2_p1: "Avant de déployer la DAO, on prouve l'<strong>edge prédictif</strong>. Le token <code>AUG-POC</code> finance la stratégie sur Kalshi : NAV transparente, frais de performance, pool dédié aux contributeurs.",
         s2_meta: '→ Pas de promesse de rendement. Pas de spéculation. Juste un signal mesurable avant de scale.',
@@ -321,9 +324,9 @@
         topbar: 'session initialized',
         status: 'Phase 1 — Kalshi POC',
         hero_title: 'Weather prediction markets<span class="blink">_</span>',
-        hero_tagline: 'A <span class="accent">DAO</span> combining prediction markets and decentralized parametric insurance.',
+        hero_tagline: 'A <span class="accent">DAO</span> combining prediction markets and decentralized parametric mutual coverage.',
         s1_h: 'the project',
-        s1_p1: 'Augure is building on-chain infrastructure for weather prediction markets and parametric insurance. When climate becomes a market, coverage becomes programmable.',
+        s1_p1: 'Augure is building on-chain infrastructure for weather prediction markets and decentralized parametric mutual coverage. When climate becomes a market, coverage becomes programmable.',
         s2_h: 'phase 1 — kalshi POC',
         s2_p1: 'Before deploying the DAO, we prove the <strong>predictive edge</strong>. The <code>AUG-POC</code> token funds the strategy on Kalshi: transparent NAV, performance fee, contributor pool.',
         s2_meta: '→ No yield promise. No speculation. Just a measurable signal before we scale.',
@@ -348,6 +351,9 @@
         const key = el.dataset.i18n;
         if (dict[key] != null) el.innerHTML = dict[key];
       });
+      // Notion link follows current language (FR/EN versions of the WP)
+      const notionEl = document.getElementById('link-notion');
+      if (notionEl) notionEl.href = LINKS.notion[lang] || LINKS.notion.en;
       const btnFr = document.getElementById('btn-fr');
       const btnEn = document.getElementById('btn-en');
       btnFr.classList.toggle('active', lang === 'fr');
@@ -383,7 +389,7 @@
        ============================================================ */
     document.getElementById('link-discord').href = LINKS.discord;
     document.getElementById('link-github').href = LINKS.github;
-    document.getElementById('link-notion').href = LINKS.notion;
+    // Notion link is set per-language inside applyLang()
 
     document.getElementById('btn-fr').addEventListener('click', () => applyLang('fr'));
     document.getElementById('btn-en').addEventListener('click', () => applyLang('en'));

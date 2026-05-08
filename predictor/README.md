@@ -89,4 +89,4 @@ kalshi-poc/
 
 ## Ce qu'on NE fait PAS dans cette phase
 
-Pas de smart contract, pas de DAO, pas de bot live, pas de produit assurance, pas d'ouverture de compte Kalshi, pas d'argent réel. Tout vient APRÈS la preuve d'edge.
+Pas de smart contract, pas de DAO, pas de bot live, pas de produit de mutuelle, pas d'ouverture de compte Kalshi, pas d'argent réel. Tout vient APRÈS la preuve d'edge.

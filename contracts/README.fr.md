@@ -17,7 +17,7 @@ contracts/
 ├── token/          ← ERC-20 AUG-POC et AUG, avec mint/burn guards
 ├── rounds/         ← module mint ratifié multisig (subscription + redemption)
 ├── governance/     ← panel Top-X holders, votes, slashing
-└── insurance/      ← (Phase 3) contracts paramétriques météo + oracles
+└── mutual/         ← (Phase 3) contracts paramétriques météo + oracles
 ```
 
 ### `token/`
@@ -33,15 +33,17 @@ Phase 1 : multisig simple (founder + 2 advisors).
 Phase 2 : panel on-chain composé des Top-X holders en tokens, chacun ayant une voix (non pondéré par stake). Utilisé pour ratifier les rounds de valuation contestés.
 Phase 3 : DAO complète avec votes token-weighted pour les changements paramétriques (rubric, taux, fees), avec règles de quorum et seuils.
 
-### `insurance/`
-Phase 3+. Contracts d'assurance paramétrique météo. Stakers underwrite des risk pools ; acheteurs souscrivent à des payouts déclenchés par event. Pricing calculé off-chain par le predictor, résolution oracle via Chainlink Custom au-dessus des feeds NOAA/NWS.
+### `mutual/`
+Phase 3+. Contracts paramétriques de mutuelle météo. Les membres apportent du collatéral au pool de mutualisation ; les acheteurs souscrivent à des payouts paramétriques déclenchés par event. Pricing calculé off-chain par le predictor, résolution oracle via Chainlink Custom au-dessus des feeds NOAA/NWS.
+
+> Augure n'opère **pas** comme assureur réglementé. Cf. white paper, section 4.
 
 ## Toolchain
 
 **Foundry** *(prévu)*. Justification : cycle compile + test plus rapide, fuzzing intégré, tooling Solidity moderne, audité et forké largement. Hardhat pourra être ajouté plus tard si un workflow de déploiement spécifique en a besoin.
 
 Version Solidity : ≥ 0,8,20.
-Chain cible : à trancher (candidats : Base, Arbitrum, Optimism). Critères : coût gaz, compatibilité EVM, écosystème de contributeurs assurance / DeFi, options de custody pour le bankroll.
+Chain cible : à trancher (candidats : Base, Arbitrum, Optimism). Critères : coût gaz, compatibilité EVM, écosystème de contributeurs DeFi / risk-pool, options de custody pour le bankroll.
 
 ## Specs à écrire avant tout code
 
