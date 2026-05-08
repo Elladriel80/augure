@@ -1,6 +1,0 @@
-DEPRECATED — this directory is no longer used.
-
-The valuation engine is fact-only and works strictly from Git-observable artifacts
-(merged PRs, diffs, commits, reviews). Narrative submissions are explicitly rejected.
-
-You can safely delete this directory.
