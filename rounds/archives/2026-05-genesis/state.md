@@ -5,7 +5,7 @@
 
 ## Projet
 
-**Augure** : projet open-source de prediction markets météo + assurance paramétrique décentralisée. Vision long terme : DAO avec moat prédictif ML communautaire et DePIN data layer.
+**Augure** : projet open-source de marchés prédictifs météo + mutuelle paramétrique décentralisée. Vision long terme : DAO avec moat prédictif ML communautaire et DePIN data layer.
 
 **Phase actuelle** : POC Kalshi. Objectif = valider quantitativement un edge prédictif sur les marchés Kalshi météo avant de construire l'infrastructure DAO. Pas de produit final visé en POC ; livrable = preuve d'edge.
 
@@ -14,7 +14,7 @@
 ## Roadmap macro
 
 1. **POC Kalshi** *(en cours)* — valider l'edge prédictif. Critère go/no-go : ensemble IA bat le best single model et bat la climato sur N>50 events.
-2. **DAO Augure** — risk-pool tokenisé façon Nexus Mutual, contrats émis via AMM/orderbook on-chain, pricing via le moteur prédictif.
+2. **DAO Augure** — pool de mutualisation tokenisé façon Nexus Mutual, contrats paramétriques émis via AMM/orderbook on-chain, pricing via le moteur prédictif.
 3. **DePIN data layer** — stations physiques rémunérées en token (WeatherXM partner ou réseau propre).
 4. **Single token unifié** — staking underwriter, rewards data providers, rewards modelers, gouvernance.
 

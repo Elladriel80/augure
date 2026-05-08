@@ -2,9 +2,11 @@
 
 # Augure
 
-**Open-source decentralized weather prediction markets and parametric insurance.**
+**Open-source weather prediction markets and decentralized parametric mutual coverage.**
 
-Augure is in early-stage development. Its first phase validates a predictive edge on Kalshi weather markets before building the DAO infrastructure for risk-pool based parametric insurance.
+Augure is in early-stage development. Its first phase validates a predictive edge on Kalshi weather markets before building the DAO infrastructure for a mutualization-pool-backed parametric mutual.
+
+> **Important note** — Augure is not insurance in the meaning of the French Code des assurances or of Solvency II. It is a **decentralized discretionary mutual**: members pool capital, and indemnification follows automatic parametric execution backed by oracles, governed by token holders. See white paper, section 4.
 
 ## Repository structure
 
@@ -13,7 +15,7 @@ This is a monorepo organized in four top-level concerns:
 ```
 augure/
 ├── predictor/      ← prediction code (Phase 1: Kalshi POC)
-├── contracts/      ← smart contracts (Phase 2+: token, governance, insurance)
+├── contracts/      ← smart contracts (Phase 2+: token, governance, mutual)
 ├── rounds/         ← token issuance mechanics (live: AUG-POC labor-value mint)
 └── docs/           ← project-wide documents (token model, architecture)
 ```
@@ -22,7 +24,7 @@ augure/
 The prediction engine. Currently the Kalshi POC: meta-ensemble IA combining ECMWF, GraphCast, GFS, JMA forecasts; NWS resolution rules; microstructure analysis; backtest infrastructure.
 
 ### `contracts/`
-Solidity smart contracts. Currently a roadmap (no live contracts yet). Will host the AUG-POC ERC-20 token, the rounds-mint module, panel governance, and (Phase 3+) parametric insurance contracts and weather oracles.
+Solidity smart contracts. Currently a roadmap (no live contracts yet). Will host the AUG-POC ERC-20 token, the rounds-mint module, panel governance, and (Phase 3+) parametric mutual contracts and weather oracles.
 
 ### `rounds/`
 The live mechanics for issuing AUG-POC tokens to anyone bringing labor value to the project (code, research, data, design, capital). Contains the public rubric, hourly rate sheet, valuation agent prompt, automation scripts, and historical valuation reports.
@@ -33,7 +35,7 @@ Cross-cutting documentation: token economic model, valuation engine spec, projec
 ## Phases
 
 1. **POC Kalshi** *(in progress)* — validate predictive edge. Go/no-go criterion: meta-ensemble IA beats best single model and beats climatology on N>50 events.
-2. **DAO Augure** — tokenized risk pool (Nexus Mutual style), contract issuance via AMM/orderbook, pricing via the prediction engine.
+2. **DAO Augure** — tokenized mutualization pool (Nexus Mutual style), parametric contract issuance via AMM/orderbook, pricing via the prediction engine.
 3. **DePIN data layer** — physical weather stations rewarded in token (WeatherXM partnership or proprietary network).
 
 ## Token model in one sentence

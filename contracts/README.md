@@ -17,7 +17,7 @@ contracts/
 ├── token/          ← ERC-20 AUG-POC and AUG, with mint/burn guards
 ├── rounds/         ← multisig-ratified mint module (subscription + redemption)
 ├── governance/     ← Top-X holder panel, voting, slashing
-└── insurance/      ← (Phase 3) parametric weather contracts + oracles
+└── mutual/         ← (Phase 3) parametric weather contracts + oracles
 ```
 
 ### `token/`
@@ -33,15 +33,17 @@ Phase 1: simple multisig (founder + 2 advisors).
 Phase 2: on-chain panel composed of the Top-X token holders with one vote each (not stake-weighted). Used for ratifying contested valuation rounds.
 Phase 3: full DAO with token-weighted votes for parametric changes (rubric, rates, fees), with quorum and threshold rules.
 
-### `insurance/`
-Phase 3+. Parametric weather insurance contracts. Stakers underwrite risk pools; buyers purchase event-triggered payouts. Pricing computed off-chain by the predictor, oracle resolution via Chainlink Custom on top of NOAA/NWS feeds.
+### `mutual/`
+Phase 3+. Parametric weather mutual contracts. Members deposit collateral into the mutualization pool; buyers purchase event-triggered payouts. Pricing computed off-chain by the predictor, oracle resolution via Chainlink Custom on top of NOAA/NWS feeds.
+
+> Augure does **not** operate as a regulated insurer. See white paper, section 4.
 
 ## Toolchain
 
 **Foundry** *(planned)*. Justification: faster compile + test cycle, integrated fuzzing, modern Solidity tooling, audited and forked widely. Hardhat could be added later if a specific deployment workflow needs it.
 
 Solidity version: ≥ 0.8.20.
-Target chain: TBD (candidates: Base, Arbitrum, Optimism). Decision criteria: gas cost, EVM compatibility, ecosystem of insurance / DeFi contributors, custody options for the bankroll.
+Target chain: TBD (candidates: Base, Arbitrum, Optimism). Decision criteria: gas cost, EVM compatibility, ecosystem of risk-pool / DeFi contributors, custody options for the bankroll.
 
 ## Specs to write before any code
 

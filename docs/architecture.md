@@ -4,11 +4,13 @@
 
 ## Vision
 
-Augure est un protocole décentralisé d'assurance paramétrique météo, alimenté par un moteur prédictif communautaire. Trois piliers :
+Augure est un protocole décentralisé de **mutuelle paramétrique météo**, alimenté par un moteur prédictif communautaire. Trois piliers :
 
 1. **Moteur prédictif** : méta-ensemble de modèles météo IA + données crowdsourcées. Open-source, contributif, mesuré sur Kalshi en phase POC.
-2. **DAO d'assurance** : risk pool tokenisé façon Nexus Mutual. Stakers underwrite, payouts paramétriques déclenchés par oracles météo.
+2. **DAO mutualiste** : pool de mutualisation tokenisé façon Nexus Mutual. Membres apportent du collatéral, payouts paramétriques déclenchés par oracles météo.
 3. **DePIN data layer** : stations physiques rémunérées en token. Améliore la résolution locale et réduit la dépendance aux feeds gouvernementaux.
+
+> **Précision juridique** — Augure n'est pas un assureur réglementé. Le terme "mutuelle" recouvre ici une **mutuelle discrétionnaire décentralisée** : les membres mutualisent un pool, l'exécution des indemnisations est paramétrique-automatique (oracle on-chain), aucun engagement contractuel d'assureur. Cf. white paper section 4.
 
 Les trois piliers se renforcent : meilleure prédiction → meilleur pricing → plus de contrats vendus → plus de stakers attirés → financement de plus de capteurs DePIN → meilleure prédiction.
 
@@ -30,15 +32,15 @@ Démarre une fois la Phase 1 validée. Objectifs :
 
 Code : `contracts/token/`, `contracts/rounds/`, `contracts/governance/`.
 
-### Phase 3 — Assurance paramétrique
+### Phase 3 — Mutuelle paramétrique
 
 Démarre une fois la DAO opérationnelle et le predictor démontré en live. Objectifs :
-- Risk pool : stakers déposent USDC/BTC, perçoivent les primes des contrats vendus.
+- Pool de mutualisation : les membres déposent USDC/BTC, perçoivent les primes des contrats vendus via appréciation de la NAV.
 - Pricing : moteur prédictif (off-chain) émet des prix de contrat, signés et postés on-chain.
 - Résolution : Chainlink Custom au-dessus des feeds NOAA/NWS (et DePIN propre quand disponible).
 - Catégories initiales : température extrême, précipitations cumulées, événements vent.
 
-Code : `contracts/insurance/`, `predictor/oracle/` (signature des prix), pipeline de résolution dans `predictor/scripts/`.
+Code : `contracts/mutual/`, `predictor/oracle/` (signature des prix), pipeline de résolution dans `predictor/scripts/`.
 
 ### Phase 4 — DePIN data layer
 
@@ -77,7 +79,7 @@ Le module `predictor/src/kalshi/resolution.py` actuel sert de prototype : règle
 
 ## Décisions ouvertes
 
-- **Chain de déploiement** : Base / Arbitrum / Optimism. Critères : gas, écosystème DeFi/insurance, custody options.
+- **Chain de déploiement** : Base / Arbitrum / Optimism. Critères : gas, écosystème DeFi/risk-pool, custody options.
 - **Stable de bankroll** : USDC, EURC, multi-stable. Impact : frais conversion Kalshi (USD only).
 - **Custody Kalshi POC** : compte personnel JS, structure intermédiaire LLC US, foundation. Détermine la structure juridique amont.
 - **Toolchain smart contracts** : Foundry retenu, à graver dans `contracts/README.md`.
