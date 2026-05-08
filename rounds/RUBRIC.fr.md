@@ -111,11 +111,12 @@ Inspiré du barème Immunefi, recalibré après premiers cas.
 
 ## 9. Apports cash
 
-Hors rubric. Mécanique triviale :
-- Apport BTC : `tokens = montant_BTC / NAV_BTC_par_token`.
-- Apport USDC/EURC : converti au spot BTC du jour de subscription, puis idem.
+Hors rubric côté valuation (1 sat = 1 sat, pas d'estimation) mais **soumis à ratification comme tout autre apport**.
 
-Pas de fenêtre de challenge sur le cash (objectif).
+- Apport BTC : envoyé à l'adresse multisig `subscription-pending` du round. Accepté à J+7 → mint à NAV. Refusé par ratificateur(s) avec motivation écrite → fonds renvoyés à l'expéditeur.
+- Apport USDC / EURC : converti en sats au spot du jour de subscription, même mécanique pending + ratification.
+
+Les apports cash apparaissent dans le rapport mensuel de l'agent **sans valuation** (montant brut + adresse expéditeur) pour visibilité du ratificateur. Refus possible pour raison stratégique, réputationnelle, conflit d'intérêts, ou compliance. Symétrie avec le code : on "refuse" un apport travail en ne mergant pas son PR ; on refuse un apport cash en renvoyant les fonds.
 
 ## 10. Valuation rétroactive (genesis)
 

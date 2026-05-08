@@ -111,11 +111,12 @@ Inspired by Immunefi tiers, recalibrated after first cases.
 
 ## 9. Cash deposits
 
-Out of rubric. Trivial mechanic:
-- BTC deposit: `tokens = amount_BTC / NAV_BTC_per_token`.
-- USDC/EURC deposit: converted at subscription-day BTC spot, then same.
+Out of valuation rubric (1 sat = 1 sat, no estimation needed) but **subject to ratification like any other contribution**.
 
-No challenge window on cash (objective).
+- BTC deposit: sent to the round's `subscription-pending` multisig address. If accepted at day +7, mint at NAV. If refused by ratifier(s) with written rationale, funds are returned to the sender.
+- USDC / EURC deposit: converted to sats at subscription-day spot, same pending + ratification mechanic.
+
+Cash apports appear in the monthly agent report **without valuation** (gross amount + sender address) for ratifier visibility. Refusal is possible for strategic, reputational, conflict-of-interest or compliance reasons. Symmetry with code: a labor contribution is "refused" by not merging its PR; a cash contribution is refused by returning its funds.
 
 ## 10. Retroactive valuation (genesis)
 

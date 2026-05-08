@@ -6,14 +6,14 @@ Augure récompense la valeur travail apportée au projet, sous toute forme : cod
 
 ## Étapes pour participer
 
-1. **Lis** [`README.fr.md`](README.fr.md), [`RUBRIC.fr.md`](RUBRIC.fr.md), [`HOURLY_RATES.fr.md`](HOURLY_RATES.fr.md). Le modèle économique est non-conventionnel — assure-toi qu'il te convient avant d'investir du temps.
-2. **Enregistre ton wallet** dans [`WALLETS.md`](WALLETS.md) (PR signé).
-3. **Apporte de la valeur** :
-   - **Code** : ouvre des PRs sur le repo principal Augure.
-   - **Recherche / specs** : commite RFCs, design docs, notebooks d'analyse.
-   - **Donnée** : commite datasets ou le code qui les a produits, licence claire.
-   - **Community** : commite un digest mensuel signé par ton wallet en `community/digest-YYYY-MM.md`. Sans commit, pas de valeur.
-   - **Cash** : virement BTC à l'adresse du multisig (publiée). Mint suit la subscription window mensuelle.
+1. **Lis** [`README.fr.md`](README.fr.md), [`rounds/RUBRIC.fr.md`](rounds/RUBRIC.fr.md), [`rounds/HOURLY_RATES.fr.md`](rounds/HOURLY_RATES.fr.md). Le modèle économique est non-conventionnel — assure-toi qu'il te convient avant d'investir du temps.
+2. **Enregistre ton wallet** dans [`rounds/WALLETS.md`](rounds/WALLETS.md) (PR signé).
+3. **Apporte de la valeur** dans le module pertinent :
+   - **`predictor/`** — code, datasets, RFCs de recherche sur la prédiction.
+   - **`contracts/`** — Solidity, specs, audits (Phase 2+).
+   - **`rounds/`** — améliorations du rubric, du prompt, des scripts, de l'automatisation.
+   - **`docs/`** — architecture, modèle token, RFCs sur le projet lui-même.
+   - **Cash** — virement BTC à l'adresse multisig publiée. Subscription window mensuelle ; le cash est **soumis à ratification** comme tout autre apport et peut être refusé avec motivation écrite.
 4. **Cooldown** : ta première contribution doit être mergée > 30 jours avant éligibilité au mint. Filtre les drive-by.
 
 ## Ce qui n'est PAS valorisé

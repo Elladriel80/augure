@@ -6,14 +6,14 @@ Augure rewards labor value brought to the project, in any form: code, data, rese
 
 ## Steps to participate
 
-1. **Read** [`README.md`](README.md), [`RUBRIC.md`](RUBRIC.md), and [`HOURLY_RATES.md`](HOURLY_RATES.md). The economic model is unconventional — make sure it suits you before investing time.
-2. **Register your wallet** in [`WALLETS.md`](WALLETS.md) (signed PR).
-3. **Bring value**:
-   - **Code**: open PRs on the main Augure repository.
-   - **Research / specs**: commit RFCs, design docs, or analysis notebooks.
-   - **Data**: commit datasets or the code that produced them, with clear license.
-   - **Community**: commit a monthly digest signed by your wallet at `community/digest-YYYY-MM.md`. Without commit, no value.
-   - **Cash**: BTC transfer to the multisig address (published). Mint follows the monthly subscription window.
+1. **Read** [`README.md`](README.md), [`rounds/RUBRIC.md`](rounds/RUBRIC.md), and [`rounds/HOURLY_RATES.md`](rounds/HOURLY_RATES.md). The economic model is unconventional — make sure it suits you before investing time.
+2. **Register your wallet** in [`rounds/WALLETS.md`](rounds/WALLETS.md) (signed PR).
+3. **Bring value** in the relevant module:
+   - **`predictor/`** — code, datasets, research RFCs about prediction.
+   - **`contracts/`** — Solidity, specs, audits (Phase 2+).
+   - **`rounds/`** — improvements to the rubric, prompt, scripts, automation.
+   - **`docs/`** — architecture, token model, RFCs about the project itself.
+   - **Cash** — BTC transfer to the published multisig address. Subscription window is monthly; cash is **subject to ratification** like any other contribution and may be refused with written rationale.
 4. **Cooldown**: your first contribution must be merged > 30 days before you become eligible for mint. This filters drive-by participants.
 
 ## What is NOT valued

@@ -1,75 +1,49 @@
 > [Read in English](README.md)
 
-# augure-rounds
+# Augure
 
-Mécanique d'émission des tokens **AUG-POC** sur la base de la valeur travail apportée au projet Augure.
+**Prediction markets météo et assurance paramétrique décentralisée, open-source.**
 
-> Augure est un projet open-source de prediction markets météo et d'assurance paramétrique décentralisée. Sa phase POC actuelle valide un edge prédictif sur les marchés Kalshi.
+Augure est en phase initiale. Sa première étape est de valider un edge prédictif sur les marchés météo Kalshi avant de construire l'infrastructure DAO pour l'assurance paramétrique adossée à un risk pool.
 
-## Principe
+## Structure du repo
 
-Tout apport au projet — cash, code, donnée, design, recherche — relève de la même substance : la **valeur travail**. Ce repo opère le moteur qui :
+Ce monorepo s'organise en quatre dossiers de premier niveau :
 
-1. **Collecte** mensuellement les contributions de chaque participant enregistré, **strictement à partir d'artefacts Git observables** (PRs mergés, diffs, commits, reviews). Pas d'auto-déclaration, pas d'heures déclarées, pas de narratif.
-2. **Estime** leur valeur en équivalent **BTC** (« combien le marché aurait-il payé pour ce livrable ? »), via un agent IA suivant un rubric public.
-3. **Ouvre une fenêtre de challenge publique de 7 jours** sur le rapport de valuation publié.
-4. **Libère** les tokens AUG-POC à la fin de la fenêtre, mintés à hauteur de `valeur_BTC / NAV_par_token`.
+```
+augure/
+├── predictor/      ← code de prédiction (Phase 1 : POC Kalshi)
+├── contracts/      ← smart contracts (Phase 2+ : token, gouvernance, assurance)
+├── rounds/         ← mécanique d'émission de tokens (live : mint AUG-POC valeur travail)
+└── docs/           ← documents transverses (modèle token, architecture)
+```
 
-Le cash suit le même chemin : un dépôt BTC (ou USDC au spot) est traité comme de la valeur travail déjà cristallisée.
+### `predictor/`
+Le moteur de prédiction. Actuellement le POC Kalshi : méta-ensemble IA combinant ECMWF, GraphCast, GFS, JMA ; règles de résolution NWS ; analyse microstructure ; infrastructure backtest.
 
-## Règles dures
+### `contracts/`
+Smart contracts Solidity. Actuellement une roadmap (pas encore de contracts live). Hébergera le token ERC-20 AUG-POC, le module mint des rounds, la gouvernance par panel, et (Phase 3+) les contracts paramétriques d'assurance et oracles météo.
 
-- **Faits seuls.** Source de vérité : Git. Ce qui n'est pas commité n'existe pas pour la valuation.
-- **Push KO = 0.** PR rejetés, fermés sans merge ou abandonnés n'ont aucune valeur.
-- **Unité BTC.** Taux horaires, NAV, valuations, mints — tout en BTC ou sats.
-- **Pas de privilège catégoriel.** Un cash investor est traité comme un contributeur code : un apport de valeur, valorisé puis minté.
+### `rounds/`
+La mécanique vivante d'émission des tokens AUG-POC à toute personne apportant de la valeur travail au projet (code, recherche, donnée, design, capital). Contient le rubric public, la grille de taux horaires, le prompt de l'agent de valuation, les scripts d'automatisation, et les rapports historiques de valuation.
 
-## Documents de référence
+### `docs/`
+Documentation transverse : modèle économique du token, spec du moteur de valuation, architecture projet.
 
-- **[`RUBRIC.fr.md`](RUBRIC.fr.md)** — procédure de valuation suivie par l'agent IA.
-- **[`HOURLY_RATES.fr.md`](HOURLY_RATES.fr.md)** — grille de taux par profil (en sats/h).
-- **[`agent/PROMPT.fr.md`](agent/PROMPT.fr.md)** — prompt système de l'agent.
-- **[`WALLETS.md`](WALLETS.md)** — registry public des wallets.
-- **[`CONTRIBUTING.fr.md`](CONTRIBUTING.fr.md)** — comment participer.
+## Phases
 
-## Cycle mensuel
+1. **POC Kalshi** *(en cours)* — valider l'edge prédictif. Critère go/no-go : ensemble IA bat le best single model et bat la climato sur N>50 events.
+2. **DAO Augure** — risk pool tokenisé façon Nexus Mutual, émission des contrats via AMM/orderbook, pricing via le moteur prédictif.
+3. **DePIN data layer** — stations météo physiques rémunérées en token (partenariat WeatherXM ou réseau propre).
 
-| Jour | Action |
-|---|---|
-| 1 | Snapshot automatique des contributions mergées du mois M-1 |
-| 1-2 | L'agent IA produit `valuation_report.md` (PR ouverte) |
-| 1-7 | Fenêtre de challenge publique (challenge formel par commentaire signé) |
-| 7 | Auto-merge si non contesté → mint multisig. Sinon → vote du panel Top X holders |
+## Modèle de token en une phrase
 
-## Valuations contestées — le panel des holders
+Un seul token (AUG-POC, puis AUG après lancement DAO). Une seule mécanique : chaque apport — cash ou travail — est valorisé en équivalent BTC et minté à la NAV. Pas de buckets pré-attribués, pas de bonus founder, pas de catégorie privilégiée. La cap table émerge des valuations accumulées. Détail dans [`docs/token_model.md`](docs/token_model.md).
 
-Si un challenge formel est déposé pendant la fenêtre, la décision passe au **panel des Top X holders en tokens, chacun ayant 1 voix** (non pondéré par stake). Majorité simple.
+## Comment participer
 
-| Phase | Contributeurs | X |
-|---|---|---|
-| 1 | ≤ 20 | 5 |
-| 2 | 20-50 | 7 |
-| 3 | > 50 | 11 |
-
-Le panel valide la valuation de l'IA telle quelle, ou la renvoie avec instructions écrites pour révision.
-
-## Garde-fous
-
-- Cap mensuel : ≤ 10 % du supply circulant minté par fenêtre.
-- Cap par apporteur : ≤ 30 % du mint mensuel.
-- Valuations > 0,01 BTC dans un round : vote panel automatique même sans contestation.
-- Cooldown nouveau entrant : première PR mergée > 30 jours avant éligibilité au mint.
-- Slashing : claw-back sur 6 mois en cas de fraude établie par vote 67 %.
-
-## Statut
-
-Phase 1 (MVP 4 semaines) :
-- [ ] RUBRIC, HOURLY_RATES, PROMPT (premiers drafts livrés)
-- [ ] Script de collecte GitHub
-- [ ] Multisig Safe sur Base
-- [ ] Round genesis (valuation rétroactive du travail pré-open-source)
-- [ ] Premier round live
+Voir [`CONTRIBUTING.fr.md`](CONTRIBUTING.fr.md). En résumé : enregistre ton wallet, livre des artefacts visibles dans Git (code, donnée, RFCs) sur le module pertinent, fais-toi évaluer chaque mois par le rubric, reçois des tokens AUG-POC.
 
 ## Licence
 
-Code et documents sous [Apache 2.0](LICENSE).
+[Apache 2.0](LICENSE).
