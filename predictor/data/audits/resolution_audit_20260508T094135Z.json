@@ -1,0 +1,4153 @@
+{
+  "generated_at": "20260508T094135Z",
+  "n_events": 40,
+  "n_markets": 241,
+  "series_count": {
+    "KXHIGHAUS": 1,
+    "KXHIGHCHI": 1,
+    "KXHIGHDEN": 1,
+    "KXHIGHLAX": 2,
+    "KXHIGHMIA": 1,
+    "KXHIGHNY": 1,
+    "KXHIGHPHIL": 1,
+    "KXHIGHTBOS": 1,
+    "KXHIGHTHOU": 1,
+    "KXHIGHTLV": 2,
+    "KXHIGHTMIN": 1,
+    "KXHIGHTOKC": 1,
+    "KXHIGHTPHX": 1,
+    "KXHIGHTSFO": 2,
+    "KXHURCTOT": 1,
+    "KXLOWTCHI": 1,
+    "KXLOWTDC": 1,
+    "KXLOWTDEN": 1,
+    "KXLOWTLAX": 2,
+    "KXLOWTMIA": 1,
+    "KXLOWTMIN": 1,
+    "KXLOWTOKC": 1,
+    "KXLOWTPHIL": 1,
+    "KXLOWTPHX": 1,
+    "KXLOWTSATX": 1,
+    "KXLOWTSEA": 2,
+    "KXLOWTSFO": 2,
+    "KXRAINAUSM": 1,
+    "KXRAINCHIM": 1,
+    "KXRAINHOUM": 1,
+    "KXRAINMIAM": 1,
+    "KXRAINNYC": 1,
+    "KXRAINNYCM": 1,
+    "KXRAINSEAM": 1
+  },
+  "station_count": {
+    "CLIAUS": 13,
+    "CLIMDW": 13,
+    "CLIDEN": 12,
+    "CLILAX": 24,
+    "CLIMIA": 19,
+    "CLINYC": 11,
+    "CLIPHL": 12,
+    "CLIBOS": 6,
+    "CLIIAH": 13,
+    "CLILAS": 12,
+    "CLIMSP": 12,
+    "CLIOKC": 12,
+    "CLIPHX": 12,
+    "CLISFO": 24,
+    "UNKNOWN": 9,
+    "CLIORD": 6,
+    "CLIDCA": 6,
+    "CLISAT": 6,
+    "CLISEA": 19
+  },
+  "rows": [
+    {
+      "ticker": "KXHIGHAUS-26MAY08-T76",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 76.0,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KAUS : OUI si obs (arrondi) < 76.0"
+    },
+    {
+      "ticker": "KXHIGHAUS-26MAY08-B76.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 76.0,
+      "cap": 77.0,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KAUS : OUI si 76.0 <= obs (arrondi) <= 77.0"
+    },
+    {
+      "ticker": "KXHIGHAUS-26MAY08-B78.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 78.0,
+      "cap": 79.0,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KAUS : OUI si 78.0 <= obs (arrondi) <= 79.0"
+    },
+    {
+      "ticker": "KXHIGHAUS-26MAY08-B80.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 80.0,
+      "cap": 81.0,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KAUS : OUI si 80.0 <= obs (arrondi) <= 81.0"
+    },
+    {
+      "ticker": "KXHIGHAUS-26MAY08-B82.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 82.0,
+      "cap": 83.0,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KAUS : OUI si 82.0 <= obs (arrondi) <= 83.0"
+    },
+    {
+      "ticker": "KXHIGHAUS-26MAY08-T83",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 83.0,
+      "cap": null,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KAUS : OUI si obs (arrondi) > 83.0"
+    },
+    {
+      "ticker": "KXHIGHCHI-26MAY08-T63",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 63.0,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMDW : OUI si obs (arrondi) < 63.0"
+    },
+    {
+      "ticker": "KXHIGHCHI-26MAY08-B63.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 63.0,
+      "cap": 64.0,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMDW : OUI si 63.0 <= obs (arrondi) <= 64.0"
+    },
+    {
+      "ticker": "KXHIGHCHI-26MAY08-B65.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 65.0,
+      "cap": 66.0,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMDW : OUI si 65.0 <= obs (arrondi) <= 66.0"
+    },
+    {
+      "ticker": "KXHIGHCHI-26MAY08-B67.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 67.0,
+      "cap": 68.0,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMDW : OUI si 67.0 <= obs (arrondi) <= 68.0"
+    },
+    {
+      "ticker": "KXHIGHCHI-26MAY08-B69.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 69.0,
+      "cap": 70.0,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMDW : OUI si 69.0 <= obs (arrondi) <= 70.0"
+    },
+    {
+      "ticker": "KXHIGHCHI-26MAY08-T70",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 70.0,
+      "cap": null,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMDW : OUI si obs (arrondi) > 70.0"
+    },
+    {
+      "ticker": "KXHIGHDEN-26MAY08-T66",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 66.0,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KDEN : OUI si obs (arrondi) < 66.0"
+    },
+    {
+      "ticker": "KXHIGHDEN-26MAY08-B66.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 66.0,
+      "cap": 67.0,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KDEN : OUI si 66.0 <= obs (arrondi) <= 67.0"
+    },
+    {
+      "ticker": "KXHIGHDEN-26MAY08-B68.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 68.0,
+      "cap": 69.0,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KDEN : OUI si 68.0 <= obs (arrondi) <= 69.0"
+    },
+    {
+      "ticker": "KXHIGHDEN-26MAY08-B70.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 70.0,
+      "cap": 71.0,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KDEN : OUI si 70.0 <= obs (arrondi) <= 71.0"
+    },
+    {
+      "ticker": "KXHIGHDEN-26MAY08-B72.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 72.0,
+      "cap": 73.0,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KDEN : OUI si 72.0 <= obs (arrondi) <= 73.0"
+    },
+    {
+      "ticker": "KXHIGHDEN-26MAY08-T73",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 73.0,
+      "cap": null,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KDEN : OUI si obs (arrondi) > 73.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY07-T68",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 68.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si obs (arrondi) < 68.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY07-B68.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 68.0,
+      "cap": 69.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si 68.0 <= obs (arrondi) <= 69.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY07-B70.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 70.0,
+      "cap": 71.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si 70.0 <= obs (arrondi) <= 71.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY07-B72.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 72.0,
+      "cap": 73.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si 72.0 <= obs (arrondi) <= 73.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY07-B74.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 74.0,
+      "cap": 75.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si 74.0 <= obs (arrondi) <= 75.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY07-T75",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 75.0,
+      "cap": null,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si obs (arrondi) > 75.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY08-T68",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 68.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si obs (arrondi) < 68.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY08-B68.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 68.0,
+      "cap": 69.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si 68.0 <= obs (arrondi) <= 69.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY08-B70.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 70.0,
+      "cap": 71.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si 70.0 <= obs (arrondi) <= 71.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY08-B72.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 72.0,
+      "cap": 73.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si 72.0 <= obs (arrondi) <= 73.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY08-B74.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 74.0,
+      "cap": 75.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si 74.0 <= obs (arrondi) <= 75.0"
+    },
+    {
+      "ticker": "KXHIGHLAX-26MAY08-T75",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 75.0,
+      "cap": null,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAX : OUI si obs (arrondi) > 75.0"
+    },
+    {
+      "ticker": "KXHIGHMIA-26MAY08-T86",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 86.0,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMIA : OUI si obs (arrondi) < 86.0"
+    },
+    {
+      "ticker": "KXHIGHMIA-26MAY08-B86.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 86.0,
+      "cap": 87.0,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMIA : OUI si 86.0 <= obs (arrondi) <= 87.0"
+    },
+    {
+      "ticker": "KXHIGHMIA-26MAY08-B88.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 88.0,
+      "cap": 89.0,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMIA : OUI si 88.0 <= obs (arrondi) <= 89.0"
+    },
+    {
+      "ticker": "KXHIGHMIA-26MAY08-B90.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 90.0,
+      "cap": 91.0,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMIA : OUI si 90.0 <= obs (arrondi) <= 91.0"
+    },
+    {
+      "ticker": "KXHIGHMIA-26MAY08-B92.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 92.0,
+      "cap": 93.0,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMIA : OUI si 92.0 <= obs (arrondi) <= 93.0"
+    },
+    {
+      "ticker": "KXHIGHMIA-26MAY08-T93",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 93.0,
+      "cap": null,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMIA : OUI si obs (arrondi) > 93.0"
+    },
+    {
+      "ticker": "KXHIGHNY-26MAY08-T64",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 64.0,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KNYC : OUI si obs (arrondi) < 64.0"
+    },
+    {
+      "ticker": "KXHIGHNY-26MAY08-B64.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 64.0,
+      "cap": 65.0,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KNYC : OUI si 64.0 <= obs (arrondi) <= 65.0"
+    },
+    {
+      "ticker": "KXHIGHNY-26MAY08-B66.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 66.0,
+      "cap": 67.0,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KNYC : OUI si 66.0 <= obs (arrondi) <= 67.0"
+    },
+    {
+      "ticker": "KXHIGHNY-26MAY08-B68.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 68.0,
+      "cap": 69.0,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KNYC : OUI si 68.0 <= obs (arrondi) <= 69.0"
+    },
+    {
+      "ticker": "KXHIGHNY-26MAY08-B70.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 70.0,
+      "cap": 71.0,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KNYC : OUI si 70.0 <= obs (arrondi) <= 71.0"
+    },
+    {
+      "ticker": "KXHIGHNY-26MAY08-T71",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 71.0,
+      "cap": null,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KNYC : OUI si obs (arrondi) > 71.0"
+    },
+    {
+      "ticker": "KXHIGHPHIL-26MAY08-T65",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 65.0,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHL : OUI si obs (arrondi) < 65.0"
+    },
+    {
+      "ticker": "KXHIGHPHIL-26MAY08-B65.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 65.0,
+      "cap": 66.0,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHL : OUI si 65.0 <= obs (arrondi) <= 66.0"
+    },
+    {
+      "ticker": "KXHIGHPHIL-26MAY08-B67.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 67.0,
+      "cap": 68.0,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHL : OUI si 67.0 <= obs (arrondi) <= 68.0"
+    },
+    {
+      "ticker": "KXHIGHPHIL-26MAY08-B69.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 69.0,
+      "cap": 70.0,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHL : OUI si 69.0 <= obs (arrondi) <= 70.0"
+    },
+    {
+      "ticker": "KXHIGHPHIL-26MAY08-B71.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 71.0,
+      "cap": 72.0,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHL : OUI si 71.0 <= obs (arrondi) <= 72.0"
+    },
+    {
+      "ticker": "KXHIGHPHIL-26MAY08-T72",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 72.0,
+      "cap": null,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHL : OUI si obs (arrondi) > 72.0"
+    },
+    {
+      "ticker": "KXHIGHTBOS-26MAY08-T58",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 58.0,
+      "station": "CLIBOS",
+      "icao": "KBOS",
+      "lat": 42.3656,
+      "lon": -71.0096,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KBOS : OUI si obs (arrondi) < 58.0"
+    },
+    {
+      "ticker": "KXHIGHTBOS-26MAY08-B58.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 58.0,
+      "cap": 59.0,
+      "station": "CLIBOS",
+      "icao": "KBOS",
+      "lat": 42.3656,
+      "lon": -71.0096,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KBOS : OUI si 58.0 <= obs (arrondi) <= 59.0"
+    },
+    {
+      "ticker": "KXHIGHTBOS-26MAY08-B60.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 60.0,
+      "cap": 61.0,
+      "station": "CLIBOS",
+      "icao": "KBOS",
+      "lat": 42.3656,
+      "lon": -71.0096,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KBOS : OUI si 60.0 <= obs (arrondi) <= 61.0"
+    },
+    {
+      "ticker": "KXHIGHTBOS-26MAY08-B62.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 62.0,
+      "cap": 63.0,
+      "station": "CLIBOS",
+      "icao": "KBOS",
+      "lat": 42.3656,
+      "lon": -71.0096,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KBOS : OUI si 62.0 <= obs (arrondi) <= 63.0"
+    },
+    {
+      "ticker": "KXHIGHTBOS-26MAY08-B64.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 64.0,
+      "cap": 65.0,
+      "station": "CLIBOS",
+      "icao": "KBOS",
+      "lat": 42.3656,
+      "lon": -71.0096,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KBOS : OUI si 64.0 <= obs (arrondi) <= 65.0"
+    },
+    {
+      "ticker": "KXHIGHTBOS-26MAY08-T65",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 65.0,
+      "cap": null,
+      "station": "CLIBOS",
+      "icao": "KBOS",
+      "lat": 42.3656,
+      "lon": -71.0096,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KBOS : OUI si obs (arrondi) > 65.0"
+    },
+    {
+      "ticker": "KXHIGHTHOU-26MAY08-T76",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 76.0,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KIAH : OUI si obs (arrondi) < 76.0"
+    },
+    {
+      "ticker": "KXHIGHTHOU-26MAY08-B76.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 76.0,
+      "cap": 77.0,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KIAH : OUI si 76.0 <= obs (arrondi) <= 77.0"
+    },
+    {
+      "ticker": "KXHIGHTHOU-26MAY08-B78.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 78.0,
+      "cap": 79.0,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KIAH : OUI si 78.0 <= obs (arrondi) <= 79.0"
+    },
+    {
+      "ticker": "KXHIGHTHOU-26MAY08-B80.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 80.0,
+      "cap": 81.0,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KIAH : OUI si 80.0 <= obs (arrondi) <= 81.0"
+    },
+    {
+      "ticker": "KXHIGHTHOU-26MAY08-B82.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 82.0,
+      "cap": 83.0,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KIAH : OUI si 82.0 <= obs (arrondi) <= 83.0"
+    },
+    {
+      "ticker": "KXHIGHTHOU-26MAY08-T83",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 83.0,
+      "cap": null,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KIAH : OUI si obs (arrondi) > 83.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY07-T89",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 89.0,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si obs (arrondi) < 89.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY07-B89.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 89.0,
+      "cap": 90.0,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si 89.0 <= obs (arrondi) <= 90.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY07-B91.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 91.0,
+      "cap": 92.0,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si 91.0 <= obs (arrondi) <= 92.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY07-B93.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 93.0,
+      "cap": 94.0,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si 93.0 <= obs (arrondi) <= 94.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY07-B95.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 95.0,
+      "cap": 96.0,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si 95.0 <= obs (arrondi) <= 96.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY07-T96",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 96.0,
+      "cap": null,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si obs (arrondi) > 96.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY08-T95",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 95.0,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si obs (arrondi) < 95.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY08-B95.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 95.0,
+      "cap": 96.0,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si 95.0 <= obs (arrondi) <= 96.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY08-B97.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 97.0,
+      "cap": 98.0,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si 97.0 <= obs (arrondi) <= 98.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY08-B99.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 99.0,
+      "cap": 100.0,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si 99.0 <= obs (arrondi) <= 100.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY08-B101.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 101.0,
+      "cap": 102.0,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si 101.0 <= obs (arrondi) <= 102.0"
+    },
+    {
+      "ticker": "KXHIGHTLV-26MAY08-T102",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 102.0,
+      "cap": null,
+      "station": "CLILAS",
+      "icao": "KLAS",
+      "lat": 36.084,
+      "lon": -115.1537,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KLAS : OUI si obs (arrondi) > 102.0"
+    },
+    {
+      "ticker": "KXHIGHTMIN-26MAY08-T66",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 66.0,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMSP : OUI si obs (arrondi) < 66.0"
+    },
+    {
+      "ticker": "KXHIGHTMIN-26MAY08-B66.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 66.0,
+      "cap": 67.0,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMSP : OUI si 66.0 <= obs (arrondi) <= 67.0"
+    },
+    {
+      "ticker": "KXHIGHTMIN-26MAY08-B68.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 68.0,
+      "cap": 69.0,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMSP : OUI si 68.0 <= obs (arrondi) <= 69.0"
+    },
+    {
+      "ticker": "KXHIGHTMIN-26MAY08-B70.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 70.0,
+      "cap": 71.0,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMSP : OUI si 70.0 <= obs (arrondi) <= 71.0"
+    },
+    {
+      "ticker": "KXHIGHTMIN-26MAY08-B72.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 72.0,
+      "cap": 73.0,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMSP : OUI si 72.0 <= obs (arrondi) <= 73.0"
+    },
+    {
+      "ticker": "KXHIGHTMIN-26MAY08-T73",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 73.0,
+      "cap": null,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KMSP : OUI si obs (arrondi) > 73.0"
+    },
+    {
+      "ticker": "KXHIGHTOKC-26MAY08-T83",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 83.0,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KOKC : OUI si obs (arrondi) < 83.0"
+    },
+    {
+      "ticker": "KXHIGHTOKC-26MAY08-B83.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 83.0,
+      "cap": 84.0,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KOKC : OUI si 83.0 <= obs (arrondi) <= 84.0"
+    },
+    {
+      "ticker": "KXHIGHTOKC-26MAY08-B85.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 85.0,
+      "cap": 86.0,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KOKC : OUI si 85.0 <= obs (arrondi) <= 86.0"
+    },
+    {
+      "ticker": "KXHIGHTOKC-26MAY08-B87.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 87.0,
+      "cap": 88.0,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KOKC : OUI si 87.0 <= obs (arrondi) <= 88.0"
+    },
+    {
+      "ticker": "KXHIGHTOKC-26MAY08-B89.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 89.0,
+      "cap": 90.0,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KOKC : OUI si 89.0 <= obs (arrondi) <= 90.0"
+    },
+    {
+      "ticker": "KXHIGHTOKC-26MAY08-T90",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 90.0,
+      "cap": null,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KOKC : OUI si obs (arrondi) > 90.0"
+    },
+    {
+      "ticker": "KXHIGHTPHX-26MAY08-T98",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 98.0,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHX : OUI si obs (arrondi) < 98.0"
+    },
+    {
+      "ticker": "KXHIGHTPHX-26MAY08-B98.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 98.0,
+      "cap": 99.0,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHX : OUI si 98.0 <= obs (arrondi) <= 99.0"
+    },
+    {
+      "ticker": "KXHIGHTPHX-26MAY08-B100.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 100.0,
+      "cap": 101.0,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHX : OUI si 100.0 <= obs (arrondi) <= 101.0"
+    },
+    {
+      "ticker": "KXHIGHTPHX-26MAY08-B102.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 102.0,
+      "cap": 103.0,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHX : OUI si 102.0 <= obs (arrondi) <= 103.0"
+    },
+    {
+      "ticker": "KXHIGHTPHX-26MAY08-B104.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 104.0,
+      "cap": 105.0,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHX : OUI si 104.0 <= obs (arrondi) <= 105.0"
+    },
+    {
+      "ticker": "KXHIGHTPHX-26MAY08-T105",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 105.0,
+      "cap": null,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KPHX : OUI si obs (arrondi) > 105.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY07-T62",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 62.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si obs (arrondi) < 62.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY07-B62.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 62.0,
+      "cap": 63.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si 62.0 <= obs (arrondi) <= 63.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY07-B64.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 64.0,
+      "cap": 65.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si 64.0 <= obs (arrondi) <= 65.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY07-B66.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 66.0,
+      "cap": 67.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si 66.0 <= obs (arrondi) <= 67.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY07-B68.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 68.0,
+      "cap": 69.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si 68.0 <= obs (arrondi) <= 69.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY07-T69",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 69.0,
+      "cap": null,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si obs (arrondi) > 69.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY08-T62",
+      "variable": "temp_max",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 62.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si obs (arrondi) < 62.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY08-B62.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 62.0,
+      "cap": 63.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si 62.0 <= obs (arrondi) <= 63.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY08-B64.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 64.0,
+      "cap": 65.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si 64.0 <= obs (arrondi) <= 65.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY08-B66.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 66.0,
+      "cap": 67.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si 66.0 <= obs (arrondi) <= 67.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY08-B68.5",
+      "variable": "temp_max",
+      "strike_type": "between",
+      "floor": 68.0,
+      "cap": 69.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si 68.0 <= obs (arrondi) <= 69.0"
+    },
+    {
+      "ticker": "KXHIGHTSFO-26MAY08-T69",
+      "variable": "temp_max",
+      "strike_type": "greater",
+      "floor": 69.0,
+      "cap": null,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_max @ KSFO : OUI si obs (arrondi) > 69.0"
+    },
+    {
+      "ticker": "KXHURCTOT-26DEC01-T4",
+      "variable": null,
+      "strike_type": "greater",
+      "floor": 4.0,
+      "cap": null,
+      "station": "UNKNOWN",
+      "icao": null,
+      "lat": null,
+      "lon": null,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "station NWS non identifi\u00e9e \u2014 r\u00e9solution sera approximative"
+      ],
+      "describe": "None @ ? : OUI si obs (arrondi) > 4.0"
+    },
+    {
+      "ticker": "KXHURCTOT-26DEC01-T5",
+      "variable": null,
+      "strike_type": "greater",
+      "floor": 5.0,
+      "cap": null,
+      "station": "UNKNOWN",
+      "icao": null,
+      "lat": null,
+      "lon": null,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "station NWS non identifi\u00e9e \u2014 r\u00e9solution sera approximative"
+      ],
+      "describe": "None @ ? : OUI si obs (arrondi) > 5.0"
+    },
+    {
+      "ticker": "KXHURCTOT-26DEC01-T6",
+      "variable": null,
+      "strike_type": "greater",
+      "floor": 6.0,
+      "cap": null,
+      "station": "UNKNOWN",
+      "icao": null,
+      "lat": null,
+      "lon": null,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "station NWS non identifi\u00e9e \u2014 r\u00e9solution sera approximative"
+      ],
+      "describe": "None @ ? : OUI si obs (arrondi) > 6.0"
+    },
+    {
+      "ticker": "KXHURCTOT-26DEC01-T7",
+      "variable": null,
+      "strike_type": "greater",
+      "floor": 7.0,
+      "cap": null,
+      "station": "UNKNOWN",
+      "icao": null,
+      "lat": null,
+      "lon": null,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "station NWS non identifi\u00e9e \u2014 r\u00e9solution sera approximative"
+      ],
+      "describe": "None @ ? : OUI si obs (arrondi) > 7.0"
+    },
+    {
+      "ticker": "KXHURCTOT-26DEC01-T8",
+      "variable": null,
+      "strike_type": "greater",
+      "floor": 8.0,
+      "cap": null,
+      "station": "UNKNOWN",
+      "icao": null,
+      "lat": null,
+      "lon": null,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "station NWS non identifi\u00e9e \u2014 r\u00e9solution sera approximative"
+      ],
+      "describe": "None @ ? : OUI si obs (arrondi) > 8.0"
+    },
+    {
+      "ticker": "KXHURCTOT-26DEC01-T9",
+      "variable": null,
+      "strike_type": "greater",
+      "floor": 9.0,
+      "cap": null,
+      "station": "UNKNOWN",
+      "icao": null,
+      "lat": null,
+      "lon": null,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "station NWS non identifi\u00e9e \u2014 r\u00e9solution sera approximative"
+      ],
+      "describe": "None @ ? : OUI si obs (arrondi) > 9.0"
+    },
+    {
+      "ticker": "KXHURCTOT-26DEC01-T10",
+      "variable": null,
+      "strike_type": "greater",
+      "floor": 10.0,
+      "cap": null,
+      "station": "UNKNOWN",
+      "icao": null,
+      "lat": null,
+      "lon": null,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "station NWS non identifi\u00e9e \u2014 r\u00e9solution sera approximative"
+      ],
+      "describe": "None @ ? : OUI si obs (arrondi) > 10.0"
+    },
+    {
+      "ticker": "KXHURCTOT-26DEC01-T12",
+      "variable": null,
+      "strike_type": "greater",
+      "floor": 12.0,
+      "cap": null,
+      "station": "UNKNOWN",
+      "icao": null,
+      "lat": null,
+      "lon": null,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "station NWS non identifi\u00e9e \u2014 r\u00e9solution sera approximative"
+      ],
+      "describe": "None @ ? : OUI si obs (arrondi) > 12.0"
+    },
+    {
+      "ticker": "KXHURCTOT-26DEC01-T15",
+      "variable": null,
+      "strike_type": "greater",
+      "floor": 15.0,
+      "cap": null,
+      "station": "UNKNOWN",
+      "icao": null,
+      "lat": null,
+      "lon": null,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "station NWS non identifi\u00e9e \u2014 r\u00e9solution sera approximative"
+      ],
+      "describe": "None @ ? : OUI si obs (arrondi) > 15.0"
+    },
+    {
+      "ticker": "KXLOWTCHI-26MAY08-T38",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 38.0,
+      "station": "CLIORD",
+      "icao": "KORD",
+      "lat": 41.9803,
+      "lon": -87.909,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KORD : OUI si obs (arrondi) < 38.0"
+    },
+    {
+      "ticker": "KXLOWTCHI-26MAY08-B38.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 38.0,
+      "cap": 39.0,
+      "station": "CLIORD",
+      "icao": "KORD",
+      "lat": 41.9803,
+      "lon": -87.909,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KORD : OUI si 38.0 <= obs (arrondi) <= 39.0"
+    },
+    {
+      "ticker": "KXLOWTCHI-26MAY08-B40.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 40.0,
+      "cap": 41.0,
+      "station": "CLIORD",
+      "icao": "KORD",
+      "lat": 41.9803,
+      "lon": -87.909,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KORD : OUI si 40.0 <= obs (arrondi) <= 41.0"
+    },
+    {
+      "ticker": "KXLOWTCHI-26MAY08-B42.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 42.0,
+      "cap": 43.0,
+      "station": "CLIORD",
+      "icao": "KORD",
+      "lat": 41.9803,
+      "lon": -87.909,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KORD : OUI si 42.0 <= obs (arrondi) <= 43.0"
+    },
+    {
+      "ticker": "KXLOWTCHI-26MAY08-B44.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 44.0,
+      "cap": 45.0,
+      "station": "CLIORD",
+      "icao": "KORD",
+      "lat": 41.9803,
+      "lon": -87.909,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KORD : OUI si 44.0 <= obs (arrondi) <= 45.0"
+    },
+    {
+      "ticker": "KXLOWTCHI-26MAY08-T45",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 45.0,
+      "cap": null,
+      "station": "CLIORD",
+      "icao": "KORD",
+      "lat": 41.9803,
+      "lon": -87.909,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KORD : OUI si obs (arrondi) > 45.0"
+    },
+    {
+      "ticker": "KXLOWTDC-26MAY08-T43",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 43.0,
+      "station": "CLIDCA",
+      "icao": "KDCA",
+      "lat": 38.8521,
+      "lon": -77.0377,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDCA : OUI si obs (arrondi) < 43.0"
+    },
+    {
+      "ticker": "KXLOWTDC-26MAY08-B43.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 43.0,
+      "cap": 44.0,
+      "station": "CLIDCA",
+      "icao": "KDCA",
+      "lat": 38.8521,
+      "lon": -77.0377,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDCA : OUI si 43.0 <= obs (arrondi) <= 44.0"
+    },
+    {
+      "ticker": "KXLOWTDC-26MAY08-B45.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 45.0,
+      "cap": 46.0,
+      "station": "CLIDCA",
+      "icao": "KDCA",
+      "lat": 38.8521,
+      "lon": -77.0377,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDCA : OUI si 45.0 <= obs (arrondi) <= 46.0"
+    },
+    {
+      "ticker": "KXLOWTDC-26MAY08-B47.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 47.0,
+      "cap": 48.0,
+      "station": "CLIDCA",
+      "icao": "KDCA",
+      "lat": 38.8521,
+      "lon": -77.0377,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDCA : OUI si 47.0 <= obs (arrondi) <= 48.0"
+    },
+    {
+      "ticker": "KXLOWTDC-26MAY08-B49.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 49.0,
+      "cap": 50.0,
+      "station": "CLIDCA",
+      "icao": "KDCA",
+      "lat": 38.8521,
+      "lon": -77.0377,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDCA : OUI si 49.0 <= obs (arrondi) <= 50.0"
+    },
+    {
+      "ticker": "KXLOWTDC-26MAY08-T50",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 50.0,
+      "cap": null,
+      "station": "CLIDCA",
+      "icao": "KDCA",
+      "lat": 38.8521,
+      "lon": -77.0377,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDCA : OUI si obs (arrondi) > 50.0"
+    },
+    {
+      "ticker": "KXLOWTDEN-26MAY08-T37",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 37.0,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDEN : OUI si obs (arrondi) < 37.0"
+    },
+    {
+      "ticker": "KXLOWTDEN-26MAY08-B37.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 37.0,
+      "cap": 38.0,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDEN : OUI si 37.0 <= obs (arrondi) <= 38.0"
+    },
+    {
+      "ticker": "KXLOWTDEN-26MAY08-B39.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 39.0,
+      "cap": 40.0,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDEN : OUI si 39.0 <= obs (arrondi) <= 40.0"
+    },
+    {
+      "ticker": "KXLOWTDEN-26MAY08-B41.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 41.0,
+      "cap": 42.0,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDEN : OUI si 41.0 <= obs (arrondi) <= 42.0"
+    },
+    {
+      "ticker": "KXLOWTDEN-26MAY08-B43.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 43.0,
+      "cap": 44.0,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDEN : OUI si 43.0 <= obs (arrondi) <= 44.0"
+    },
+    {
+      "ticker": "KXLOWTDEN-26MAY08-T44",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 44.0,
+      "cap": null,
+      "station": "CLIDEN",
+      "icao": "KDEN",
+      "lat": 39.8561,
+      "lon": -104.6737,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KDEN : OUI si obs (arrondi) > 44.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY07-T50",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 50.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si obs (arrondi) < 50.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY07-B50.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 50.0,
+      "cap": 51.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si 50.0 <= obs (arrondi) <= 51.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY07-B52.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 52.0,
+      "cap": 53.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si 52.0 <= obs (arrondi) <= 53.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY07-B54.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 54.0,
+      "cap": 55.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si 54.0 <= obs (arrondi) <= 55.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY07-B56.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 56.0,
+      "cap": 57.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si 56.0 <= obs (arrondi) <= 57.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY07-T57",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 57.0,
+      "cap": null,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si obs (arrondi) > 57.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY08-T52",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 52.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si obs (arrondi) < 52.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY08-B52.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 52.0,
+      "cap": 53.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si 52.0 <= obs (arrondi) <= 53.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY08-B54.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 54.0,
+      "cap": 55.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si 54.0 <= obs (arrondi) <= 55.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY08-B56.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 56.0,
+      "cap": 57.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si 56.0 <= obs (arrondi) <= 57.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY08-B58.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 58.0,
+      "cap": 59.0,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si 58.0 <= obs (arrondi) <= 59.0"
+    },
+    {
+      "ticker": "KXLOWTLAX-26MAY08-T59",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 59.0,
+      "cap": null,
+      "station": "CLILAX",
+      "icao": "KLAX",
+      "lat": 33.9425,
+      "lon": -118.4081,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KLAX : OUI si obs (arrondi) > 59.0"
+    },
+    {
+      "ticker": "KXLOWTMIA-26MAY08-T69",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 69.0,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMIA : OUI si obs (arrondi) < 69.0"
+    },
+    {
+      "ticker": "KXLOWTMIA-26MAY08-B69.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 69.0,
+      "cap": 70.0,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMIA : OUI si 69.0 <= obs (arrondi) <= 70.0"
+    },
+    {
+      "ticker": "KXLOWTMIA-26MAY08-B71.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 71.0,
+      "cap": 72.0,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMIA : OUI si 71.0 <= obs (arrondi) <= 72.0"
+    },
+    {
+      "ticker": "KXLOWTMIA-26MAY08-B73.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 73.0,
+      "cap": 74.0,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMIA : OUI si 73.0 <= obs (arrondi) <= 74.0"
+    },
+    {
+      "ticker": "KXLOWTMIA-26MAY08-B75.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 75.0,
+      "cap": 76.0,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMIA : OUI si 75.0 <= obs (arrondi) <= 76.0"
+    },
+    {
+      "ticker": "KXLOWTMIA-26MAY08-T76",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 76.0,
+      "cap": null,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMIA : OUI si obs (arrondi) > 76.0"
+    },
+    {
+      "ticker": "KXLOWTMIN-26MAY08-T32",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 32.0,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMSP : OUI si obs (arrondi) < 32.0"
+    },
+    {
+      "ticker": "KXLOWTMIN-26MAY08-B32.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 32.0,
+      "cap": 33.0,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMSP : OUI si 32.0 <= obs (arrondi) <= 33.0"
+    },
+    {
+      "ticker": "KXLOWTMIN-26MAY08-B34.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 34.0,
+      "cap": 35.0,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMSP : OUI si 34.0 <= obs (arrondi) <= 35.0"
+    },
+    {
+      "ticker": "KXLOWTMIN-26MAY08-B36.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 36.0,
+      "cap": 37.0,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMSP : OUI si 36.0 <= obs (arrondi) <= 37.0"
+    },
+    {
+      "ticker": "KXLOWTMIN-26MAY08-B38.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 38.0,
+      "cap": 39.0,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMSP : OUI si 38.0 <= obs (arrondi) <= 39.0"
+    },
+    {
+      "ticker": "KXLOWTMIN-26MAY08-T39",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 39.0,
+      "cap": null,
+      "station": "CLIMSP",
+      "icao": "KMSP",
+      "lat": 44.8848,
+      "lon": -93.2223,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KMSP : OUI si obs (arrondi) > 39.0"
+    },
+    {
+      "ticker": "KXLOWTOKC-26MAY08-T47",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 47.0,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KOKC : OUI si obs (arrondi) < 47.0"
+    },
+    {
+      "ticker": "KXLOWTOKC-26MAY08-B47.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 47.0,
+      "cap": 48.0,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KOKC : OUI si 47.0 <= obs (arrondi) <= 48.0"
+    },
+    {
+      "ticker": "KXLOWTOKC-26MAY08-B49.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 49.0,
+      "cap": 50.0,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KOKC : OUI si 49.0 <= obs (arrondi) <= 50.0"
+    },
+    {
+      "ticker": "KXLOWTOKC-26MAY08-B51.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 51.0,
+      "cap": 52.0,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KOKC : OUI si 51.0 <= obs (arrondi) <= 52.0"
+    },
+    {
+      "ticker": "KXLOWTOKC-26MAY08-B53.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 53.0,
+      "cap": 54.0,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KOKC : OUI si 53.0 <= obs (arrondi) <= 54.0"
+    },
+    {
+      "ticker": "KXLOWTOKC-26MAY08-T54",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 54.0,
+      "cap": null,
+      "station": "CLIOKC",
+      "icao": "KOKC",
+      "lat": 35.3931,
+      "lon": -97.6007,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KOKC : OUI si obs (arrondi) > 54.0"
+    },
+    {
+      "ticker": "KXLOWTPHIL-26MAY08-T42",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 42.0,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHL : OUI si obs (arrondi) < 42.0"
+    },
+    {
+      "ticker": "KXLOWTPHIL-26MAY08-B42.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 42.0,
+      "cap": 43.0,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHL : OUI si 42.0 <= obs (arrondi) <= 43.0"
+    },
+    {
+      "ticker": "KXLOWTPHIL-26MAY08-B44.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 44.0,
+      "cap": 45.0,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHL : OUI si 44.0 <= obs (arrondi) <= 45.0"
+    },
+    {
+      "ticker": "KXLOWTPHIL-26MAY08-B46.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 46.0,
+      "cap": 47.0,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHL : OUI si 46.0 <= obs (arrondi) <= 47.0"
+    },
+    {
+      "ticker": "KXLOWTPHIL-26MAY08-B48.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 48.0,
+      "cap": 49.0,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHL : OUI si 48.0 <= obs (arrondi) <= 49.0"
+    },
+    {
+      "ticker": "KXLOWTPHIL-26MAY08-T49",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 49.0,
+      "cap": null,
+      "station": "CLIPHL",
+      "icao": "KPHL",
+      "lat": 39.8729,
+      "lon": -75.2437,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHL : OUI si obs (arrondi) > 49.0"
+    },
+    {
+      "ticker": "KXLOWTPHX-26MAY08-T62",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 62.0,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHX : OUI si obs (arrondi) < 62.0"
+    },
+    {
+      "ticker": "KXLOWTPHX-26MAY08-B62.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 62.0,
+      "cap": 63.0,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHX : OUI si 62.0 <= obs (arrondi) <= 63.0"
+    },
+    {
+      "ticker": "KXLOWTPHX-26MAY08-B64.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 64.0,
+      "cap": 65.0,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHX : OUI si 64.0 <= obs (arrondi) <= 65.0"
+    },
+    {
+      "ticker": "KXLOWTPHX-26MAY08-B66.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 66.0,
+      "cap": 67.0,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHX : OUI si 66.0 <= obs (arrondi) <= 67.0"
+    },
+    {
+      "ticker": "KXLOWTPHX-26MAY08-B68.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 68.0,
+      "cap": 69.0,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHX : OUI si 68.0 <= obs (arrondi) <= 69.0"
+    },
+    {
+      "ticker": "KXLOWTPHX-26MAY08-T69",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 69.0,
+      "cap": null,
+      "station": "CLIPHX",
+      "icao": "KPHX",
+      "lat": 33.4373,
+      "lon": -112.0078,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KPHX : OUI si obs (arrondi) > 69.0"
+    },
+    {
+      "ticker": "KXLOWTSATX-26MAY08-T60",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 60.0,
+      "station": "CLISAT",
+      "icao": "KSAT",
+      "lat": 29.5337,
+      "lon": -98.4698,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSAT : OUI si obs (arrondi) < 60.0"
+    },
+    {
+      "ticker": "KXLOWTSATX-26MAY08-B60.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 60.0,
+      "cap": 61.0,
+      "station": "CLISAT",
+      "icao": "KSAT",
+      "lat": 29.5337,
+      "lon": -98.4698,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSAT : OUI si 60.0 <= obs (arrondi) <= 61.0"
+    },
+    {
+      "ticker": "KXLOWTSATX-26MAY08-B62.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 62.0,
+      "cap": 63.0,
+      "station": "CLISAT",
+      "icao": "KSAT",
+      "lat": 29.5337,
+      "lon": -98.4698,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSAT : OUI si 62.0 <= obs (arrondi) <= 63.0"
+    },
+    {
+      "ticker": "KXLOWTSATX-26MAY08-B64.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 64.0,
+      "cap": 65.0,
+      "station": "CLISAT",
+      "icao": "KSAT",
+      "lat": 29.5337,
+      "lon": -98.4698,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSAT : OUI si 64.0 <= obs (arrondi) <= 65.0"
+    },
+    {
+      "ticker": "KXLOWTSATX-26MAY08-B66.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 66.0,
+      "cap": 67.0,
+      "station": "CLISAT",
+      "icao": "KSAT",
+      "lat": 29.5337,
+      "lon": -98.4698,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSAT : OUI si 66.0 <= obs (arrondi) <= 67.0"
+    },
+    {
+      "ticker": "KXLOWTSATX-26MAY08-T67",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 67.0,
+      "cap": null,
+      "station": "CLISAT",
+      "icao": "KSAT",
+      "lat": 29.5337,
+      "lon": -98.4698,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSAT : OUI si obs (arrondi) > 67.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY07-T44",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 44.0,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si obs (arrondi) < 44.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY07-B44.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 44.0,
+      "cap": 45.0,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si 44.0 <= obs (arrondi) <= 45.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY07-B46.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 46.0,
+      "cap": 47.0,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si 46.0 <= obs (arrondi) <= 47.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY07-B48.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 48.0,
+      "cap": 49.0,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si 48.0 <= obs (arrondi) <= 49.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY07-B50.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 50.0,
+      "cap": 51.0,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si 50.0 <= obs (arrondi) <= 51.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY07-T51",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 51.0,
+      "cap": null,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si obs (arrondi) > 51.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY08-T44",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 44.0,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si obs (arrondi) < 44.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY08-B44.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 44.0,
+      "cap": 45.0,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si 44.0 <= obs (arrondi) <= 45.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY08-B46.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 46.0,
+      "cap": 47.0,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si 46.0 <= obs (arrondi) <= 47.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY08-B48.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 48.0,
+      "cap": 49.0,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si 48.0 <= obs (arrondi) <= 49.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY08-B50.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 50.0,
+      "cap": 51.0,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si 50.0 <= obs (arrondi) <= 51.0"
+    },
+    {
+      "ticker": "KXLOWTSEA-26MAY08-T51",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 51.0,
+      "cap": null,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSEA : OUI si obs (arrondi) > 51.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY07-T48",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 48.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si obs (arrondi) < 48.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY07-B48.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 48.0,
+      "cap": 49.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si 48.0 <= obs (arrondi) <= 49.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY07-B50.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 50.0,
+      "cap": 51.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si 50.0 <= obs (arrondi) <= 51.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY07-B52.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 52.0,
+      "cap": 53.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si 52.0 <= obs (arrondi) <= 53.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY07-B54.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 54.0,
+      "cap": 55.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si 54.0 <= obs (arrondi) <= 55.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY07-T55",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 55.0,
+      "cap": null,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si obs (arrondi) > 55.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY08-T48",
+      "variable": "temp_min",
+      "strike_type": "less",
+      "floor": null,
+      "cap": 48.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si obs (arrondi) < 48.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY08-B48.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 48.0,
+      "cap": 49.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si 48.0 <= obs (arrondi) <= 49.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY08-B50.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 50.0,
+      "cap": 51.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si 50.0 <= obs (arrondi) <= 51.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY08-B52.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 52.0,
+      "cap": 53.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si 52.0 <= obs (arrondi) <= 53.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY08-B54.5",
+      "variable": "temp_min",
+      "strike_type": "between",
+      "floor": 54.0,
+      "cap": 55.0,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si 54.0 <= obs (arrondi) <= 55.0"
+    },
+    {
+      "ticker": "KXLOWTSFO-26MAY08-T55",
+      "variable": "temp_min",
+      "strike_type": "greater",
+      "floor": 55.0,
+      "cap": null,
+      "station": "CLISFO",
+      "icao": "KSFO",
+      "lat": 37.6213,
+      "lon": -122.379,
+      "rounding": "nearest_int",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "temp_min @ KSFO : OUI si obs (arrondi) > 55.0"
+    },
+    {
+      "ticker": "KXRAINAUSM-26MAY-1",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 1.0,
+      "cap": null,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KAUS : OUI si obs (arrondi) > 1.0"
+    },
+    {
+      "ticker": "KXRAINAUSM-26MAY-2",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 2.0,
+      "cap": null,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KAUS : OUI si obs (arrondi) > 2.0"
+    },
+    {
+      "ticker": "KXRAINAUSM-26MAY-3",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 3.0,
+      "cap": null,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KAUS : OUI si obs (arrondi) > 3.0"
+    },
+    {
+      "ticker": "KXRAINAUSM-26MAY-4",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 4.0,
+      "cap": null,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KAUS : OUI si obs (arrondi) > 4.0"
+    },
+    {
+      "ticker": "KXRAINAUSM-26MAY-5",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 5.0,
+      "cap": null,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KAUS : OUI si obs (arrondi) > 5.0"
+    },
+    {
+      "ticker": "KXRAINAUSM-26MAY-6",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 6.0,
+      "cap": null,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KAUS : OUI si obs (arrondi) > 6.0"
+    },
+    {
+      "ticker": "KXRAINAUSM-26MAY-7",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 7.0,
+      "cap": null,
+      "station": "CLIAUS",
+      "icao": "KAUS",
+      "lat": 30.1945,
+      "lon": -97.6699,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KAUS : OUI si obs (arrondi) > 7.0"
+    },
+    {
+      "ticker": "KXRAINCHIM-26MAY-1",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 1.0,
+      "cap": null,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMDW : OUI si obs (arrondi) > 1.0"
+    },
+    {
+      "ticker": "KXRAINCHIM-26MAY-2",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 2.0,
+      "cap": null,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMDW : OUI si obs (arrondi) > 2.0"
+    },
+    {
+      "ticker": "KXRAINCHIM-26MAY-3",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 3.0,
+      "cap": null,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMDW : OUI si obs (arrondi) > 3.0"
+    },
+    {
+      "ticker": "KXRAINCHIM-26MAY-4",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 4.0,
+      "cap": null,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMDW : OUI si obs (arrondi) > 4.0"
+    },
+    {
+      "ticker": "KXRAINCHIM-26MAY-5",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 5.0,
+      "cap": null,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMDW : OUI si obs (arrondi) > 5.0"
+    },
+    {
+      "ticker": "KXRAINCHIM-26MAY-6",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 6.0,
+      "cap": null,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMDW : OUI si obs (arrondi) > 6.0"
+    },
+    {
+      "ticker": "KXRAINCHIM-26MAY-7",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 7.0,
+      "cap": null,
+      "station": "CLIMDW",
+      "icao": "KMDW",
+      "lat": 41.7868,
+      "lon": -87.7522,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMDW : OUI si obs (arrondi) > 7.0"
+    },
+    {
+      "ticker": "KXRAINHOUM-26MAY-1",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 1.0,
+      "cap": null,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KIAH : OUI si obs (arrondi) > 1.0"
+    },
+    {
+      "ticker": "KXRAINHOUM-26MAY-2",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 2.0,
+      "cap": null,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KIAH : OUI si obs (arrondi) > 2.0"
+    },
+    {
+      "ticker": "KXRAINHOUM-26MAY-3",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 3.0,
+      "cap": null,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KIAH : OUI si obs (arrondi) > 3.0"
+    },
+    {
+      "ticker": "KXRAINHOUM-26MAY-4",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 4.0,
+      "cap": null,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KIAH : OUI si obs (arrondi) > 4.0"
+    },
+    {
+      "ticker": "KXRAINHOUM-26MAY-5",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 5.0,
+      "cap": null,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KIAH : OUI si obs (arrondi) > 5.0"
+    },
+    {
+      "ticker": "KXRAINHOUM-26MAY-6",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 6.0,
+      "cap": null,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KIAH : OUI si obs (arrondi) > 6.0"
+    },
+    {
+      "ticker": "KXRAINHOUM-26MAY-7",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 7.0,
+      "cap": null,
+      "station": "CLIIAH",
+      "icao": "KIAH",
+      "lat": 29.9844,
+      "lon": -95.3414,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KIAH : OUI si obs (arrondi) > 7.0"
+    },
+    {
+      "ticker": "KXRAINMIAM-26MAY-1",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 1.0,
+      "cap": null,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMIA : OUI si obs (arrondi) > 1.0"
+    },
+    {
+      "ticker": "KXRAINMIAM-26MAY-2",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 2.0,
+      "cap": null,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMIA : OUI si obs (arrondi) > 2.0"
+    },
+    {
+      "ticker": "KXRAINMIAM-26MAY-3",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 3.0,
+      "cap": null,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMIA : OUI si obs (arrondi) > 3.0"
+    },
+    {
+      "ticker": "KXRAINMIAM-26MAY-4",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 4.0,
+      "cap": null,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMIA : OUI si obs (arrondi) > 4.0"
+    },
+    {
+      "ticker": "KXRAINMIAM-26MAY-5",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 5.0,
+      "cap": null,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMIA : OUI si obs (arrondi) > 5.0"
+    },
+    {
+      "ticker": "KXRAINMIAM-26MAY-6",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 6.0,
+      "cap": null,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMIA : OUI si obs (arrondi) > 6.0"
+    },
+    {
+      "ticker": "KXRAINMIAM-26MAY-7",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 7.0,
+      "cap": null,
+      "station": "CLIMIA",
+      "icao": "KMIA",
+      "lat": 25.7959,
+      "lon": -80.287,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KMIA : OUI si obs (arrondi) > 7.0"
+    },
+    {
+      "ticker": "KXRAINNYC-26MAY08-T0",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 0.0,
+      "cap": 0.0,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": true,
+      "notes": [
+        "Trace = YES (NWS reports 'T' for trace precipitation)"
+      ],
+      "describe": "precip_in @ KNYC : OUI si obs (arrondi) > 0.0"
+    },
+    {
+      "ticker": "KXRAINNYCM-26MAY-1",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 1.0,
+      "cap": null,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [],
+      "describe": "precip_in @ KNYC : OUI si obs (arrondi) > 1.0"
+    },
+    {
+      "ticker": "KXRAINNYCM-26MAY-2",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 2.0,
+      "cap": null,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [],
+      "describe": "precip_in @ KNYC : OUI si obs (arrondi) > 2.0"
+    },
+    {
+      "ticker": "KXRAINNYCM-26MAY-3",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 3.0,
+      "cap": null,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [],
+      "describe": "precip_in @ KNYC : OUI si obs (arrondi) > 3.0"
+    },
+    {
+      "ticker": "KXRAINNYCM-26MAY-4",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 4.0,
+      "cap": null,
+      "station": "CLINYC",
+      "icao": "KNYC",
+      "lat": 40.7794,
+      "lon": -73.9692,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [],
+      "describe": "precip_in @ KNYC : OUI si obs (arrondi) > 4.0"
+    },
+    {
+      "ticker": "KXRAINSEAM-26MAY-1",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 1.0,
+      "cap": null,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KSEA : OUI si obs (arrondi) > 1.0"
+    },
+    {
+      "ticker": "KXRAINSEAM-26MAY-2",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 2.0,
+      "cap": null,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KSEA : OUI si obs (arrondi) > 2.0"
+    },
+    {
+      "ticker": "KXRAINSEAM-26MAY-3",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 3.0,
+      "cap": null,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KSEA : OUI si obs (arrondi) > 3.0"
+    },
+    {
+      "ticker": "KXRAINSEAM-26MAY-4",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 4.0,
+      "cap": null,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KSEA : OUI si obs (arrondi) > 4.0"
+    },
+    {
+      "ticker": "KXRAINSEAM-26MAY-5",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 5.0,
+      "cap": null,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KSEA : OUI si obs (arrondi) > 5.0"
+    },
+    {
+      "ticker": "KXRAINSEAM-26MAY-6",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 6.0,
+      "cap": null,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KSEA : OUI si obs (arrondi) > 6.0"
+    },
+    {
+      "ticker": "KXRAINSEAM-26MAY-7",
+      "variable": "precip_in",
+      "strike_type": "greater",
+      "floor": 7.0,
+      "cap": null,
+      "station": "CLISEA",
+      "icao": "KSEA",
+      "lat": 47.4502,
+      "lon": -122.3088,
+      "rounding": "nearest_0.01",
+      "trace_is_yes": false,
+      "notes": [
+        "rules_secondary mentions rounding/conversion nuances"
+      ],
+      "describe": "precip_in @ KSEA : OUI si obs (arrondi) > 7.0"
+    }
+  ]
+}
