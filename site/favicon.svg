@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Augure">
+  <rect width="64" height="64" rx="12" fill="#0a0e0a"/>
+  <!-- Shield outline -->
+  <path d="M32 8 L52 14 L52 30 C52 44 42 52 32 56 C22 52 12 44 12 30 L12 14 Z"
+        fill="none" stroke="#4ade80" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Rising chart line -->
+  <path d="M17 40 L24 33 L31 28 L40 19"
+        fill="none" stroke="#4ade80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Arrow head -->
+  <path d="M34 19 L40 19 L40 25"
+        fill="none" stroke="#4ade80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Three interlocked rings (mutualization) -->
+  <circle cx="23" cy="46" r="4" fill="none" stroke="#4ade80" stroke-width="2"/>
+  <circle cx="32" cy="48" r="4" fill="none" stroke="#4ade80" stroke-width="2"/>
+  <circle cx="41" cy="46" r="4" fill="none" stroke="#4ade80" stroke-width="2"/>
+</svg>
