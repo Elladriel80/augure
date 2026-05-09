@@ -20,3 +20,13 @@ rounds/*/draft_*.md
 
 # Logs
 *.log
+
+# Foundry artifacts (contracts/) — duplicated in contracts/.gitignore for safety
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lib/
+contracts/lcov.info
+contracts/coverage/
+contracts/.env
+contracts/.env.local

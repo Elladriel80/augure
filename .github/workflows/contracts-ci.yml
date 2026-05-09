@@ -1,0 +1,92 @@
+name: contracts-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'contracts/**'
+      - '.github/workflows/contracts-ci.yml'
+  pull_request:
+    paths:
+      - 'contracts/**'
+      - '.github/workflows/contracts-ci.yml'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: contracts
+
+jobs:
+  build-and-test:
+    name: Build, format-check, test, coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install dependencies (forge install)
+        run: |
+          forge install --no-commit \
+            foundry-rs/forge-std@v1.9.4 \
+            OpenZeppelin/openzeppelin-contracts@v5.1.0
+
+      - name: Format check
+        run: forge fmt --check
+
+      - name: Build
+        run: forge build --sizes
+
+      - name: Run tests
+        run: forge test -vvv
+
+      - name: Coverage report
+        run: forge coverage --report summary --report lcov
+        continue-on-error: true
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-lcov
+          path: contracts/lcov.info
+          if-no-files-found: ignore
+
+  static-analysis:
+    name: Slither static analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install dependencies (forge install)
+        run: |
+          forge install --no-commit \
+            foundry-rs/forge-std@v1.9.4 \
+            OpenZeppelin/openzeppelin-contracts@v5.1.0
+
+      - name: Run Slither
+        uses: crytic/slither-action@v0.4.0
+        id: slither
+        with:
+          target: contracts/
+          slither-config: contracts/slither.config.json
+          fail-on: medium
+          slither-version: 0.10.4

@@ -24,7 +24,7 @@ augure/
 The prediction engine. Currently the Kalshi POC: meta-ensemble IA combining ECMWF, GraphCast, GFS, JMA forecasts; NWS resolution rules; microstructure analysis; backtest infrastructure.
 
 ### `contracts/`
-Solidity smart contracts. Currently a roadmap (no live contracts yet). Will host the AUG-POC ERC-20 token, the rounds-mint module, panel governance, and (Phase 3+) parametric mutual contracts and weather oracles.
+Solidity smart contracts. **Phase 1 in progress** (May 2026): on-chain settlement layer for the labor-value mint mechanism — `AugPocToken` (ERC-20 + AccessControl + Pausable), `RoundRegistry` (propose / challenge / execute / cancel lifecycle), `MonthlyMintCap` (10 % monthly cap library). Foundry, Solidity 0.8.24, OpenZeppelin v5, Arbitrum Sepolia testnet target. See [`contracts/README.md`](contracts/README.md) for status and milestones.
 
 ### `rounds/`
 The live mechanics for issuing AUG-POC tokens to anyone bringing labor value to the project (code, research, data, design, capital). Contains the public rubric, hourly rate sheet, valuation agent prompt, automation scripts, and historical valuation reports.
