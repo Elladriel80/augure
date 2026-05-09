@@ -1,0 +1,104 @@
+name: Weekly Recap (FR)
+
+# Posts a French weekly recap to Discord every Sunday around 8 PM Paris time.
+#
+# Cron: '30 18 * * 0' = Sunday 18:30 UTC
+#   = 20:30 Paris in summer (CEST, UTC+2)
+#   = 19:30 Paris in winter (CET,  UTC+1)
+# GitHub Actions cron has no DST awareness — adjust this expression if the
+# winter time bothers you, or use both 17:30 + 18:30 with a guard.
+#
+# GitHub may delay scheduled runs by 5–15 minutes during peak load. That's fine
+# for a weekly recap; if you ever need minute-precise timing use an external
+# scheduler.
+#
+# Required: secret DISCORD_WEBHOOK_URL (already configured for announce-release).
+#
+# Optional repo variables:
+#   PROJECT_NAME            - default "Augure"
+#   PROJECT_TAGLINE_FR      - default "Marchés prédictifs décentralisés pour le risque météo"
+#   RECAP_LOOKBACK_DAYS     - default 7
+#   RECAP_SKIP_IF_EMPTY     - default "true" — set to "false" to force a post even on quiet weeks
+#   ANNOUNCE_DISABLE_DISCORD - "true" disables Discord posting (also disables this recap)
+
+on:
+  schedule:
+    - cron: '30 18 * * 0'
+  workflow_dispatch:
+    inputs:
+      lookback_days:
+        description: 'Lookback window in days (default 7)'
+        required: false
+        type: string
+        default: '7'
+      dry_run:
+        description: 'Dry run only (do not actually post to Discord)'
+        required: false
+        type: boolean
+        default: false
+      force_post:
+        description: 'Post even if there are no notable changes'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  recap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build weekly recap
+        env:
+          PROJECT_NAME: ${{ vars.PROJECT_NAME || 'Augure' }}
+          PROJECT_TAGLINE: ${{ vars.PROJECT_TAGLINE_FR || 'Marchés prédictifs décentralisés pour le risque météo' }}
+          RECAP_LOOKBACK_DAYS: ${{ inputs.lookback_days || vars.RECAP_LOOKBACK_DAYS || '7' }}
+          RECAP_SKIP_IF_EMPTY: ${{ inputs.force_post && 'false' || (vars.RECAP_SKIP_IF_EMPTY || 'true') }}
+        run: node .github/scripts/build-weekly-recap.mjs
+
+      - name: Decide whether to post
+        id: gate
+        run: |
+          if [ -f recap.empty ]; then
+            echo "post=false" >> "$GITHUB_OUTPUT"
+            echo "Recap is empty — skipping Discord post. Reason:"
+            cat recap.empty
+          elif [ -f recap.discord.md ]; then
+            echo "post=true" >> "$GITHUB_OUTPUT"
+            echo "Recap ready, $(wc -c < recap.discord.md) bytes."
+          else
+            echo "post=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Neither recap.empty nor recap.discord.md was produced."
+          fi
+
+      - name: Post to Discord
+        if: ${{ steps.gate.outputs.post == 'true' && !inputs.dry_run && vars.ANNOUNCE_DISABLE_DISCORD != 'true' }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_MESSAGE_PATH: recap.discord.md
+        run: node .github/scripts/post-discord.mjs
+
+      - name: Upload recap artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-recap-${{ github.run_id }}
+          path: |
+            recap.discord.md
+            recap.empty
+          if-no-files-found: ignore
+          retention-days: 30
