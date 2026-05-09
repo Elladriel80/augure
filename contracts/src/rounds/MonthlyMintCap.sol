@@ -6,5 +6,5 @@ pragma solidity 0.8.24;
 ///         at the start of each calendar month (UTC). Implementation in M2.
 library MonthlyMintCap {
     /// @dev Placeholder constant — real cap math arrives in M2.
-    uint256 internal constant CAP_BPS_PLACEHOLDER = 1_000;
+    uint256 internal constant CAP_BPS_PLACEHOLDER = 1000;
 }

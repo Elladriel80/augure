@@ -18,13 +18,7 @@ contract SanityTest is Test {
     }
 
     function test_PlaceholdersDeploy() public view {
-        assertEq(
-            token.PLACEHOLDER(),
-            "M1 will replace this with the real ERC20 + AccessControl + Pausable."
-        );
-        assertEq(
-            registry.PLACEHOLDER(),
-            "M3 will replace this with the real round lifecycle + cap enforcement."
-        );
+        assertEq(token.PLACEHOLDER(), "M1 will replace this with the real ERC20 + AccessControl + Pausable.");
+        assertEq(registry.PLACEHOLDER(), "M3 will replace this with the real round lifecycle + cap enforcement.");
     }
 }
