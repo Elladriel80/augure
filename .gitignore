@@ -22,6 +22,18 @@ rounds/*/draft_*.md
 TODO-HUMAIN.md
 NOTES-PRIVEES*.md
 
+# Local artefacts produced by the announce-release script when run outside CI
+announcement.discord.md
+announcement.x.txt
+
+# Dashboard (Next.js)
+dashboard/.next/
+dashboard/node_modules/
+dashboard/out/
+dashboard/.env
+dashboard/.env.local
+dashboard/.vercel
+
 # Logs
 *.log
 
