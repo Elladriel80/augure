@@ -12,7 +12,7 @@ Phase 1 — *active*. Jalons M0 à M5. Voir [`/docs/architecture.md`](../docs/ar
 
 Les primitives on-chain qui ratifient et exécutent les rounds mensuels déjà produits off-chain (voir [`/rounds/`](../rounds/)) :
 
-1. **`AugPocToken`** — ERC-20 avec `AccessControl` et `Pausable`. 18 décimales (standard Ethereum). Pas de cap fixe — l'émission est régulée par `RoundRegistry` qui applique le cap mensuel de 10 %.
+1. **`AugPocToken`** — ERC-20 avec `ERC20Permit`, `AccessControl` et `Pausable`. 18 décimales (standard Ethereum). Pas de cap fixe — l'émission est régulée par `RoundRegistry` qui applique le cap mensuel de 10 %. Quatre rôles : `DEFAULT_ADMIN_ROLE`, `MINTER_ROLE` (RoundRegistry), `PAUSER_ROLE` (Safe), `BURNER_ROLE` (réservé au futur `AugConverter` qui exécutera la conversion `AUG-POC → AUG` au lancement DAO en Phase 2 — cf. white paper §7.2). La pause bloque uniquement les transferts d'utilisateur à utilisateur ; mint et burn restent opérationnels.
 2. **`RoundRegistry`** — cycle de vie propose / challenge / execute / cancel des rounds mensuels de mint. Chaque round est ancré à son hash IPFS (le snapshot du `valuation_report.md` dans `/rounds/archives/<round-id>/`).
 3. **`MonthlyMintCap`** — bibliothèque pure qui calcule le cap mensuel de 10 % à partir du supply circulant en début de mois calendaire (UTC).
 
@@ -110,7 +110,7 @@ Détail dans [`docs/ROUND-LIFECYCLE.fr.md`](docs/ROUND-LIFECYCLE.fr.md).
 | Jalon | Périmètre | Statut |
 |---|---|---|
 | **M0** | Scaffold Foundry, CI, threat model, doc bilingue | ✅ fait |
-| **M1** | `AugPocToken` (ERC20 + Permit + AccessControl + Pausable) | en attente |
+| **M1** | `AugPocToken` (ERC20 + Permit + AccessControl + Pausable + 4 rôles) | ✅ fait |
 | **M2** | Bibliothèque `MonthlyMintCap` + fuzzing exhaustif | en attente |
 | **M3** | `RoundRegistry` (propose / challenge / execute / cancel) | en attente |
 | **M4** | Scripts de déploiement Arbitrum Sepolia + intégration Safe | en attente |
