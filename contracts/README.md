@@ -12,7 +12,7 @@ Phase 1 — *active*. Milestones M0 through M5. See [`/docs/architecture.md`](..
 
 The on-chain primitives that ratify and execute the monthly mint rounds already produced off-chain (see [`/rounds/`](../rounds/)):
 
-1. **`AugPocToken`** — ERC-20 with `AccessControl` and `Pausable`. 18 decimals (Ethereum standard). No fixed cap — issuance is regulated by `RoundRegistry` enforcing the 10 % monthly cap.
+1. **`AugPocToken`** — ERC-20 with `ERC20Permit`, `AccessControl`, and `Pausable`. 18 decimals (Ethereum standard). No fixed cap — issuance is regulated by `RoundRegistry` enforcing the 10 % monthly cap. Four roles: `DEFAULT_ADMIN_ROLE`, `MINTER_ROLE` (RoundRegistry), `PAUSER_ROLE` (Safe), `BURNER_ROLE` (reserved for the future `AugConverter` that will execute the `AUG-POC → AUG` conversion at the Phase 2 DAO launch — see white paper §7.2). Pause blocks user-to-user transfers only; mint and burn remain operational.
 2. **`RoundRegistry`** — propose / challenge / execute / cancel lifecycle for monthly mint rounds. Each round is anchored to its IPFS hash (the `valuation_report.md` snapshot from `/rounds/archives/<round-id>/`).
 3. **`MonthlyMintCap`** — pure library computing the 10 % monthly cap from circulating supply at the start of each calendar month (UTC).
 
@@ -110,7 +110,7 @@ Detail in [`docs/ROUND-LIFECYCLE.md`](docs/ROUND-LIFECYCLE.md).
 | Milestone | Scope | Status |
 |---|---|---|
 | **M0** | Foundry scaffold, CI, threat model, bilingual doc | ✅ done |
-| **M1** | `AugPocToken` (ERC20 + Permit + AccessControl + Pausable) | pending |
+| **M1** | `AugPocToken` (ERC20 + Permit + AccessControl + Pausable + 4 roles) | ✅ done |
 | **M2** | `MonthlyMintCap` library + exhaustive fuzzing | pending |
 | **M3** | `RoundRegistry` (propose / challenge / execute / cancel) | pending |
 | **M4** | Deployment scripts on Arbitrum Sepolia + Safe integration | pending |
