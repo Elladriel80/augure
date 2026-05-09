@@ -1,6 +1,6 @@
-# Kalshi Weather POC
+# Augure Weather Predictor — Kalshi POC
 
-POC pour MyOwly (rebuild) — moteur de prédiction météo testé en paper-trading sur les contrats Kalshi snow/rain, avant tout déploiement réel.
+Moteur prédictif d'Augure — testé en paper-trading sur les contrats Kalshi snow/rain, avant tout déploiement réel. Cette POC valide l'edge prédictif qui motive la suite du projet (DAO, mutuelle paramétrique).
 
 ## Objectif
 

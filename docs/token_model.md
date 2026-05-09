@@ -14,8 +14,8 @@ Le token AUG-POC représente une part de la valeur travail accumulée dans le pr
 
 ## 2. Token AUG-POC
 
-- **Standard :** ERC-20 sur Base ou Arbitrum.
-- **Décimales :** 8 (alignées sur BTC).
+- **Standard :** ERC-20 sur Arbitrum (cible retenue 2026-05-09 ; Sepolia testnet en Phase 1, mainnet conditionné à un audit communautaire).
+- **Décimales :** 18 (standard Ethereum). Choix retenu 2026-05-09 pour la compatibilité maximale avec l'écosystème Web3 (DEX, indexeurs, wallets). L'unité de compte fonctionnelle reste le **sat** : la convention 1 sat = 1 token est imposée par construction au mint au NAV initial, indépendamment du nombre de décimales du contract ERC-20.
 - **Unité de compte :** BTC. Tous les calculs internes (NAV, taux horaires, valuations) sont en BTC ou sats.
 - **NAV initiale :** **1 sat = 1 token** (atomique, validé 2026-05-08). Aucune conversion mentale nécessaire — le nombre de tokens détenu lit directement la valeur travail apportée en sats.
 - **Convertibilité future :** mécanisme de conversion AUG-POC → AUG (DAO Augure) inscrit dans le contract dès le départ. Ratio voté à 67 % par les holders au moment du lancement DAO.
