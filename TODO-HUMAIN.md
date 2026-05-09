@@ -36,12 +36,10 @@
 - **Devient bloquant :** au moment du déploiement testnet (M4).
 - **Temps estimé :** 15 minutes une fois MetaMask configuré.
 
-### ☐ Me communiquer ton adresse EOA admin temporaire
+### ☑ Me communiquer ton adresse EOA admin temporaire — *fait le 2026-05-09*
 
 - **Pourquoi :** l'adresse de ton portefeuille personnel (MetaMask sur Arbitrum Sepolia) qui détiendra temporairement les "clés admin" des contrats avant qu'on les transfère au Safe.
-- **Ce que tu auras à faire :** ouvrir MetaMask, basculer sur Arbitrum Sepolia, copier l'adresse publique (`0x...`), me l'envoyer. **Aucune clé privée**, juste l'adresse publique.
-- **Devient bloquant :** M4 (préparation du déploiement).
-- **Temps estimé :** 30 secondes.
+- **Statut :** ✅ adresse reçue, validée (checksum EIP-55 OK), stockée en mémoire Claude. Pas committée dans le repo public en attendant M4 (sera de toute façon publique dès le premier déploiement on-chain).
 
 ### ☐ Récupérer un peu d'ETH testnet sur Arbitrum Sepolia
 
