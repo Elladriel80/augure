@@ -1,6 +1,6 @@
 # TODO humain — Jean-Sébastien
 
-> Ce fichier liste **uniquement** ce qui requiert ton intervention humaine et ne peut pas être fait par Claude (création de comptes externes, génération de portefeuilles, opérations de signature, validation de jalons). Tout le reste — code, tests, doc, CI — est traité côté Claude.
+> Ce fichier liste **uniquement** ce qui requiert ton intervention humaine et ne peut pas être fait via le tooling automatisé (création de comptes externes, génération de portefeuilles, opérations de signature, validation de jalons). Tout le reste — code, tests, doc, CI — est traité par les outils du projet.
 >
 > Format : chaque action a un **statut**, un **moment où elle devient bloquante**, et une **estimation du temps** que ça te prendra.
 >
@@ -39,7 +39,7 @@
 ### ☑ Me communiquer ton adresse EOA admin temporaire — *fait le 2026-05-09*
 
 - **Pourquoi :** l'adresse de ton portefeuille personnel (MetaMask sur Arbitrum Sepolia) qui détiendra temporairement les "clés admin" des contrats avant qu'on les transfère au Safe.
-- **Statut :** ✅ adresse reçue, validée (checksum EIP-55 OK), stockée en mémoire Claude. Pas committée dans le repo public en attendant M4 (sera de toute façon publique dès le premier déploiement on-chain).
+- **Statut :** ✅ adresse reçue, validée (checksum EIP-55 OK), conservée hors du repo public en attendant M4 (sera de toute façon publique dès le premier déploiement on-chain).
 
 ### ☐ Récupérer un peu d'ETH testnet sur Arbitrum Sepolia
 

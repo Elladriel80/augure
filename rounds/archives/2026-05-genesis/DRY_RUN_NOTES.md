@@ -10,7 +10,7 @@
 
 ## Pourquoi c'était un dry-run
 
-1. **Pas d'accès direct à `kalshi-poc`** au moment du run. L'agent (Claude) avait travaillé sur la base des descriptions consolidées dans la mémoire projet (`project_kalshi_poc.md`), pas sur les artefacts Git réels.
+1. **Pas d'accès direct à `kalshi-poc`** au moment du run. L'agent de valuation avait travaillé sur la base des descriptions consolidées dans la mémoire projet (`project_kalshi_poc.md`), pas sur les artefacts Git réels.
 2. **Pas de pipeline GitHub Actions.** Le script `collect_github_activity.py` était un squelette ; il n'a pas tourné pour produire `raw.json`.
 3. **Pas de panel Top-X holders.** Supply = 0 → pas de holders.
 

@@ -7,13 +7,13 @@
 Ce round genesis a tourné en **deux passes** :
 
 1. **Dry-run** (avant migration de `kalshi-poc` vers `predictor/`) — basé sur les descriptions de la mémoire projet, sans accès direct au code source. Documenté dans `DRY_RUN_NOTES.md`. Total : 0,273 BTC.
-2. **Run réel** (après migration) — agent Claude lit directement les 32 fichiers Python du dossier `predictor/` et applique le rubric. Documenté ici. Total : 0,340 BTC.
+2. **Run réel** (après migration) — l'agent de valuation lit directement les 32 fichiers Python du dossier `predictor/` et applique le rubric. Documenté ici. Total : 0,340 BTC.
 
 Le run réel est **canonique** pour la ratification. Le dry-run est conservé en archive comme calibration de référence et pour traçabilité du processus.
 
 ## Méthode du run réel
 
-L'agent (Claude Sonnet 4.6) a procédé en 4 étapes :
+L'agent de valuation a procédé en 4 étapes :
 
 1. **Énumération** des fichiers via Glob (`**/*.py` dans `predictor/`).
 2. **Lecture batch** de 24 fichiers source représentatifs : `src/config.py`, `src/kalshi/{client,models,resolution}.py`, `src/predictors/{base,parsers,climatology,forecast_blend,ensemble}.py`, `src/microstructure/{distribution,biases}.py`, `src/simulation/{sizing,ledger,scoring}.py`, `src/weather/open_meteo.py`, `scripts/{test_resolution,test_microstructure,test_ensemble,forward_predict,score_forward,backtest,daily_run}.py`.

@@ -2,7 +2,7 @@
 
 *Date : 2026-05-08*
 *Source : décomposition `phases.md` + lecture directe des fichiers source dans `augure/predictor/`*
-*Agent : Claude (Anthropic), application directe du prompt versionné `rounds/agent/PROMPT.fr.md` v0.2*
+*Agent de valuation : application directe du prompt versionné `rounds/agent/PROMPT.fr.md` v0.2*
 *Statut : **RUN RÉEL** — basé sur les artefacts Git effectivement présents dans `augure/predictor/`. Le DRY_RUN_NOTES.md précédent a été conservé pour traçabilité de la méthode.*
 
 ---
