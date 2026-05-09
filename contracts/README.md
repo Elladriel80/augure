@@ -112,7 +112,7 @@ Detail in [`docs/ROUND-LIFECYCLE.md`](docs/ROUND-LIFECYCLE.md).
 | **M0** | Foundry scaffold, CI, threat model, bilingual doc | ✅ done |
 | **M1** | `AugPocToken` (ERC20 + Permit + AccessControl + Pausable + 4 roles) | ✅ done |
 | **M2** | `MonthlyMintCap` library + exhaustive fuzzing | ✅ done |
-| **M3** | `RoundRegistry` (propose / challenge / execute / cancel) | pending |
+| **M3** | `RoundRegistry` (propose / challenge / execute / cancel) | ✅ done |
 | **M4** | Deployment scripts on Arbitrum Sepolia + Safe integration | pending |
 | **M5** | Read-only dashboard (Next.js + viem) | pending |
 
