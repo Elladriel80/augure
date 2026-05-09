@@ -36,9 +36,8 @@ jobs:
 
       - name: Install dependencies (forge install)
         run: |
-          forge install --no-commit \
-            foundry-rs/forge-std@v1.9.4 \
-            OpenZeppelin/openzeppelin-contracts@v5.1.0
+          forge install --no-git foundry-rs/forge-std@v1.9.4
+          forge install --no-git OpenZeppelin/openzeppelin-contracts@v5.1.0
 
       - name: Format check
         run: forge fmt --check
@@ -78,9 +77,8 @@ jobs:
 
       - name: Install dependencies (forge install)
         run: |
-          forge install --no-commit \
-            foundry-rs/forge-std@v1.9.4 \
-            OpenZeppelin/openzeppelin-contracts@v5.1.0
+          forge install --no-git foundry-rs/forge-std@v1.9.4
+          forge install --no-git OpenZeppelin/openzeppelin-contracts@v5.1.0
 
       - name: Run Slither
         uses: crytic/slither-action@v0.4.0
