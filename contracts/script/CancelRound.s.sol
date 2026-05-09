@@ -7,12 +7,15 @@ import {RoundRegistry} from "../src/rounds/RoundRegistry.sol";
 import {IRoundRegistry} from "../src/interfaces/IRoundRegistry.sol";
 
 /// @title  CancelRound — cancel a Proposed or Challenged round
-/// @notice Break-glass helper. Two modes (testnet broadcast / mainnet calldata-print). Use
-///         when an off-chain panel upholds a challenge, or when a typo / stale round must
-///         be killed before its window expires.
+/// @notice Break-glass helper. Two modes (broadcast / calldata-print). Use when an
+///         off-chain panel upholds a challenge, or when a typo / stale round must be
+///         killed before its window expires.
 ///
 /// @dev    Required env vars: REGISTRY_ADDRESS, ROUND_HASH, REASON_IPFS_URI.
-///         Optional: BROADCAST=true + CANCELLER_PK.
+///         Required when BROADCAST=true: CANCELLER_ADDRESS (must hold ROUND_CANCELLER_ROLE).
+///         Optional: BROADCAST=true.
+///
+///         Signer is configured via Foundry CLI flags (--ledger / --private-key / etc.).
 contract CancelRound is Script {
     function run() external {
         RoundRegistry registry = RoundRegistry(vm.envAddress("REGISTRY_ADDRESS"));
@@ -35,11 +38,11 @@ contract CancelRound is Script {
         console2.log("Reason URI:  ", reasonUri);
 
         if (broadcastMode) {
-            uint256 cancellerKey = vm.envUint("CANCELLER_PK");
-            address canceller = vm.addr(cancellerKey);
+            address canceller = vm.envAddress("CANCELLER_ADDRESS");
+            require(canceller != address(0), "CancelRound: CANCELLER_ADDRESS is zero");
             console2.log("Broadcast mode: canceller = ", canceller);
 
-            vm.startBroadcast(cancellerKey);
+            vm.startBroadcast(canceller);
             registry.cancelRound(roundHash, reasonUri);
             vm.stopBroadcast();
 

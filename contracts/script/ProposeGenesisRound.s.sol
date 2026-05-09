@@ -8,20 +8,25 @@ import {IRoundRegistry} from "../src/interfaces/IRoundRegistry.sol";
 
 /// @title  ProposeGenesisRound — proposes the Augure 2026-05-genesis round on the registry
 /// @notice Propose-time helper. Two modes:
-///           - Testnet (BROADCAST=true): broadcasts `proposeRound` from the proposer EOA.
-///           - Mainnet (BROADCAST=false): prints the Safe-compatible calldata so the
-///             founder can paste it into the Safe Transaction Builder and have the multisig
-///             sign + broadcast.
+///           - Broadcast (BROADCAST=true): signs and broadcasts `proposeRound` using the
+///             signer configured via Foundry CLI flags (--ledger / --private-key / etc.).
+///             The signer MUST hold ROUND_PROPOSER_ROLE on the registry.
+///           - Dry-run (BROADCAST=false): prints the Safe-compatible calldata so the
+///             founder can paste it into the Safe Transaction Builder.
 ///
-/// @dev    Required environment variables (all):
-///           - REGISTRY_ADDRESS : deployed RoundRegistry address
+/// @dev    Required environment variables (broadcast mode):
+///           - REGISTRY_ADDRESS    : deployed RoundRegistry address
 ///           - GENESIS_BENEFICIARY : address that receives the genesis mint (founder EOA)
 ///           - GENESIS_IPFS_URI    : `ipfs://...` pointer to the pinned valuation_report.md
-///                                   (under rounds/archives/2026-05-genesis/)
-///           - PROPOSER_PK        : private key of the proposer when BROADCAST=true (testnet)
+///           - PROPOSER_ADDRESS    : address that signs the tx; must hold ROUND_PROPOSER_ROLE
 ///         Optional:
-///           - BROADCAST          : "true" to broadcast, anything else to dry-run / print calldata
-///                                  (default: false)
+///           - BROADCAST           : "true" to broadcast, anything else to dry-run / print calldata
+///
+///         Invocation example with Ledger:
+///           BROADCAST=true forge script script/ProposeGenesisRound.s.sol:ProposeGenesisRound \
+///             --rpc-url $RPC_ARBITRUM_SEPOLIA \
+///             --ledger --sender $PROPOSER_ADDRESS --hd-paths "m/44'/60'/0'/0/0" \
+///             --broadcast -vv
 ///
 ///         Constants — match the off-chain valuation_report.md:
 ///           Genesis amount: 34_039_500 ether (= 34_039_500 sats × 10^18 wei per token)
@@ -67,11 +72,11 @@ contract ProposeGenesisRound is Script {
         console2.logBytes32(roundHash);
 
         if (broadcastMode) {
-            uint256 proposerKey = vm.envUint("PROPOSER_PK");
-            address proposer = vm.addr(proposerKey);
+            address proposer = vm.envAddress("PROPOSER_ADDRESS");
+            require(proposer != address(0), "ProposeGenesisRound: PROPOSER_ADDRESS is zero");
             console2.log("Broadcast mode: proposer = ", proposer);
 
-            vm.startBroadcast(proposerKey);
+            vm.startBroadcast(proposer);
             registry.proposeRound(roundHash, beneficiaries, amounts, ipfsUri, GENESIS_CHALLENGE_WINDOW_DAYS);
             vm.stopBroadcast();
 

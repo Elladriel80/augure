@@ -8,15 +8,18 @@ import {IRoundRegistry} from "../src/interfaces/IRoundRegistry.sol";
 
 /// @title  ExecuteRound — execute a round whose challenge window has expired
 /// @notice Operational helper. Two modes:
-///           - Testnet (BROADCAST=true): broadcasts `executeRound` from the executor EOA.
-///           - Mainnet (BROADCAST=false): prints the Safe-compatible calldata.
+///           - Broadcast (BROADCAST=true): signs and broadcasts `executeRound` using
+///             the signer configured via Foundry CLI flags (--ledger / --private-key /
+///             etc.). The signer MUST hold ROUND_EXECUTOR_ROLE on the registry.
+///           - Dry-run (BROADCAST=false): prints the Safe-compatible calldata.
 ///
-/// @dev    Required environment variables (all):
-///           - REGISTRY_ADDRESS : deployed RoundRegistry address
-///           - ROUND_HASH       : 32-byte hash of the round to execute (0x-prefixed)
+/// @dev    Required environment variables:
+///           - REGISTRY_ADDRESS  : deployed RoundRegistry address
+///           - ROUND_HASH        : 32-byte hash of the round to execute (0x-prefixed)
+///         Required when BROADCAST=true:
+///           - EXECUTOR_ADDRESS  : address that signs the tx; must hold ROUND_EXECUTOR_ROLE
 ///         Optional:
-///           - BROADCAST        : "true" to broadcast, false to dry-run (default: false)
-///           - EXECUTOR_PK      : required when BROADCAST=true
+///           - BROADCAST         : "true" to broadcast, false to dry-run (default: false)
 contract ExecuteRound is Script {
     function run() external {
         RoundRegistry registry = RoundRegistry(vm.envAddress("REGISTRY_ADDRESS"));
@@ -42,11 +45,11 @@ contract ExecuteRound is Script {
         console2.log("Window ended at (unix): ", windowEnd);
 
         if (broadcastMode) {
-            uint256 executorKey = vm.envUint("EXECUTOR_PK");
-            address executor = vm.addr(executorKey);
+            address executor = vm.envAddress("EXECUTOR_ADDRESS");
+            require(executor != address(0), "ExecuteRound: EXECUTOR_ADDRESS is zero");
             console2.log("Broadcast mode: executor = ", executor);
 
-            vm.startBroadcast(executorKey);
+            vm.startBroadcast(executor);
             registry.executeRound(roundHash);
             vm.stopBroadcast();
 

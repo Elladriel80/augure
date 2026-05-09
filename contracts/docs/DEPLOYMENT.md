@@ -31,10 +31,14 @@ Mainnet deployment notes live at the bottom — they require a Safe multisig.
 
 - Copy `.env.example` to `.env` and fill in:
   - `RPC_ARBITRUM_SEPOLIA` — your RPC endpoint (default public works).
-  - `DEPLOYER_PK` — private key of your deployer EOA. For Phase 1 testnet this **must
-    equal** `ADMIN_ADDRESS`'s account.
-  - `ADMIN_ADDRESS` — the same EOA address. (Mainnet flow is different — see §6.)
-  - `ARBISCAN_API_KEY` — for source-code verification.
+  - `ADMIN_ADDRESS` — the address that will hold `DEFAULT_ADMIN_ROLE`. On Phase 1
+    testnet this is the founder's Ledger EOA.
+  - `ETHERSCAN_API_KEY` — Etherscan API V2 key (the unified key works for Arbitrum
+    Sepolia too — no separate Arbiscan key needed since the V2 API).
+
+The signer is configured via Foundry CLI flags (`--ledger`, `--private-key`, etc.) —
+not via the `.env` file. This makes the script reusable with a hardware wallet, a
+hot key, or a multisig without code changes.
 
 ## 2. Deployment
 
@@ -42,13 +46,38 @@ Mainnet deployment notes live at the bottom — they require a Safe multisig.
 cd contracts
 source .env
 
+# With a Ledger hardware wallet (Phase 1 testnet):
 forge script script/DeployAugurePhase1.s.sol:DeployAugurePhase1 \
   --rpc-url $RPC_ARBITRUM_SEPOLIA \
+  --ledger \
+  --sender $ADMIN_ADDRESS \
+  --hd-paths "m/44'/60'/0'/0/0" \
   --broadcast \
   --verify \
-  --etherscan-api-key $ARBISCAN_API_KEY \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
   -vv
 ```
+
+If your Ledger account was created via Ledger Live, the path may be
+`m/44'/60'/<index>'/0/0` instead (one path per account). If Foundry
+cannot derive `ADMIN_ADDRESS` from the supplied path, it will refuse to
+broadcast — try the alternative path or check the address you imported.
+
+```bash
+# With a raw private key (CI / one-shot deploy from a hot wallet):
+forge script script/DeployAugurePhase1.s.sol:DeployAugurePhase1 \
+  --rpc-url $RPC_ARBITRUM_SEPOLIA \
+  --private-key $DEPLOYER_PK \
+  --sender $ADMIN_ADDRESS \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  -vv
+```
+
+Either way, expect to **sign 7 transactions** in sequence (1 token deploy + 1
+registry deploy + 5 grantRole calls). On a Ledger this means 7 physical
+confirmations on the device.
 
 The script logs the two deployed addresses. Note them — you'll need them for
 every subsequent step:
@@ -117,11 +146,12 @@ would have to be republished.
 export REGISTRY_ADDRESS=0x... # from step 2
 export GENESIS_BENEFICIARY=0x... # founder EOA receiving 34_039_500 tokens
 export GENESIS_IPFS_URI=ipfs://bafyXXX/valuation_report.md
-export PROPOSER_PK=$DEPLOYER_PK # same EOA in Phase 1 testnet
+export PROPOSER_ADDRESS=$ADMIN_ADDRESS # same Ledger EOA in Phase 1 testnet
 export BROADCAST=true
 
 forge script script/ProposeGenesisRound.s.sol:ProposeGenesisRound \
   --rpc-url $RPC_ARBITRUM_SEPOLIA \
+  --ledger --sender $PROPOSER_ADDRESS --hd-paths "m/44'/60'/0'/0/0" \
   --broadcast \
   -vv
 ```
@@ -149,11 +179,12 @@ publicly to flag the valuation. If a challenge is filed:
 ```bash
 export ROUND_HASH=0x... # from step 5.1
 export REASON_IPFS_URI=ipfs://bafyYYY/cancel-rationale.md
-export CANCELLER_PK=$DEPLOYER_PK
+export CANCELLER_ADDRESS=$ADMIN_ADDRESS
 export BROADCAST=true
 
 forge script script/CancelRound.s.sol:CancelRound \
   --rpc-url $RPC_ARBITRUM_SEPOLIA \
+  --ledger --sender $CANCELLER_ADDRESS --hd-paths "m/44'/60'/0'/0/0" \
   --broadcast \
   -vv
 ```
@@ -165,11 +196,12 @@ valuation report under a new IPFS CID, which produces a new `roundHash`.
 
 ```bash
 export ROUND_HASH=0x... # from step 5.1
-export EXECUTOR_PK=$DEPLOYER_PK
+export EXECUTOR_ADDRESS=$ADMIN_ADDRESS
 export BROADCAST=true
 
 forge script script/ExecuteRound.s.sol:ExecuteRound \
   --rpc-url $RPC_ARBITRUM_SEPOLIA \
+  --ledger --sender $EXECUTOR_ADDRESS --hd-paths "m/44'/60'/0'/0/0" \
   --broadcast \
   -vv
 ```
