@@ -2,54 +2,120 @@
 
 # contracts
 
-Smart contracts Solidity du protocole Augure. **Vide pour l'instant** — le dossier porte la roadmap architecturale jusqu'à ce que le POC predictor valide le cas pour passer aux composants on-chain.
+Smart contracts Solidity du protocole Augure. **Phase 1 en cours** — construction de la couche de règlement on-chain pour la mécanique de mint valeur-travail décrite dans [`/docs/token_model.md`](../docs/token_model.md).
 
 ## Statut
 
-Phase 2+ — *non démarré*.
+Phase 1 — *active*. Jalons M0 à M5. Voir [`/docs/architecture.md`](../docs/architecture.md) pour le phasage projet global.
 
-La Phase 1 (POC Kalshi) tourne entièrement off-chain. Les smart contracts ne démarrent qu'après le go/no-go du POC (méta-ensemble bat best single model et climato sur N>50 events). Jusque-là, ce dossier existe pour signaler l'intention et permettre aux contributeurs de proposer des specs.
+## Périmètre Phase 1
 
-## Modules prévus
+Les primitives on-chain qui ratifient et exécutent les rounds mensuels déjà produits off-chain (voir [`/rounds/`](../rounds/)) :
+
+1. **`AugPocToken`** — ERC-20 avec `AccessControl` et `Pausable`. 18 décimales (standard Ethereum). Pas de cap fixe — l'émission est régulée par `RoundRegistry` qui applique le cap mensuel de 10 %.
+2. **`RoundRegistry`** — cycle de vie propose / challenge / execute / cancel des rounds mensuels de mint. Chaque round est ancré à son hash IPFS (le snapshot du `valuation_report.md` dans `/rounds/archives/<round-id>/`).
+3. **`MonthlyMintCap`** — bibliothèque pure qui calcule le cap mensuel de 10 % à partir du supply circulant en début de mois calendaire (UTC).
+
+Hors périmètre Phase 1 (scaffoldé, pas implémenté) : token de gouvernance `AUG` + `Governor`, oracle NAV automatisé, contrats paramétriques de mutuelle, vote on-chain des Top-X holders.
+
+## Arborescence
 
 ```
 contracts/
-├── token/          ← ERC-20 AUG-POC et AUG, avec mint/burn guards
-├── rounds/         ← module mint ratifié multisig (subscription + redemption)
-├── governance/     ← panel Top-X holders, votes, slashing
-└── mutual/         ← (Phase 3) contracts paramétriques météo + oracles
+├── src/
+│   ├── token/                      # M1 — AugPocToken
+│   ├── rounds/                     # M2 (MonthlyMintCap) + M3 (RoundRegistry)
+│   └── interfaces/                 # IAugPocToken, IRoundRegistry
+├── test/
+│   ├── unit/                       # ≥ 95 % de couverture sur la logique métier
+│   ├── fuzz/                       # 10 000 runs par défaut
+│   └── invariant/                  # invariants supply / cap / rôles
+├── script/                         # M4 — scripts de déploiement + générateurs de calldata Safe
+├── docs/                           # bilingue FR/EN — architecture, sécurité, déploiement, cycle de vie
+├── foundry.toml
+├── slither.config.json
+├── remappings.txt
+├── .env.example                    # placeholders pour Arbitrum Sepolia
+└── README.md / README.fr.md
 ```
 
-### `token/`
-ERC-20 avec 8 décimales (aligné BTC). Deux phases :
-- **AUG-POC** : token de la phase POC, mintable uniquement via le module `rounds/` après ratification multisig. Inclut logique de redemption window et hooks de slashing.
-- **AUG** : token de la phase DAO. Mécanisme de conversion depuis AUG-POC selon un ratio voté par les holders (seuil ≥ 67 %) au lancement DAO.
+## Stack
 
-### `rounds/`
-Module mint ratifié multisig. Reçoit les rapports de valuation ratifiés depuis l'agent off-chain + ratificateur (ou post-DAO depuis le vote on-chain du panel holders). Mint des tokens à la NAV courante vers les wallets spécifiés dans le rapport. Applique les caps durs (10 % mensuel, 30 % par contributeur).
+- **Foundry** (forge, cast, anvil) — versions stables pinées via CI.
+- **Solidity 0.8.24**, EVM `paris`, optimiseur 200 runs.
+- **OpenZeppelin Contracts v5.1.0** pour chaque primitive (ERC20, AccessControl, Pausable, ReentrancyGuard, SafeERC20, ERC20Permit). Aucune réimplémentation maison.
+- **`forge-std` v1.9.4** pour les tests et scripts.
+- **Slither 0.10.4** pour l'analyse statique (la CI échoue à partir du niveau `medium`).
+- **CI** dans `.github/workflows/contracts-ci.yml` — tourne à chaque push / PR qui touche à `contracts/**`.
 
-### `governance/`
-Phase 1 : multisig simple (founder + 2 advisors).
-Phase 2 : panel on-chain composé des Top-X holders en tokens, chacun ayant une voix (non pondéré par stake). Utilisé pour ratifier les rounds de valuation contestés.
-Phase 3 : DAO complète avec votes token-weighted pour les changements paramétriques (rubric, taux, fees), avec règles de quorum et seuils.
+## Chain cible
 
-### `mutual/`
-Phase 3+. Contracts paramétriques de mutuelle météo. Les membres apportent du collatéral au pool de mutualisation ; les acheteurs souscrivent à des payouts paramétriques déclenchés par event. Pricing calculé off-chain par le predictor, résolution oracle via Chainlink Custom au-dessus des feeds NOAA/NWS.
+Arbitrum Sepolia (testnet) en Phase 1. Le déploiement mainnet est **bloqué** tant qu'au moins un audit communautaire (Code4rena Arena-X, Sherlock Watson, ou peer review documentée) n'est pas réalisé.
 
-> Augure n'opère **pas** comme assureur réglementé. Cf. white paper, section 4.
+## Build & tests
 
-## Toolchain
+> Foundry doit être installé localement. Voir [getfoundry.sh](https://book.getfoundry.sh/getting-started/installation).
 
-**Foundry** *(prévu)*. Justification : cycle compile + test plus rapide, fuzzing intégré, tooling Solidity moderne, audité et forké largement. Hardhat pourra être ajouté plus tard si un workflow de déploiement spécifique en a besoin.
+```bash
+# depuis contracts/
+forge install --no-commit foundry-rs/forge-std@v1.9.4 OpenZeppelin/openzeppelin-contracts@v5.1.0
+forge build
+forge test -vvv
+forge coverage --report summary
+```
 
-Version Solidity : ≥ 0,8,20.
-Chain cible : à trancher (candidats : Base, Arbitrum, Optimism). Critères : coût gaz, compatibilité EVM, écosystème de contributeurs DeFi / risk-pool, options de custody pour le bankroll.
+La CI exécute les mêmes commandes sur chaque PR — l'install local n'est nécessaire que pour le développement.
 
-## Specs à écrire avant tout code
+## Modèle de sécurité (version courte)
 
-- Spec token AUG-POC (mint guard, surface slashing, lock de transferabilité)
-- Spec module mint des rounds (format des preuves de ratification, signatures multisig)
-- Spec adresse subscription pending (flux de remboursement en cas de refus du round)
-- Spec queue de redemption (window, gate, lockup, oracle NAV)
+- Tous les rôles privilégiés (`MINTER_ROLE`, `PAUSER_ROLE`, `ROUND_PROPOSER_ROLE`, `ROUND_EXECUTOR_ROLE`) sont détenus par un multisig Safe sur Arbitrum Sepolia. **Jamais une EOA.**
+- Pas d'upgradeabilité au démarrage. Les bug fixes sont déployés en tant que nouveaux contracts + migration.
+- Pattern Checks-Effects-Interactions strict, `ReentrancyGuard` sur toutes les surfaces de transfert externe, `SafeERC20` pour toutes les interactions ERC20.
+- Tests obligatoires à trois niveaux : unit (≥ 95 % de couverture), fuzz (10 000 runs), invariants sur les propriétés critiques (supply ≤ cap mensuel ; pas de mint sans fenêtre de challenge expirée ; `MINTER_ROLE` détenu uniquement par le Safe).
 
-Contributions bienvenues sur les PRs de spec (voir [`/CONTRIBUTING.fr.md`](../CONTRIBUTING.fr.md)).
+Threat model complet dans [`docs/SECURITY.fr.md`](docs/SECURITY.fr.md).
+
+## Cycle de vie d'un round (Phase 1)
+
+```
+   ┌────────────────────┐
+   │ Agent IA off-chain │  ───►  /rounds/archives/<round-id>/valuation_report.md
+   │ produit le rapport │
+   └─────────┬──────────┘
+             │ founder ratifie + pin IPFS
+             ▼
+   ┌────────────────────┐
+   │ Safe.proposeRound  │  ───►  RoundRegistry.proposeRound()
+   │  (calldata)        │        émet l'event RoundProposed
+   └─────────┬──────────┘
+             │
+             ▼
+   ┌────────────────────┐         ┌─────────────────────┐
+   │ Fenêtre challenge  │  ───►   │  challengeRound()    │  (n'importe qui)
+   │ (7 j / 30 j genesis)│         │  → status Challenged │
+   └─────────┬──────────┘         └─────────┬───────────┘
+             │ fenêtre expirée + status == Proposed
+             ▼                               │ Safe revoit le vote panel off-chain
+   ┌────────────────────┐                    ▼
+   │ Safe.executeRound  │              ┌─────────────────────┐
+   │  → mint aux bens   │              │ Safe.cancelRound() │
+   │  → check cap 10 %  │              └─────────────────────┘
+   └────────────────────┘
+```
+
+Détail dans [`docs/ROUND-LIFECYCLE.fr.md`](docs/ROUND-LIFECYCLE.fr.md).
+
+## Roadmap (jalons)
+
+| Jalon | Périmètre | Statut |
+|---|---|---|
+| **M0** | Scaffold Foundry, CI, threat model, doc bilingue | ✅ fait |
+| **M1** | `AugPocToken` (ERC20 + Permit + AccessControl + Pausable) | en attente |
+| **M2** | Bibliothèque `MonthlyMintCap` + fuzzing exhaustif | en attente |
+| **M3** | `RoundRegistry` (propose / challenge / execute / cancel) | en attente |
+| **M4** | Scripts de déploiement Arbitrum Sepolia + intégration Safe | en attente |
+| **M5** | Dashboard read-only (Next.js + viem) | en attente |
+
+## Licence
+
+Apache 2.0 — voir [/LICENSE](../LICENSE).
