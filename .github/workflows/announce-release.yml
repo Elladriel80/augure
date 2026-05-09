@@ -1,0 +1,105 @@
+name: Announce Release
+
+# Triggered when a release tag is pushed (e.g. v0.1.0, v1.2.3-alpha).
+# Generates a builder-log style announcement in English and posts it to:
+#   - Discord (via webhook)
+#   - X / Twitter (via OAuth 1.0a User Context)
+#
+# Required GitHub repository secrets:
+#   DISCORD_WEBHOOK_URL          - Discord channel webhook URL
+#   X_API_KEY                    - X / Twitter app consumer key
+#   X_API_SECRET                 - X / Twitter app consumer secret
+#   X_ACCESS_TOKEN               - X / Twitter user access token
+#   X_ACCESS_TOKEN_SECRET        - X / Twitter user access token secret
+#
+# Optional repository variables (vars):
+#   PROJECT_NAME                 - Display name (default: "Augure")
+#   PROJECT_TAGLINE              - Short tagline (default: "Decentralized prediction markets for weather risk")
+#   ANNOUNCE_DRY_RUN             - "true" to skip actual posting (still prints messages to logs)
+#   ANNOUNCE_DISABLE_X           - "true" to skip X posting (Discord still runs)
+#   ANNOUNCE_DISABLE_DISCORD     - "true" to skip Discord posting (X still runs)
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to announce (e.g. v0.1.0). Leave empty to use the latest tag.'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run only (do not actually post)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  announce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # need full history for `git log` between tags
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Resolve tag
+        id: resolve
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG="${{ github.ref_name }}"
+          else
+            TAG=$(git describe --tags --abbrev=0)
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Resolved tag: $TAG"
+
+      - name: Build announcement messages
+        id: build
+        env:
+          GIT_TAG: ${{ steps.resolve.outputs.tag }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          PROJECT_NAME: ${{ vars.PROJECT_NAME || 'Augure' }}
+          PROJECT_TAGLINE: ${{ vars.PROJECT_TAGLINE || 'Decentralized prediction markets for weather risk' }}
+        run: node .github/scripts/build-announcement.mjs
+
+      - name: Post to Discord
+        if: ${{ vars.ANNOUNCE_DISABLE_DISCORD != 'true' && !inputs.dry_run && vars.ANNOUNCE_DRY_RUN != 'true' }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_MESSAGE_PATH: announcement.discord.md
+        run: node .github/scripts/post-discord.mjs
+
+      - name: Post to X
+        if: ${{ vars.ANNOUNCE_DISABLE_X != 'true' && !inputs.dry_run && vars.ANNOUNCE_DRY_RUN != 'true' }}
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          X_MESSAGE_PATH: announcement.x.txt
+        run: node .github/scripts/post-x.mjs
+
+      - name: Upload announcement artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: announcement-${{ steps.resolve.outputs.tag }}
+          path: |
+            announcement.discord.md
+            announcement.x.txt
+          retention-days: 30
