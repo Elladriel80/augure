@@ -13,7 +13,7 @@ La Phase 1 déploie sur **Arbitrum Sepolia testnet uniquement**. Le déploiement
 Avant de lancer les scripts de déploiement, le founder doit avoir :
 
 - Une EOA fundée sur Arbitrum Sepolia (quelques ETH-Sepolia depuis un faucet — gas uniquement).
-- Un multisig Safe déployé sur Arbitrum Sepolia. Voir [TODO-HUMAIN.md](../../TODO-HUMAIN.md) à la racine du repo.
+- Un multisig Safe déployé sur Arbitrum Sepolia (M-sur-N, signataires hardware-wallet, seuil M ≥ 2).
 - Une clé API Arbiscan (gratuite).
 - Une clé API Pinata (pour le pinning IPFS des rounds en M5+).
 - Un `.env` rempli depuis `.env.example`.

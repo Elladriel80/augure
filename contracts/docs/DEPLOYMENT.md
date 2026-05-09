@@ -13,7 +13,7 @@ Phase 1 deploys to **Arbitrum Sepolia testnet only**. Mainnet deployment is gate
 Before running the deploy scripts, the founder must have:
 
 - A funded EOA on Arbitrum Sepolia (a few ETH-Sepolia from a faucet — gas only).
-- A Safe multisig deployed on Arbitrum Sepolia. See [TODO-HUMAIN.md](../../TODO-HUMAIN.md) at repo root.
+- A Safe multisig deployed on Arbitrum Sepolia (M-of-N, hardware-wallet signers, threshold M ≥ 2).
 - An Arbiscan API key (free).
 - A Pinata API key (for round IPFS pinning at M5+).
 - `.env` filled in from `.env.example`.

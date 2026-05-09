@@ -18,6 +18,10 @@ Thumbs.db
 # Local round drafts (avant ratification publique)
 rounds/*/draft_*.md
 
+# Working coordination notes (kept outside the repo, never public)
+TODO-HUMAIN.md
+NOTES-PRIVEES*.md
+
 # Logs
 *.log
 
