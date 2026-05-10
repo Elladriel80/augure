@@ -1,0 +1,51 @@
+name: dashboard-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'dashboard/**'
+      - '.github/workflows/dashboard-ci.yml'
+  pull_request:
+    paths:
+      - 'dashboard/**'
+      - '.github/workflows/dashboard-ci.yml'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: dashboard
+
+jobs:
+  build-and-typecheck:
+    name: Build and typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_RPC_URL: https://sepolia-rollup.arbitrum.io/rpc
+          NEXT_PUBLIC_CHAIN_ID: '421614'
+          NEXT_PUBLIC_TOKEN_ADDRESS: '0x0000000000000000000000000000000000000000'
+          NEXT_PUBLIC_REGISTRY_ADDRESS: '0x0000000000000000000000000000000000000000'
+          NEXT_PUBLIC_DEPLOY_BLOCK: '0'
+          NEXT_PUBLIC_EXPLORER_URL: https://sepolia.arbiscan.io
+        run: npm run build
