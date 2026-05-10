@@ -1,39 +1,46 @@
 {
   "run_id": "002",
-  "ts_utc": null,
+  "type": "live",
+  "ts_utc": "2026-05-10T17:12:17Z",
   "model": {
     "ensemble": ["ECMWF", "GraphCast", "GFS", "JMA"],
-    "p_yes": null,
-    "confidence": null,
-    "feature_set_hash": null
+    "p_yes": 0.146,
+    "confidence": "med",
+    "feature_set_hash": null,
+    "p_yes_climatology": 0.154
   },
   "event": {
-    "description": "<TBD>",
-    "resolution_time_utc": null
+    "description": "Lowest temperature in NYC on 2026-05-11, bin 50-51°F (50.5)",
+    "resolution_time_utc": "2026-05-12T04:00:00Z"
   },
   "markets": [
     {
       "platform": "kalshi",
-      "ticker": "<TBD>",
-      "url": null,
-      "resolution_source": "NWS",
+      "ticker": "KXLOWTNYC-26MAY11-B50.5",
+      "url": "https://kalshi.com/markets/KXLOWTNYC/lowest-temperature-in-new-york-city-on-may-11-2026",
+      "resolution_source": "NWS Central Park (KNYC) daily minimum temperature",
       "snapshot_pre": {
-        "mid": null,
-        "bid": null,
-        "ask": null,
-        "ts_utc": null
+        "yes_mid": 0.36,
+        "yes_bid": 0.35,
+        "yes_ask": 0.37,
+        "spread_cents": 2.0,
+        "ts_utc": "2026-05-10T17:12:17Z"
       },
       "edge_bps": {
-        "vs_market": null,
-        "vs_climatology": null
+        "vs_market": -2136,
+        "vs_climatology": -76
       },
       "position": {
-        "side": null,
-        "size_usd": null,
+        "side": "NO",
+        "size_usd": 100,
+        "entry_price_cents": null,
+        "n_contracts": null,
+        "opened_at_utc": null,
         "paper": true
       },
       "resolution": {
         "outcome": null,
+        "observed_value_f": null,
         "ts_utc": null,
         "pnl_usd": null
       }
@@ -44,5 +51,5 @@
     "brier_climatology": null,
     "brier_best_single_model": null
   },
-  "notes": ""
+  "notes": "First live position. Bin 50.5 = NYC daily low between 50.0°F (incl) and 51.0°F (excl). Model and climatology agree (~15%); market overprices at 36%. Trade thesis: pure mid-market mispricing, not a tail bet. Position will be opened on Kalshi paper account; entry_price_cents and n_contracts to be filled when trade is executed."
 }

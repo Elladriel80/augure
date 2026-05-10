@@ -1,12 +1,17 @@
 TWEET 1 (T-1h, pre-run):
-Augure run 002 incoming.
+First live position on Augure tonight.
 
-Event: <TBD, e.g. NYC high temp ≥ 75°F on 2026-05-11>
-Meta-ensemble (ECMWF + GraphCast + GFS + JMA): P(YES)=<TBD>%
-Kalshi implies <TBD>%. Edge: <±TBD> bps.
-[Polymarket implies <TBD>%. Edge: <±TBD> bps.]
+Run 001 was a pipeline shake-down. 60 markets scanned, 0 bet placed.
+Run 002 opens the actual book.
 
-Logging the whole thing publicly. Resolves <date>.
+Event: Lowest temp NYC on May 11, bin 50-51°F.
+Meta-ensemble (ECMWF + GraphCast + GFS + JMA): P(YES) = 14.6%
+Climatology (29 yrs): 15.4%
+Kalshi implies 36%. Edge: −2136 bps.
+
+Position: BUY NO on Kalshi (KXLOWTNYC-26MAY11-B50.5).
+
+Logged publicly. Resolves May 12 ~04:00 UTC.
 
 ---
 
@@ -14,8 +19,6 @@ TWEET 2 (post-resolution, reply):
 Run 002 resolved <YES|NO>.
 
 Brier: model <TBD> vs climatology <TBD>.
-2-run cumulative: meta is/isn't beating baseline yet.
-
-Phase 1 go/no-go = N>50 events. 48 to go.
+First live position closed. Phase 1 counter: 1 / 50.
 
 Full log → github.com/Elladriel80/augure/blob/main/predictor/runs/002/report.json

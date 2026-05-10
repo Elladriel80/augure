@@ -1,5 +1,6 @@
 {
   "run_id": "001",
+  "type": "pipeline",
   "ts_utc": "2026-05-08T10:45:00Z",
   "model": {
     "ensemble": ["climatology", "forecast_blend", "ensemble"],
