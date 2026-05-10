@@ -260,6 +260,7 @@
     <section>
       <h2 data-i18n="s2_h">phase 1 — POC kalshi</h2>
       <p data-i18n="s2_p1">Avant de déployer la DAO, on prouve l'<strong>edge prédictif</strong>. Le token <code>AUG-POC</code> finance la stratégie sur Kalshi : NAV transparente, frais de performance, pool dédié aux contributeurs.</p>
+      <p data-i18n="s2_p2">Le token <code>AUG-POC</code> est désormais déployé sur <strong>Arbitrum Sepolia</strong> (testnet) avec son registre de rounds. Premier round genesis proposé — fenêtre de challenge jusqu'au 9 juin 2026. État on-chain en direct → <a href="https://augure.vercel.app" target="_blank" rel="noopener noreferrer">dashboard</a>.</p>
       <p class="meta" data-i18n="s2_meta">→ Pas de promesse de rendement. Pas de spéculation. Juste un signal mesurable avant de scale.</p>
     </section>
 
@@ -277,6 +278,10 @@
       <a class="link-card" id="link-github" href="#" target="_blank" rel="noopener noreferrer">
         <div class="label">// code</div>
         <div class="url">github</div>
+      </a>
+      <a class="link-card" id="link-dashboard" href="#" target="_blank" rel="noopener noreferrer">
+        <div class="label">// state</div>
+        <div class="url">dashboard</div>
       </a>
       <a class="link-card" id="link-notion" href="#" target="_blank" rel="noopener noreferrer">
         <div class="label">// whitepaper</div>
@@ -297,6 +302,7 @@
     const LINKS = {
       discord: 'https://discord.gg/YZ2wnDM9dQ',
       github:  'https://github.com/Elladriel80/augure',
+      dashboard: 'https://augure.vercel.app',
       notion: {
         fr: 'https://www.notion.so/White-Papper-Augure-35a472ba28fa80f6829ff8b921083d9a',
         en: 'https://www.notion.so/35a472ba28fa810fa1f5e1447235be41'
@@ -316,6 +322,7 @@
         s1_p1: "Augure construit une infrastructure on-chain pour les marchés prédictifs météo et la mutuelle paramétrique. Quand le climat devient un marché, la couverture devient programmable.",
         s2_h: 'phase 1 — POC kalshi',
         s2_p1: "Avant de déployer la DAO, on prouve l'<strong>edge prédictif</strong>. Le token <code>AUG-POC</code> finance la stratégie sur Kalshi : NAV transparente, frais de performance, pool dédié aux contributeurs.",
+        s2_p2: 'Le token <code>AUG-POC</code> est désormais déployé sur <strong>Arbitrum Sepolia</strong> (testnet) avec son registre de rounds. Premier round genesis proposé — fenêtre de challenge jusqu\'au 9 juin 2026. État on-chain en direct → <a href="https://augure.vercel.app" target="_blank" rel="noopener noreferrer">dashboard</a>.',
         s2_meta: '→ Pas de promesse de rendement. Pas de spéculation. Juste un signal mesurable avant de scale.',
         s3_h: 'contribuer',
         s3_p1: 'Le projet est <strong>ouvert à tous</strong>. Devs, modélisateurs météo, économistes, designers, gouvernance — toute compétence trouve sa place. On construit en public, on documente en public, on décide en public.',
@@ -332,6 +339,7 @@
         s1_p1: 'Augure is building on-chain infrastructure for weather prediction markets and decentralized parametric mutual coverage. When climate becomes a market, coverage becomes programmable.',
         s2_h: 'phase 1 — kalshi POC',
         s2_p1: 'Before deploying the DAO, we prove the <strong>predictive edge</strong>. The <code>AUG-POC</code> token funds the strategy on Kalshi: transparent NAV, performance fee, contributor pool.',
+        s2_p2: 'The <code>AUG-POC</code> token is now deployed on <strong>Arbitrum Sepolia</strong> (testnet) with its round registry. First genesis round proposed — challenge window until 2026-06-09. Live on-chain state → <a href="https://augure.vercel.app" target="_blank" rel="noopener noreferrer">dashboard</a>.',
         s2_meta: '→ No yield promise. No speculation. Just a measurable signal before we scale.',
         s3_h: 'contribute',
         s3_p1: 'The project is <strong>open to anyone</strong>. Devs, weather modelers, economists, designers, governance — every skill finds a place. We build in public, document in public, decide in public.',
@@ -392,6 +400,7 @@
        ============================================================ */
     document.getElementById('link-discord').href = LINKS.discord;
     document.getElementById('link-github').href = LINKS.github;
+    document.getElementById('link-dashboard').href = LINKS.dashboard;
     // Notion link is set per-language inside applyLang()
 
     document.getElementById('btn-fr').addEventListener('click', () => applyLang('fr'));
