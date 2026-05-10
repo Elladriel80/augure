@@ -1,0 +1,38 @@
+{
+  "run_id": "001",
+  "market": {
+    "platform": "kalshi",
+    "ticker": null,
+    "question": "exploratory snapshot — 60 markets across 6 US cities (Austin, Chicago, Denver, Miami, Philadelphia, San Antonio), high/low temperature contracts",
+    "resolution_source": "NWS",
+    "resolution_time_utc": null
+  },
+  "model": {
+    "ensemble": ["climatology", "forecast_blend", "ensemble"],
+    "p_yes": null,
+    "confidence": null
+  },
+  "market_snapshot_pre": {
+    "mid": null,
+    "bid": null,
+    "ask": null,
+    "ts_utc": "2026-05-08T10:45:00Z"
+  },
+  "edge_bps": {
+    "vs_market": null,
+    "vs_climatology": null
+  },
+  "position": {
+    "side": null,
+    "size_usd": 0,
+    "paper": true
+  },
+  "resolution": {
+    "outcome": null,
+    "ts_utc": null,
+    "brier_model": null,
+    "brier_climatology": null,
+    "pnl_usd": null
+  },
+  "_note": "Run 001 was an end-to-end pipeline dry-run on 2026-05-08, not a position. No bet was placed in predictor/data/ledger/paper_bets.csv. Single-position fields (ticker, p_yes, edge_bps) are intentionally null because no single market was selected. See REPORT.md for the full builder-log narrative."
+}
