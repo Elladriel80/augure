@@ -63,7 +63,12 @@ for (let i = 0; i < parts.length; i++) {
 
   const res = await fetch(WEBHOOK, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      // Cloudflare in front of Discord rejects bare/default UAs with
+      // HTTP 403 + error 1010. Send a descriptive UA to avoid that.
+      'User-Agent': 'Augure-Announce/1.0 (+https://github.com/Elladriel80/augure)',
+    },
     body,
   });
 
