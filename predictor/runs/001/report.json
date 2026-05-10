@@ -1,38 +1,21 @@
 {
   "run_id": "001",
-  "market": {
-    "platform": "kalshi",
-    "ticker": null,
-    "question": "exploratory snapshot — 60 markets across 6 US cities (Austin, Chicago, Denver, Miami, Philadelphia, San Antonio), high/low temperature contracts",
-    "resolution_source": "NWS",
-    "resolution_time_utc": null
-  },
+  "ts_utc": "2026-05-08T10:45:00Z",
   "model": {
     "ensemble": ["climatology", "forecast_blend", "ensemble"],
     "p_yes": null,
-    "confidence": null
+    "confidence": null,
+    "feature_set_hash": null
   },
-  "market_snapshot_pre": {
-    "mid": null,
-    "bid": null,
-    "ask": null,
-    "ts_utc": "2026-05-08T10:45:00Z"
+  "event": {
+    "description": "exploratory snapshot — 60 markets across 6 US cities (Austin, Chicago, Denver, Miami, Philadelphia, San Antonio), high/low temperature contracts. No single event was selected for entry.",
+    "resolution_time_utc": null
   },
-  "edge_bps": {
-    "vs_market": null,
-    "vs_climatology": null
-  },
-  "position": {
-    "side": null,
-    "size_usd": 0,
-    "paper": true
-  },
-  "resolution": {
-    "outcome": null,
-    "ts_utc": null,
+  "markets": [],
+  "scoring": {
     "brier_model": null,
     "brier_climatology": null,
-    "pnl_usd": null
+    "brier_best_single_model": null
   },
-  "_note": "Run 001 was an end-to-end pipeline dry-run on 2026-05-08, not a position. No bet was placed in predictor/data/ledger/paper_bets.csv. Single-position fields (ticker, p_yes, edge_bps) are intentionally null because no single market was selected. See REPORT.md for the full builder-log narrative."
+  "notes": "Run 001 was an end-to-end pipeline dry-run on 2026-05-08, not a position. No paper bet was placed (predictor/data/ledger/paper_bets.csv is header-only) and no single market was selected, so the markets array is intentionally empty. Phase 1 N counter remains at 0 until Run 002 opens an actual paper position. See REPORT.md for the full builder-log narrative and the on-disk artifacts under predictor/data/."
 }
