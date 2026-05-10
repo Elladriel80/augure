@@ -12,24 +12,31 @@ Usage
 -----
 
     python predictor/scripts/post_to_discord.py \\
-        --channel product-updates \\
-        --file predictor/runs/002/templates/pre-run-discord.md
+        --channel predictions \\
+        --file predictor/runs/002/PRE_RUN.md
 
 The channel name is mapped to an environment variable:
 
-    --channel product-updates
-        → reads DISCORD_WEBHOOK_PRODUCT_UPDATES from the env
+    --channel predictions
+        → reads DISCORD_WEBHOOK_PREDICTIONS from the env
 
 The variable's value must be a full Discord webhook URL of the form
 "https://discord.com/api/webhooks/<id>/<token>". Set them either in a
-local .env (gitignored) or export them before running:
+local predictor/.env (gitignored) or export them before running:
 
-    export DISCORD_WEBHOOK_PRODUCT_UPDATES="https://discord.com/api/webhooks/..."
+    export DISCORD_WEBHOOK_PREDICTIONS="https://discord.com/api/webhooks/..."
+
+The conventional channels for Phase 1 are listed in
+predictor/.env.example. Quick reference:
+
+    --channel predictions   → DISCORD_WEBHOOK_PREDICTIONS   (#🎯-predictions, run open)
+    --channel pnl-tracker   → DISCORD_WEBHOOK_PNL_TRACKER   (#💰-pnl-tracker, resolution)
+    --channel build-log     → DISCORD_WEBHOOK_BUILD_LOG     (#🛠-build-log, post-mortem)
 
 Channel-name to env-var mapping rules:
     - lowercase, hyphens, dots  → uppercase, underscores
-    - so "product-updates" → DISCORD_WEBHOOK_PRODUCT_UPDATES
-    - and "kalshi.runs"    → DISCORD_WEBHOOK_KALSHI_RUNS
+    - so "pnl-tracker"   → DISCORD_WEBHOOK_PNL_TRACKER
+    - and "kalshi.runs"  → DISCORD_WEBHOOK_KALSHI_RUNS
 
 Discord enforces a 2000-character limit per message. Longer content is
 truncated to 1990 chars + an ellipsis. If the file you want to send
