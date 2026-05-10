@@ -22,8 +22,13 @@ name: Announce Release
 on:
   push:
     tags:
+      # Semver releases: v0.1.0, v1.2.3, v0.1.0-rc1, v1.0.0-alpha, ...
       - 'v[0-9]+.[0-9]+.[0-9]+'
       - 'v[0-9]+.[0-9]+.[0-9]+-*'
+      # Milestone tags: M0, M3, M12, ...
+      - 'M[0-9]+'
+      # Kalshi POC run tags: run-001, run-002, run-2026-05, ...
+      - 'run-*'
   workflow_dispatch:
     inputs:
       tag:
