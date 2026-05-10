@@ -1,0 +1,37 @@
+{
+  "run_id": "002",
+  "market": {
+    "platform": "kalshi",
+    "ticker": "<TBD>",
+    "question": "<TBD>",
+    "resolution_source": "NWS",
+    "resolution_time_utc": "<TBD>"
+  },
+  "model": {
+    "ensemble": ["ECMWF", "GraphCast", "GFS", "JMA"],
+    "p_yes": null,
+    "confidence": null
+  },
+  "market_snapshot_pre": {
+    "mid": null,
+    "bid": null,
+    "ask": null,
+    "ts_utc": null
+  },
+  "edge_bps": {
+    "vs_market": null,
+    "vs_climatology": null
+  },
+  "position": {
+    "side": null,
+    "size_usd": null,
+    "paper": true
+  },
+  "resolution": {
+    "outcome": null,
+    "ts_utc": null,
+    "brier_model": null,
+    "brier_climatology": null,
+    "pnl_usd": null
+  }
+}
