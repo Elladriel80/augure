@@ -1,9 +1,19 @@
 # predictor/runs/
 
-Public, append-only record of every Kalshi POC run. Phase 1 of Augure
-is about measuring a predictive edge before any decentralized
-parametric mutual is built — every paper or live position has to leave
-a trace here.
+Public, append-only record of every Phase 1 prediction-market run.
+Augure Phase 1 is about measuring a predictive edge before any
+decentralized parametric mutual is built — every paper or live
+position has to leave a trace here.
+
+## Supported platforms
+
+- **Kalshi** — Phase 1 priority. Mature weather markets, real
+  liquidity, NWS-tied resolution.
+- **Polymarket** — Phase 1 secondary. The log schema supports it from
+  the start; predictor-side integration follows in a separate ticket.
+
+A single run can target one event across one or several venues. The
+schema treats venues as equal entries in `markets[]`.
 
 ## Layout
 
@@ -14,9 +24,11 @@ predictor/runs/
 │   ├── REPORT.md            builder log
 │   └── report.json          machine-readable record
 └── NNN/                     one folder per run
-    ├── REPORT.md
-    ├── report.json
-    └── templates/           pre/post-run posts (Discord + X)
+    ├── PRE_RUN.md           Discord #predictions, posted at open
+    ├── POST_RUN.md          Discord #pnl-tracker, posted at resolution
+    ├── X_THREAD_EN.md       X / Twitter — pre + post tweets, EN
+    ├── X_THREAD_FR.md       X / Twitter — pre + post tweets, FR
+    └── report.json          machine-readable record
 ```
 
 ## Workflow at a glance
