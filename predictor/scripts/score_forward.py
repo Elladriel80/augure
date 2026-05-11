@@ -144,18 +144,25 @@ def main() -> int:
               f"{top1['top1_accuracy']:>6.2f}")
         summary[predictor] = {**agg, "top1": top1}
 
-    # Comparaison aux mids Kalshi (si disponibles) — c'est la vraie référence
+    # Comparaison aux mids Kalshi (si disponibles) — c'est la vraie référence.
+    # Note : on utilise la 1ère capture AVEC un yes_mid non nul, pas la 1ère
+    # capture tout court. Les marchés Kalshi peuvent ne pas être quotés tôt
+    # le matin (yes_mid=null sur les premières captures) ; les utiliser comme
+    # référence donnerait market_flat vide et on perdrait le bench critique.
     print()
     market_flat = []
-    for r in unique_records:
+    by_ticker_with_quote: dict[str, dict] = {}
+    for r in sorted(all_records, key=lambda x: x.get("_capture_at", "")):
         if r["ticker"] not in resolutions:
             continue
-        mid = r.get("yes_mid")
-        if mid is None:
+        if r.get("yes_mid") is None:
             continue
+        if r["ticker"] not in by_ticker_with_quote:
+            by_ticker_with_quote[r["ticker"]] = r
+    for r in by_ticker_with_quote.values():
         market_flat.append({
             "ticker": r["ticker"],
-            "prob_yes": float(mid),
+            "prob_yes": float(r["yes_mid"]),
             "outcome": 1 if resolutions[r["ticker"]] == "yes" else 0,
         })
     if market_flat:
