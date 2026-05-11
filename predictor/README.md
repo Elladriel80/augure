@@ -37,10 +37,29 @@ Critère de succès : Brier score et accuracy meilleurs que les odds Kalshi clos
 ## Setup
 
 ```bash
-# Depuis le dossier kalshi-poc
+# Depuis le dossier predictor/
 python -m venv .venv
 .venv\Scripts\activate   # Windows
+.venv/bin/activate       # Linux / macOS
+
+# Installation reproductible (recommandé) :
+pip install -r requirements.lock --require-hashes
+
+# Ou installation lâche (versions min seulement) :
 pip install -r requirements.txt
+```
+
+**Reproductibilité des dépendances.** `requirements.lock` est généré par
+[`pip-tools`](https://pip-tools.readthedocs.io/) à partir de
+`requirements.txt`. Il épingle chaque dépendance transitive avec ses
+hashs SHA-256, ce qui rend l'install reproductible et bloque la
+substitution silencieuse d'un paquet vérolé.
+
+Pour régénérer après une modification de `requirements.txt` :
+
+```bash
+pip install pip-tools
+pip-compile --generate-hashes --output-file=predictor/requirements.lock predictor/requirements.txt
 ```
 
 ## Pipeline d'exécution

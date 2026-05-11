@@ -1,0 +1,53 @@
+# CodeQL static analysis. Runs on push to main, on every PR targeting
+# main, and weekly on Sunday at 19:30 UTC (a quiet slot for GitHub
+# scheduled runs). Findings show up under the repo's Security tab.
+#
+# Languages: Python (predictor/) + JavaScript/TypeScript (dashboard/ +
+# .github/scripts/). Solidity is not yet covered by CodeQL — Slither in
+# the contracts-ci workflow handles that side.
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '30 19 * * 0'
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python, javascript-typescript]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # Use the security-extended query suite so we catch a wider
+          # range of injection / path-traversal patterns than the
+          # default. Off by default to stay cheap; on for a small repo.
+          queries: security-extended
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
