@@ -27,6 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/rounds" className="hover:text-accent">
                 rounds
               </Link>
+              <Link href="/algorithm" className="hover:text-accent">
+                algorithm
+              </Link>
               <a
                 href="https://github.com/Elladriel80/augure"
                 target="_blank"

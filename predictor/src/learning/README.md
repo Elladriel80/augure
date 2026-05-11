@@ -87,6 +87,22 @@ feature was net noise on this split.
   (Overpass + USGS + Natural Earth coastline). Provides the V2 static
   context features.
 
+## Dashboard view
+
+Every training run that lands in `predictor/runs_learning/` is surfaced on
+the public dashboard at
+[augure-app.vercel.app/algorithm](https://augure-app.vercel.app/algorithm).
+The page shows the latest run's Brier vs `kalshi_mid` verdict, the full
+feature registry (clickable for the hypothesis, source URL and per-run
+history), the run history table, and the Brier trajectory chart across
+runs.
+
+The dashboard reads a static manifest
+(`/predictor_manifest.json`) generated at build time by
+[`predictor/scripts/build_dashboard_manifest.py`](../../scripts/build_dashboard_manifest.py).
+No API or chain calls at runtime — the manifest is regenerated on every
+Vercel deploy.
+
 ## Why named features, not opaque blobs
 
 A learned model that beats `kalshi_mid` is useful as a trader. A
