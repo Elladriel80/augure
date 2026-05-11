@@ -4,6 +4,7 @@ __pycache__/
 .ipynb_checkpoints/
 data/markets/*.json
 data/forecasts/*.json
+data/forecasts/nws_ndfd/*.json
 data/ledger/*.csv
 !data/**/.gitkeep
 .env
