@@ -6,6 +6,7 @@ Open-Meteo est gratuit, sans clé API. Deux endpoints utilisés :
 """
 from __future__ import annotations
 import json
+import re
 import time
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
@@ -16,6 +17,14 @@ from urllib.parse import urlencode
 import requests
 
 from src.config import USER_AGENT, FORECASTS_DIR
+
+
+# Whitelist for cache-key sanitisation. Anything outside this set is
+# collapsed to an underscore so a future caller passing a key sourced
+# from untrusted input (e.g. a Kalshi ticker, a CLI arg) cannot escape
+# the cache directory via "../", "C:\\", a NUL byte, or platform-specific
+# separators.
+_CACHE_KEY_SAFE_RE = re.compile(r"[^A-Za-z0-9._-]")
 
 
 # Stations Kalshi mappées vers (lat, lon, timezone, station officielle)
@@ -115,21 +124,60 @@ class OpenMeteoClient:
 
     # -- HTTP --
 
+    # Maximum total time we are willing to spend on retries+sleeps for
+    # a single _get call. Picks up runaway loops where 429s come back
+    # back-to-back with a `Retry-After: 60`. Keeps the daily run bounded.
+    _RETRY_BUDGET_SECONDS = 90
+    # Cap any single Retry-After at this many seconds. Some upstreams
+    # advise multi-minute sleeps; we'd rather bail out and re-run later.
+    _RETRY_AFTER_CAP_SECONDS = 30
+
     def _get(self, base: str, params: dict) -> dict:
         url = f"{base}?{urlencode(params)}"
+        budget_start = time.monotonic()
+        last_exc: Optional[BaseException] = None
         for attempt in range(3):
             try:
                 r = self.session.get(url, timeout=30)
                 if r.status_code == 429:
-                    time.sleep(2 ** attempt)
+                    # Respect Retry-After when the server provides it;
+                    # fall back to exponential backoff otherwise. Cap
+                    # the wait + check the global budget so a hostile
+                    # or buggy header can't stall the pipeline.
+                    sleep_for = self._parse_retry_after(r) or (2 ** attempt)
+                    sleep_for = min(sleep_for, self._RETRY_AFTER_CAP_SECONDS)
+                    if (time.monotonic() - budget_start) + sleep_for > self._RETRY_BUDGET_SECONDS:
+                        raise requests.HTTPError(
+                            f"open-meteo rate-limit budget exhausted "
+                            f"after {time.monotonic() - budget_start:.1f}s "
+                            f"(Retry-After suggested {sleep_for}s)"
+                        )
+                    time.sleep(sleep_for)
                     continue
                 r.raise_for_status()
                 return r.json()
-            except requests.RequestException:
+            except requests.RequestException as exc:
+                last_exc = exc
                 if attempt == 2:
                     raise
-                time.sleep(1 + attempt)
+                sleep_for = 1 + attempt
+                if (time.monotonic() - budget_start) + sleep_for > self._RETRY_BUDGET_SECONDS:
+                    raise
+                time.sleep(sleep_for)
+        if last_exc is not None:  # pragma: no cover — defensive
+            raise last_exc
         return {}
+
+    @staticmethod
+    def _parse_retry_after(resp: requests.Response) -> Optional[float]:
+        """Read a `Retry-After` header. Returns None if absent/invalid."""
+        raw = resp.headers.get("Retry-After")
+        if not raw:
+            return None
+        try:
+            return max(0.0, float(raw))
+        except ValueError:
+            return None
 
     # -- Forecast --
 
@@ -319,8 +367,22 @@ class OpenMeteoClient:
     # -- Cache --
 
     def cache_path(self, kind: str, key: str) -> Path:
-        safe = key.replace("/", "_").replace(" ", "_")
-        return self.cache_dir / f"{kind}__{safe}.json"
+        # SECURITY: collapse anything outside [A-Za-z0-9._-] to underscore
+        # (covers "..", "/", "\\", drive letters, NUL bytes, control
+        # chars). Then resolve the candidate and reject it if it escapes
+        # `self.cache_dir`. Today `key` is internal-derived (lat/lon/
+        # dates) but the guard is cheap and protects future callers.
+        safe_kind = _CACHE_KEY_SAFE_RE.sub("_", kind)
+        safe_key = _CACHE_KEY_SAFE_RE.sub("_", key)
+        cache_root = self.cache_dir.resolve()
+        candidate = (cache_root / f"{safe_kind}__{safe_key}.json").resolve()
+        try:
+            candidate.relative_to(cache_root)
+        except ValueError as exc:
+            raise ValueError(
+                f"cache_path escape attempt for kind={kind!r} key={key!r}"
+            ) from exc
+        return candidate
 
     def cached_or_fetch(self, kind: str, key: str, fetcher) -> dict:
         """Lecture/écriture cache disque, avec garde-fou anti-cache-vide.
