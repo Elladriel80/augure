@@ -11,9 +11,17 @@ contribution to model accuracy.
 The current registered feature set is exposed as FEATURES_V0 (the
 starter set) and incremented to FEATURES_V1, V2, etc. as we validate
 new features empirically.
+
+Naming discipline: every feature name MUST evoke an atmospheric or
+contextual hypothesis. No f1, f2, x_42 — use names like p_nws_ndfd,
+urban_density_5km, forecast_revision_velocity_24h. The catalog of all
+features (with hypothesis, source, status, measured Brier delta) lives
+in FEATURES.md next to this file.
 """
 from __future__ import annotations
 
+import datetime as _dt
+import math
 from typing import Any, Callable
 
 
@@ -81,6 +89,115 @@ def f_days_ahead(rec: dict[str, Any]) -> float | None:
     return None
 
 
+# ---------- V1 feature: NWS NDFD vendor forecast ----------
+
+def _normal_cdf(x: float) -> float:
+    return 0.5 * (1.0 + math.erf(x / math.sqrt(2.0)))
+
+
+def _prob_in_interval(mu: float, sigma: float,
+                       lower: float | None, upper: float | None) -> float:
+    if sigma <= 0:
+        if lower is not None and mu < lower:
+            return 0.0
+        if upper is not None and mu > upper:
+            return 0.0
+        return 1.0
+    p_lo = _normal_cdf((lower - mu) / sigma) if lower is not None else 0.0
+    p_hi = _normal_cdf((upper - mu) / sigma) if upper is not None else 1.0
+    return max(0.0, min(1.0, p_hi - p_lo))
+
+
+def _sigma_from_climato(rec: dict[str, Any]) -> float | None:
+    """Estimate sigma the same way ForecastBlendPredictor does: range/4."""
+    clim = rec.get("predictions", {}).get("climatology", {})
+    inputs = clim.get("inputs", {}) if isinstance(clim, dict) else {}
+    vmin, vmax = inputs.get("value_min"), inputs.get("value_max")
+    if vmin is None or vmax is None or vmax <= vmin:
+        # forecast_blend inputs sometimes carry sigma_climato directly
+        fb = rec.get("predictions", {}).get("forecast_blend", {})
+        fb_inputs = fb.get("inputs", {}) if isinstance(fb, dict) else {}
+        sc = fb_inputs.get("sigma_climato")
+        if sc is not None:
+            return float(sc)
+        return None
+    return max(1.0, (float(vmax) - float(vmin)) / 4.0)
+
+
+def f_p_nws_ndfd(rec: dict[str, Any]) -> float | None:
+    """P(YES) computed from the NWS NDFD official forecast.
+
+    Hypothesis: Kalshi weather markets resolve on the NWS Climatological
+    Report. A forecast from the same agency that issues the truth should
+    dominate generic vendor blends.
+
+    NDFD is forward-only (no historical archives), so for any record with
+    target_date < today this returns None and the row is dropped. The
+    feature gains coverage as forward captures accumulate going forward.
+    """
+    target = rec.get("target_date")
+    variable = rec.get("variable")
+    lower, upper = rec.get("lower"), rec.get("upper")
+    location_key = rec.get("location_key")
+    if not (target and variable and location_key):
+        return None
+
+    # NDFD only covers ~7 days forward. Skip everything outside that window
+    # to avoid wasted requests and confusing cache pollution.
+    try:
+        t = _dt.date.fromisoformat(target)
+    except Exception:
+        return None
+    today = _dt.date.today()
+    days_ahead = (t - today).days
+    if days_ahead < 0 or days_ahead > 6:
+        return None
+
+    # Resolve station coordinates from the project's CITIES table.
+    try:
+        from src.weather import CITIES  # local import to keep import graph shallow
+    except Exception:
+        return None
+    city = CITIES.get(location_key)
+    if not city:
+        return None
+
+    # Variable to NDFD field.
+    try:
+        from src.forecast.nws_ndfd import fetch_forecast
+    except Exception:
+        return None
+    try:
+        fc = fetch_forecast(city["lat"], city["lon"], target)
+    except Exception:
+        return None
+
+    if variable == "temp_max":
+        mu = fc.get("temp_max_f")
+    elif variable == "temp_min":
+        mu = fc.get("temp_min_f")
+    elif variable == "precip_in":
+        # precipitation_amount_in not yet available from NDFD periods endpoint
+        return None
+    elif variable == "snow_in":
+        return None
+    else:
+        return None
+
+    if mu is None:
+        return None
+
+    sigma = _sigma_from_climato(rec)
+    if sigma is None:
+        return None
+
+    # Same integer-rounding correction as forecast_blend for temperature bounds.
+    is_temp = variable in ("temp_max", "temp_min")
+    eff_lower = (lower - 0.5) if (is_temp and lower is not None) else lower
+    eff_upper = (upper + 0.5) if (is_temp and upper is not None) else upper
+    return _prob_in_interval(float(mu), float(sigma), eff_lower, eff_upper)
+
+
 # ---------- Registry ----------
 
 # A feature spec is (name, extractor_fn). Order matters for the model's
@@ -94,12 +211,15 @@ FEATURES_V0: list[tuple[str, Callable[[dict[str, Any]], float | None]]] = [
     ("days_ahead",       f_days_ahead),
 ]
 
-# V1, V2 etc. will be defined here as we validate new features.
-# Example pattern for the future:
-#
-#   FEATURES_V1 = FEATURES_V0 + [
-#       ("kalshi_mid", f_kalshi_mid),
-#   ]
+# V1: adds NWS NDFD vendor probability. Note that p_nws_ndfd is None on
+# rows whose target_date is in the past — historical captures predate the
+# NDFD integration. V1's effective row count will be very small until
+# daily forward captures start carrying NDFD natively.
+FEATURES_V1: list[tuple[str, Callable[[dict[str, Any]], float | None]]] = (
+    FEATURES_V0 + [
+        ("p_nws_ndfd", f_p_nws_ndfd),
+    ]
+)
 
 
 # ---------- Helpers ----------
