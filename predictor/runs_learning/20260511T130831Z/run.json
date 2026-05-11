@@ -1,0 +1,75 @@
+{
+  "timestamp_utc": "20260511T130831Z",
+  "feature_set_used": "v2",
+  "feature_names": [
+    "p_climatology",
+    "p_forecast_blend",
+    "p_ensemble",
+    "forecast_spread",
+    "days_ahead",
+    "urban_density_5km",
+    "water_pct_10km",
+    "forest_pct_5km",
+    "elevation_m",
+    "distance_to_coast_km",
+    "latitude"
+  ],
+  "n_train": 96,
+  "n_test": 42,
+  "train_date_range": [
+    "20260508T102045Z",
+    "20260510T171217Z"
+  ],
+  "test_date_range": [
+    "20260510T171217Z",
+    "20260510T171217Z"
+  ],
+  "brier_train": 0.13149111099338748,
+  "brier_test": 0.12604134183736937,
+  "brier_kalshi_mid_test": 0.028202976190476188,
+  "log_loss_train": 0.41637065088847414,
+  "log_loss_test": 0.39910141345174516,
+  "log_loss_kalshi_mid_test": 0.08888753733457458,
+  "feature_importances": {
+    "p_ensemble": 0.7838879622477447,
+    "p_forecast_blend": -0.510510601928988,
+    "p_climatology": -0.4342998398332748,
+    "forecast_spread": -0.08855690369350419,
+    "elevation_m": 0.024417949203992696,
+    "forest_pct_5km": 0.021007010208796247,
+    "latitude": 0.01407198309079232,
+    "urban_density_5km": -0.013300612564880944,
+    "distance_to_coast_km": -0.012940936129627503,
+    "water_pct_10km": 0.003909505517124414,
+    "days_ahead": 0.0
+  },
+  "feature_brier_deltas": {
+    "p_climatology": 0.0019520011534851778,
+    "p_forecast_blend": 0.0042866792895760175,
+    "p_ensemble": 0.007829710383202598,
+    "forecast_spread": -3.1382562238974065e-05,
+    "days_ahead": 2.7755575615628914e-17,
+    "urban_density_5km": -1.5047902144849079e-05,
+    "water_pct_10km": 2.0256455106060223e-06,
+    "forest_pct_5km": 0.0002603298636359441,
+    "elevation_m": 0.00012491554628418777,
+    "distance_to_coast_km": 7.277418030415816e-07,
+    "latitude": 2.0115449133883967e-05
+  },
+  "kept_features": [
+    "p_climatology",
+    "p_forecast_blend",
+    "p_ensemble",
+    "forecast_spread",
+    "days_ahead",
+    "urban_density_5km",
+    "water_pct_10km",
+    "forest_pct_5km",
+    "elevation_m",
+    "distance_to_coast_km",
+    "latitude"
+  ],
+  "dropped_features": [],
+  "methodology": "Leave-one-out Brier delta: for each feature, refit the model without it on the same train/test split and record (brier_test_without - brier_test_full). Positive = removing the feature hurt accuracy = feature carried signal.",
+  "notes": "First A.3 discovery run. V2 = V0 baseline + 6 static geographic features (urban_density_5km, water_pct_10km, forest_pct_5km, elevation_m, distance_to_coast_km, latitude). N=138 resolved, train=96 (older), test=42 (newer). Test slice currently collapses to a single capture date (20260510T171217Z) \u2014 limits temporal variance; geographic deltas mostly null on this split as expected."
+}
