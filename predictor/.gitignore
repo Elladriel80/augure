@@ -4,7 +4,9 @@ __pycache__/
 .ipynb_checkpoints/
 data/markets/*.json
 data/forecasts/*.json
+data/forecasts/nws_ndfd/*.json
 data/ledger/*.csv
+data/geographic/ne_*.geojson
 !data/**/.gitkeep
 .env
 .DS_Store
