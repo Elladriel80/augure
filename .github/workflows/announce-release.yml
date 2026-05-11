@@ -51,7 +51,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0  # need full history for `git log` between tags
           fetch-tags: true  # explicitly fetch tag objects so `git for-each-ref refs/tags/*` returns annotated tag bodies
