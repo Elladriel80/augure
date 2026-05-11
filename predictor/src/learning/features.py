@@ -222,6 +222,117 @@ FEATURES_V1: list[tuple[str, Callable[[dict[str, Any]], float | None]]] = (
 )
 
 
+# ---------- V2 features: static geographic context per station ----------
+
+def _geo_value(rec: dict[str, Any], key: str) -> float | None:
+    """Look up a static geographic value for the record's location_key.
+
+    Returns None if the station hasn't been built into stations.json yet
+    or if the value is missing — so the row is dropped instead of
+    silently zero-imputed.
+    """
+    loc = rec.get("location_key")
+    if not loc:
+        return None
+    try:
+        from src.learning.geographic import lookup_for_location_key
+    except Exception:
+        return None
+    s = lookup_for_location_key(loc)
+    if not s:
+        return None
+    v = s.get(key)
+    return float(v) if v is not None else None
+
+
+def f_urban_density_5km(rec: dict[str, Any]) -> float | None:
+    """OSM building feature count within 5 km of the station.
+
+    Proxy for the urban heat island. Dense urban cores retain nighttime
+    warmth and bias the low-temperature distribution upward vs. the
+    climatology built from older / less built-up neighbouring stations.
+    Count rather than %-area because computing %-area would require
+    polygon geometry parsing (shapely) which is out of scope here.
+    """
+    return _geo_value(rec, "urban_density_5km")
+
+
+def f_water_pct_10km(rec: dict[str, Any]) -> float | None:
+    """Count of OSM water features (natural=water + waterway) within 10 km.
+
+    Proxy for water-thermal-mass dampening of diurnal swings. Stations
+    near large water bodies should see narrower temp ranges. Naming
+    keeps the V2 "_pct_" suffix from the spec for continuity but the
+    units are counts; see FEATURES.md.
+    """
+    return _geo_value(rec, "water_pct_10km")
+
+
+def f_forest_pct_5km(rec: dict[str, Any]) -> float | None:
+    """Count of OSM forest patches (natural=wood + landuse=forest) within 5 km.
+
+    Proxy for surface shading and evapotranspiration. Forest cover
+    cools daytime highs (shade + evap) and limits radiative night
+    cooling (canopy traps).
+    """
+    return _geo_value(rec, "forest_pct_5km")
+
+
+def f_elevation_m(rec: dict[str, Any]) -> float | None:
+    """USGS elevation in meters at the station point.
+
+    Thinner air at high altitude amplifies the diurnal swing — bigger
+    daily max-min spread, larger sensitivity to insolation. Denver vs.
+    Miami sits at opposite ends of this axis.
+    """
+    return _geo_value(rec, "elevation_m")
+
+
+def f_distance_to_coast_km(rec: dict[str, Any]) -> float | None:
+    """Haversine distance in km to the nearest Natural Earth 50m coastline vertex.
+
+    Continental stations (Denver, Oklahoma City) see big seasonal swings
+    and weak inertia; maritime stations (Boston, Miami) carry far more
+    thermal mass from the adjacent ocean and have damped extremes.
+    """
+    return _geo_value(rec, "distance_to_coast_km")
+
+
+def f_latitude(rec: dict[str, Any]) -> float | None:
+    """Station absolute latitude.
+
+    Controls insolation, daylight length, seasonal amplitude. Trivial
+    feature but worth including explicitly so the model can learn the
+    season-vs-latitude interaction without us baking it into climatology.
+    """
+    return _geo_value(rec, "latitude")
+
+
+# V2: V0 baseline + the 6 static geographic context features.
+# p_nws_ndfd is intentionally *not* in V2: NDFD has no historical archive,
+# so adding it forces every old row to drop and the training set vanishes.
+# It gets its own training pass (--feature-set v1) once forward captures
+# accumulate NDFD readings.
+FEATURES_V2: list[tuple[str, Callable[[dict[str, Any]], float | None]]] = (
+    FEATURES_V0 + [
+        ("urban_density_5km",     f_urban_density_5km),
+        ("water_pct_10km",        f_water_pct_10km),
+        ("forest_pct_5km",        f_forest_pct_5km),
+        ("elevation_m",           f_elevation_m),
+        ("distance_to_coast_km",  f_distance_to_coast_km),
+        ("latitude",              f_latitude),
+    ]
+)
+
+
+# Convenience map for --feature-set CLI flag.
+FEATURE_SETS: dict[str, list[tuple[str, Callable[[dict[str, Any]], float | None]]]] = {
+    "v0": FEATURES_V0,
+    "v1": FEATURES_V1,
+    "v2": FEATURES_V2,
+}
+
+
 # ---------- Helpers ----------
 
 def _get_pred(rec: dict[str, Any], predictor_name: str) -> float | None:
