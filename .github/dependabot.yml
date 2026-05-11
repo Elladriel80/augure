@@ -1,0 +1,48 @@
+# Dependabot configuration for the Augure monorepo.
+#
+# Runs weekly on every ecosystem present in the repo so a vulnerable
+# dependency does not sit unpatched. The default reviewer is the repo
+# owner — add team handles here once contributors are onboarded.
+#
+# Docs: https://docs.github.com/code-security/dependabot
+
+version: 2
+updates:
+  # Python — predictor stack (predictor/requirements.txt + requirements.lock)
+  - package-ecosystem: "pip"
+    directory: "/predictor"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "deps"
+      - "predictor"
+    commit-message:
+      prefix: "deps(predictor)"
+
+  # JavaScript / Next.js — dashboard
+  - package-ecosystem: "npm"
+    directory: "/dashboard"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "deps"
+      - "dashboard"
+    commit-message:
+      prefix: "deps(dashboard)"
+
+  # GitHub Actions — pin third-party actions, catch supply-chain bumps
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "deps"
+      - "ci"
+    commit-message:
+      prefix: "deps(ci)"

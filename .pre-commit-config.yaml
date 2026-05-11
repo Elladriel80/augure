@@ -1,0 +1,36 @@
+# Pre-commit hooks for the Augure monorepo.
+#
+# Install:
+#   pip install pre-commit
+#   pre-commit install
+#
+# What runs on `git commit`:
+#   - gitleaks: blocks the commit if a secret-looking string lands in a
+#     diff (Etherscan/Pinata/Discord patterns + a generic high-entropy
+#     scanner). Defense-in-depth on top of GitHub's push protection;
+#     stops the leak before it leaves the laptop.
+#   - generic hygiene: trailing whitespace, EOL fixes, large-file guard,
+#     JSON/YAML syntax check, merge-conflict markers.
+#
+# To skip ONCE (do not use casually): `git commit --no-verify`.
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        name: gitleaks (secret scan)
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=512"]
+      - id: check-yaml
+        exclude: "^contracts/.*\\.ya?ml$"  # foundry uses non-standard YAML
+      - id: check-json
+        exclude: "^dashboard/public/predictor_manifest\\.json$"
+      - id: check-toml

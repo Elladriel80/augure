@@ -31,7 +31,16 @@ const PROJECT_NAME = process.env.PROJECT_NAME || 'Augure';
 const PROJECT_TAGLINE =
   process.env.PROJECT_TAGLINE ||
   'Marchés prédictifs décentralisés pour le risque météo';
-const LOOKBACK_DAYS = Number.parseInt(process.env.RECAP_LOOKBACK_DAYS || '7', 10);
+// SECURITY: clamp the lookback to a sane range. RECAP_LOOKBACK_DAYS can
+// originate from a workflow_dispatch input; parseInt drops trailing junk
+// but we still want to reject NaN and any value outside [1, 365] so the
+// number that lands in the shell substitution below is always a plain
+// positive integer.
+const _rawLookback = Number.parseInt(process.env.RECAP_LOOKBACK_DAYS || '7', 10);
+const LOOKBACK_DAYS =
+  Number.isFinite(_rawLookback) && _rawLookback >= 1 && _rawLookback <= 365
+    ? _rawLookback
+    : 7;
 const SKIP_IF_EMPTY = (process.env.RECAP_SKIP_IF_EMPTY ?? 'true') === 'true';
 
 // ---------- Helpers ----------
