@@ -1,0 +1,248 @@
+{
+  "generated_at": "2026-05-11T18:10:53Z",
+  "schema_version": 1,
+  "features": [
+    {
+      "name": "p_climatology",
+      "hypothesis": "Historical base rate of (variable in [lower, upper]) over the same date-of-year window from the past 15 years. The dumb-but-honest prior every forecast must beat.",
+      "source": "derived from `predictors/climatology.py` (Open-Meteo historical)",
+      "date_added": "2026-05-09",
+      "current_status": "active",
+      "current_brier_delta": 0.0019520011534851778,
+      "current_brier_delta_raw": "+0.0020",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": 0.0019520011534851778,
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "name": "p_forecast_blend",
+      "hypothesis": "Open-Meteo deterministic forecast around target_date, blended with climatology by horizon. Hypothesis: state-of-art deterministic forecast carries calibrated short-horizon signal.",
+      "source": "derived from `predictors/forecast_blend.py`",
+      "date_added": "2026-05-09",
+      "current_status": "active",
+      "current_brier_delta": 0.0042866792895760175,
+      "current_brier_delta_raw": "+0.0043",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": 0.0042866792895760175,
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "name": "p_ensemble",
+      "hypothesis": "Mean of four vendor probabilities (ECMWF + GraphCast + GFS + JMA). Hypothesis: vendor disagreement washes out, the mean is the wisest single bet. (Bench 2026-05-11 N=138: ensemble Brier 0.1429 vs kalshi_mid 0.0845 \u2014 the average **lost** to the market, so we need to learn weights instead of averaging blindly.)",
+      "source": "derived from `predictors/ensemble.py`",
+      "date_added": "2026-05-09",
+      "current_status": "active",
+      "current_brier_delta": 0.007829710383202598,
+      "current_brier_delta_raw": "+0.0078",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": 0.007829710383202598,
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "name": "forecast_spread",
+      "hypothesis": "Max \u2212 min of the per-vendor probabilities (proxy of model disagreement). Hypothesis: when vendors disagree, the prediction is less trustworthy and the market mid carries more weight than the model.",
+      "source": "derived from `predictions.ensemble.inputs.individual_probs`",
+      "date_added": "2026-05-09",
+      "current_status": "experimental",
+      "current_brier_delta": -3.1382562238974065e-05,
+      "current_brier_delta_raw": "-0.0000",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": -3.1382562238974065e-05,
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "name": "days_ahead",
+      "hypothesis": "Days between snapshot and target_date. Hypothesis: forecast skill decays with horizon, learned weights should interact non-linearly with this.",
+      "source": "derived from `predictions.forecast_blend.inputs.days_ahead`",
+      "date_added": "2026-05-09",
+      "current_status": "experimental",
+      "current_brier_delta": 2.7755575615628914e-17,
+      "current_brier_delta_raw": "+0.0000",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": 2.7755575615628914e-17,
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "name": "p_nws_ndfd",
+      "hypothesis": "P(YES) computed from the NWS NDFD official forecast, gaussian around NDFD temp with sigma from climatology range. Hypothesis: the agency that *resolves* Kalshi weather markets (NWS Climatological Report Daily) should issue the highest-signal forecast available.",
+      "source": "`https://api.weather.gov` via `src/forecast/nws_ndfd.py`",
+      "date_added": "2026-05-11",
+      "current_status": "experimental",
+      "current_brier_delta": null,
+      "current_brier_delta_raw": "TBD (forward-only \u2014 no historical coverage yet)",
+      "history": []
+    },
+    {
+      "name": "urban_density_5km",
+      "hypothesis": "OSM `way[\"building\"]` count within 5 km of the station. Hypothesis: urban heat island raises overnight lows above what a non-urban climatology predicts \u2192 biases low-temp markets in cities. Units: building count (not %-area; see README for why).",
+      "source": "OSM Overpass API",
+      "date_added": "2026-05-11",
+      "current_status": "experimental",
+      "current_brier_delta": -1.5047902144849079e-05,
+      "current_brier_delta_raw": "-0.0000",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": -1.5047902144849079e-05,
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "name": "water_pct_10km",
+      "hypothesis": "OSM `natural=water` + `waterway=*` feature count within 10 km. Hypothesis: large water bodies dampen diurnal swings via thermal inertia \u2192 tightens the [lower, upper] hit probability for both highs and lows. Units: feature count (kept the `_pct_` name from the spec for continuity).",
+      "source": "OSM Overpass API",
+      "date_added": "2026-05-11",
+      "current_status": "experimental",
+      "current_brier_delta": 2.0256455106060223e-06,
+      "current_brier_delta_raw": "+0.0000",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": 2.0256455106060223e-06,
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "name": "forest_pct_5km",
+      "hypothesis": "OSM `natural=wood` + `landuse=forest` feature count within 5 km. Hypothesis: canopy cover lowers daytime highs (shade + evapotranspiration) and limits radiative night cooling (canopy traps). Units: feature count.",
+      "source": "OSM Overpass API",
+      "date_added": "2026-05-11",
+      "current_status": "experimental",
+      "current_brier_delta": 0.0002603298636359441,
+      "current_brier_delta_raw": "+0.0003",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": 0.0002603298636359441,
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "name": "elevation_m",
+      "hypothesis": "USGS EPQS elevation at the station point. Hypothesis: thinner air at altitude amplifies the diurnal swing (Denver KDEN ~1638 m vs. Miami KMIA ~2 m at the extremes of our station set).",
+      "source": "USGS EPQS `https://epqs.nationalmap.gov/v1/json`",
+      "date_added": "2026-05-11",
+      "current_status": "experimental",
+      "current_brier_delta": 0.00012491554628418777,
+      "current_brier_delta_raw": "+0.0001",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": 0.00012491554628418777,
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "name": "distance_to_coast_km",
+      "hypothesis": "Haversine distance to the nearest Natural Earth 1:50m coastline vertex. Hypothesis: maritime regime (Boston, Miami, SFO) damps extremes; continental regime (Denver, Oklahoma City) amplifies them.",
+      "source": "Natural Earth `ne_50m_coastline.geojson`",
+      "date_added": "2026-05-11",
+      "current_status": "experimental",
+      "current_brier_delta": 7.277418030415816e-07,
+      "current_brier_delta_raw": "+0.0000",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": 7.277418030415816e-07,
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "name": "latitude",
+      "hypothesis": "Station latitude (degrees, signed). Hypothesis: insolation, daylight length, and seasonal amplitude scale with `cos(latitude)` \u2014 explicit feature lets the learner discover the interaction with the date-of-year encoded in climatology.",
+      "source": "NWS_STATIONS table",
+      "date_added": "2026-05-11",
+      "current_status": "experimental",
+      "current_brier_delta": 2.0115449133883967e-05,
+      "current_brier_delta_raw": "+0.0000",
+      "history": [
+        {
+          "run_ts": "20260511T130831Z",
+          "feature_set": "v2",
+          "brier_delta": 2.0115449133883967e-05,
+          "status": "active"
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "ts": "20260511T130831Z",
+      "feature_set": "v2",
+      "feature_names": [
+        "p_climatology",
+        "p_forecast_blend",
+        "p_ensemble",
+        "forecast_spread",
+        "days_ahead",
+        "urban_density_5km",
+        "water_pct_10km",
+        "forest_pct_5km",
+        "elevation_m",
+        "distance_to_coast_km",
+        "latitude"
+      ],
+      "n_train": 96,
+      "n_test": 42,
+      "train_date_range": [
+        "20260508T102045Z",
+        "20260510T171217Z"
+      ],
+      "test_date_range": [
+        "20260510T171217Z",
+        "20260510T171217Z"
+      ],
+      "brier_train": 0.13149111099338748,
+      "brier_test": 0.12604134183736937,
+      "brier_kalshi_mid_test": 0.028202976190476188,
+      "log_loss_train": 0.41637065088847414,
+      "log_loss_test": 0.39910141345174516,
+      "log_loss_kalshi_mid_test": 0.08888753733457458,
+      "gap_vs_kalshi_mid": 0.09783836564689319,
+      "verdict": "MARKET",
+      "notes": "First A.3 discovery run. V2 = V0 baseline + 6 static geographic features (urban_density_5km, water_pct_10km, forest_pct_5km, elevation_m, distance_to_coast_km, latitude). N=138 resolved, train=96 (older), test=42 (newer). Test slice currently collapses to a single capture date (20260510T171217Z) \u2014 limits temporal variance; geographic deltas mostly null on this split as expected."
+    }
+  ],
+  "paper_bets_summary": {
+    "n_open": 1,
+    "n_resolved": 0,
+    "pnl_usd_cumulative": 0.0,
+    "phase_1_counter": "1/50"
+  },
+  "kalshi_mid_reference": 0.028202976190476188
+}
