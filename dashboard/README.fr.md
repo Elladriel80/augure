@@ -22,7 +22,7 @@ pour les pièces on-chain que ce dashboard lit.
 - **Détail d'un round** (`/round/[hash]`) : metadata complète avec compte à rebours
   live de la fenêtre de challenge (le cas échéant), lien IPFS vers le
   `valuation_report.md` pinné, ventilation par bénéficiaire.
-- **Page algorithm** (`/algorithm`) : vue de la boucle d'apprentissage du
+- **Page predictor** (`/predictor`) : vue de la boucle d'apprentissage du
   predictor — carte du dernier training run avec le verdict Brier test vs
   `kalshi_mid`, registre des features (chaque hypothèse nommée avec sa
   contribution Brier mesurée, cliquable pour voir l'historique par run),
@@ -106,7 +106,7 @@ fonctions edge, pas de base de données.
 
 ## Pipeline du manifeste predictor
 
-La page `/algorithm` lit `public/predictor_manifest.json`, un instantané
+La page `/predictor` lit `public/predictor_manifest.json`, un instantané
 agrégé de l'état du predictor off-chain :
 
 - chaque training run immuable sous `predictor/runs_learning/<ts>/run.json`,

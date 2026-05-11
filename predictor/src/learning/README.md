@@ -91,7 +91,7 @@ feature was net noise on this split.
 
 Every training run that lands in `predictor/runs_learning/` is surfaced on
 the public dashboard at
-[augure-app.vercel.app/algorithm](https://augure-app.vercel.app/algorithm).
+[augure-app.vercel.app/predictor](https://augure-app.vercel.app/predictor).
 The page shows the latest run's Brier vs `kalshi_mid` verdict, the full
 feature registry (clickable for the hypothesis, source URL and per-run
 history), the run history table, and the Brier trajectory chart across

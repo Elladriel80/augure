@@ -22,7 +22,7 @@ for the on-chain pieces this dashboard reads.
 - **Round detail** (`/round/[hash]`): full metadata including the live countdown to
   the challenge window's end (when applicable), the IPFS link to the pinned
   `valuation_report.md`, and the per-beneficiary allocation breakdown.
-- **Algorithm page** (`/algorithm`): predictor learning loop view — the latest
+- **Predictor page** (`/predictor`): predictor learning loop view — the latest
   training run's summary card with the test-Brier vs `kalshi_mid` verdict,
   the feature registry (every named hypothesis with its measured Brier
   contribution, clickable for full hypothesis + per-run history), the run
@@ -103,7 +103,7 @@ database.
 
 ## Predictor manifest pipeline
 
-The `/algorithm` page reads from `public/predictor_manifest.json`, an
+The `/predictor` page reads from `public/predictor_manifest.json`, an
 aggregated snapshot of the off-chain predictor's state:
 
 - every immutable training run under `predictor/runs_learning/<ts>/run.json`,
