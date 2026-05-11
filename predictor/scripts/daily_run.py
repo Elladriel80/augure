@@ -59,7 +59,11 @@ def main() -> int:
     py = sys.executable
 
     steps = [
-        ("fetch_markets",   [py, str(SCRIPTS / "fetch_markets.py")]),
+        # `--all-weather` est requis : sans ce flag, fetch_markets écrit
+        # seulement un summary et ne refresh PAS les snapshots des markets,
+        # donc forward_predict bosse sur des données 2-3 jours obsolètes.
+        # Cf. bug détecté le 2026-05-10 (predictions sur target_date passé).
+        ("fetch_markets",   [py, str(SCRIPTS / "fetch_markets.py"), "--all-weather"]),
         ("forward_predict", [py, str(SCRIPTS / "forward_predict.py")]),
         # Le score essaie de récupérer les résolutions Kalshi pour les markets
         # capturés les jours précédents. C'est ce qui ferme la boucle.
