@@ -22,6 +22,13 @@ for the on-chain pieces this dashboard reads.
 - **Round detail** (`/round/[hash]`): full metadata including the live countdown to
   the challenge window's end (when applicable), the IPFS link to the pinned
   `valuation_report.md`, and the per-beneficiary allocation breakdown.
+- **Algorithm page** (`/algorithm`): predictor learning loop view — the latest
+  training run's summary card with the test-Brier vs `kalshi_mid` verdict,
+  the feature registry (every named hypothesis with its measured Brier
+  contribution, clickable for full hypothesis + per-run history), the run
+  history table, and the Brier trajectory chart across runs. Sourced
+  entirely from a static manifest (`/predictor_manifest.json`) generated
+  at build time — no API calls, no chain calls.
 
 ## What it does NOT do
 
@@ -93,6 +100,29 @@ NEXT_PUBLIC_REGISTRY_ADDRESS=0x... \
 
 Vercel free tier is enough — every page is server-rendered, no edge functions, no
 database.
+
+## Predictor manifest pipeline
+
+The `/algorithm` page reads from `public/predictor_manifest.json`, an
+aggregated snapshot of the off-chain predictor's state:
+
+- every immutable training run under `predictor/runs_learning/<ts>/run.json`,
+- the named-hypothesis registry in `predictor/src/learning/FEATURES.md`,
+- aggregated counters from `predictor/data/ledger/paper_bets.csv` (no
+  per-row data — only `n_open` / `n_resolved` / cumulative paper P&L).
+
+The manifest is regenerated automatically by the `prebuild` (and `predev`)
+npm hooks via `scripts/build-manifest.mjs`, which shells out to
+`predictor/scripts/build_dashboard_manifest.py`. Vercel runs `npm run
+build` so every deploy ships a fresh manifest. The shim tries `python3`
+first (Linux/macOS/Vercel), then falls back to `python` (Windows).
+
+To rebuild the manifest manually without a full Next.js build:
+
+```bash
+cd dashboard
+npm run manifest
+```
 
 ## Why not server-render with caching?
 
