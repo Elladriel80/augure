@@ -1,0 +1,112 @@
+{
+  "schema_version": 2,
+  "timestamp_utc": "20260512T134515Z",
+  "feature_set_used": "v2",
+  "feature_names": [
+    "p_climatology",
+    "p_forecast_blend",
+    "p_ensemble",
+    "forecast_spread",
+    "days_ahead",
+    "urban_density_5km",
+    "water_pct_10km",
+    "forest_pct_5km",
+    "elevation_m",
+    "distance_to_coast_km",
+    "latitude"
+  ],
+  "model_class": "sklearn.linear_model.LogisticRegression",
+  "model_hyperparams": {
+    "penalty": "l2",
+    "C": 1.0,
+    "solver": "lbfgs",
+    "max_iter": 2000,
+    "random_state": 42
+  },
+  "n_train": 151,
+  "n_test": 65,
+  "train_date_range": [
+    "20260508T102045Z",
+    "20260510T171217Z"
+  ],
+  "test_date_range": [
+    "20260510T171217Z",
+    "20260510T171217Z"
+  ],
+  "brier_train": 0.12595088354309814,
+  "brier_test": 0.1301343567059395,
+  "brier_kalshi_mid_test": 0.07640307692307692,
+  "log_loss_train": 0.39702018072025336,
+  "log_loss_test": 0.40559840074911996,
+  "log_loss_kalshi_mid_test": 0.2369496069365643,
+  "intercept": -1.852177549506765,
+  "feature_means": {
+    "p_climatology": 0.1695018988732307,
+    "p_forecast_blend": 0.16763009307254545,
+    "p_ensemble": 0.16693915972906959,
+    "forecast_spread": 0.08903665919508376,
+    "days_ahead": 0.2781456953642384,
+    "urban_density_5km": 16661.834437086094,
+    "water_pct_10km": 1509.9602649006622,
+    "forest_pct_5km": 33.854304635761586,
+    "elevation_m": 350.8212748016024,
+    "distance_to_coast_km": 446.1665936265223,
+    "latitude": 35.91580860927153
+  },
+  "feature_stds": {
+    "p_climatology": 0.17426644253886567,
+    "p_forecast_blend": 0.13009908988599006,
+    "p_ensemble": 0.12075819893284184,
+    "forecast_spread": 0.11490534651562968,
+    "days_ahead": 0.44808555825264307,
+    "urban_density_5km": 12982.559434714713,
+    "water_pct_10km": 725.354125715602,
+    "forest_pct_5km": 24.664744754162605,
+    "elevation_m": 579.2544969267374,
+    "distance_to_coast_km": 498.22808283204637,
+    "latitude": 6.330198179345841
+  },
+  "feature_importances": {
+    "p_ensemble": 1.0703317218660808,
+    "p_forecast_blend": -0.7197049147030732,
+    "p_climatology": -0.574036345988917,
+    "forecast_spread": -0.15964784716756686,
+    "water_pct_10km": 0.04224600600515901,
+    "distance_to_coast_km": 0.027780806971229557,
+    "elevation_m": 0.01943791894731666,
+    "days_ahead": 0.019381490552848057,
+    "latitude": -0.010570250097943431,
+    "forest_pct_5km": 0.00816701449129134,
+    "urban_density_5km": -0.003839167999878389
+  },
+  "feature_brier_deltas": {
+    "p_climatology": 0.0009890978625417823,
+    "p_forecast_blend": 0.004211499146942632,
+    "p_ensemble": 0.005188502829701319,
+    "forecast_spread": 3.215733263819964e-05,
+    "days_ahead": -0.00012266277402311898,
+    "urban_density_5km": 2.3189007671176043e-05,
+    "water_pct_10km": -0.0001697750149179389,
+    "forest_pct_5km": 8.033624590211841e-05,
+    "elevation_m": 4.492139402673123e-05,
+    "distance_to_coast_km": -0.00010087521460841464,
+    "latitude": 4.385745244001038e-05
+  },
+  "kept_features": [
+    "p_climatology",
+    "p_forecast_blend",
+    "p_ensemble",
+    "forecast_spread",
+    "days_ahead",
+    "urban_density_5km",
+    "water_pct_10km",
+    "forest_pct_5km",
+    "elevation_m",
+    "distance_to_coast_km",
+    "latitude"
+  ],
+  "dropped_features": [],
+  "methodology": "Leave-one-out Brier delta: for each feature, refit the model without it on the same train/test split and record (brier_test_without - brier_test_full). Positive = removing the feature hurt accuracy = feature carried signal.",
+  "inference_formula": "p_yes = sigmoid(intercept + sum_i coef_i * (x_i - mean_i) / std_i) where coef_i = feature_importances[i], mean_i = feature_means[i], std_i = feature_stds[i]. sigmoid(z) = 1 / (1 + exp(-z)).",
+  "notes": "schema v2: add intercept + feature_means/stds for live inference"
+}

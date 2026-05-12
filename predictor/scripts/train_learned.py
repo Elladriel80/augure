@@ -222,14 +222,31 @@ def main() -> int:
         print(f"   {name:<22} {sign}{abs(d):.4f}  {bar}")
 
     # ---- Persist run record ----
+    # We serialize the full fitted-model state so that downstream code
+    # (e.g. predictor/src/predictors/learned.py for live inference) can
+    # reconstruct sigmoid(intercept + Σ coef_i · (x_i − mean_i) / std_i)
+    # without re-fitting. Without these three blocks, a run.json only
+    # supports analytics, not inference.
     ts = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     run_dir = RUNS_DIR / ts
     if not args.no_write_run:
         run_dir.mkdir(parents=True, exist_ok=True)
+        intercept = float(model.clf.intercept_[0])
+        feature_means = dict(zip(feat_names, model.scaler.mean_.tolist()))
+        feature_stds = dict(zip(feat_names, model.scaler.scale_.tolist()))
         record = {
+            "schema_version": 2,
             "timestamp_utc": ts,
             "feature_set_used": args.feature_set,
             "feature_names": feat_names,
+            "model_class": "sklearn.linear_model.LogisticRegression",
+            "model_hyperparams": {
+                "penalty": "l2",
+                "C": 1.0,
+                "solver": "lbfgs",
+                "max_iter": 2000,
+                "random_state": 42,
+            },
             "n_train": len(Xtr),
             "n_test": len(Xte),
             "train_date_range": [mtr[0]["capture_at"], mtr[-1]["capture_at"]],
@@ -240,6 +257,9 @@ def main() -> int:
             "log_loss_train": ll_train,
             "log_loss_test": ll_test,
             "log_loss_kalshi_mid_test": ll_mid_test,
+            "intercept": intercept,
+            "feature_means": feature_means,
+            "feature_stds": feature_stds,
             "feature_importances": {n: c for n, c in importances},
             "feature_brier_deltas": deltas,
             "kept_features": feat_names,
@@ -249,6 +269,11 @@ def main() -> int:
                 "without it on the same train/test split and record "
                 "(brier_test_without - brier_test_full). Positive = removing "
                 "the feature hurt accuracy = feature carried signal."
+            ),
+            "inference_formula": (
+                "p_yes = sigmoid(intercept + sum_i coef_i * (x_i - mean_i) / std_i) "
+                "where coef_i = feature_importances[i], mean_i = feature_means[i], "
+                "std_i = feature_stds[i]. sigmoid(z) = 1 / (1 + exp(-z))."
             ),
             "notes": args.notes,
         }
