@@ -1,0 +1,59 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Aratea — Workflow d'auto-gestion du Project board
+#
+# À copier dans le repo cible :  .github/workflows/stale.yml
+#
+# Ce que ça fait :
+#   - Marque comme `stale` les issues sans activité depuis 30 jours
+#   - Ferme automatiquement les issues `stale` sans réaction depuis 7 jours
+#   - Exempte les issues critiques (gate, dao-vote, phase-2) — elles n'expirent jamais
+#
+# Couplé aux Project Workflows natifs activés dans Settings :
+#   - Auto-add to project (filter sur labels phase-a/b/2)
+#   - Item closed → Done
+#   - PR merged → Done
+#   - Auto-archive items closed > 14 jours
+# tu obtiens un board qui se maintient seul. Tu n'ouvres que des issues + PRs.
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Stale issues
+
+on:
+  schedule:
+    - cron: '30 1 * * *'   # tous les jours à 01:30 UTC
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 30
+          days-before-close: 7
+          stale-issue-label: 'stale'
+          stale-pr-label: 'stale'
+
+          # Exempt — ces issues ne deviennent jamais stale
+          exempt-issue-labels: 'gate,dao-vote,phase-2,governance,security'
+          exempt-pr-labels: 'gate,dao-vote,phase-2,governance,security'
+
+          stale-issue-message: >
+            Cette issue n'a pas eu d'activité depuis 30 jours. Elle est marquée
+            `stale` et sera fermée dans 7 jours si rien ne bouge. Pour la garder
+            ouverte : ajoute un commentaire ou retire le label `stale`.
+
+          stale-pr-message: >
+            Cette PR n'a pas eu d'activité depuis 30 jours et est marquée `stale`.
+            Si elle est encore d'actualité, un commentaire ou un rebase la
+            réactive.
+
+          close-issue-message: >
+            Fermeture automatique après 7 jours sans réaction au label `stale`.
+            Réouvre librement si elle est encore pertinente.
+
+          operations-per-run: 60
