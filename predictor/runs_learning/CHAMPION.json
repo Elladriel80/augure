@@ -1,0 +1,45 @@
+{
+  "_doc": "Registry of models in flight + current champion. Updated when a challenger is promoted. Read by predictor/scripts/live_run.py to decide which model takes the live paper position.",
+  "current_champion": "vendor_ensemble",
+  "champion_since": "2026-05-10T17:12:17Z",
+  "champion_reason_initial": "Used for Run 002 (NYC LOWT bin B50.5, WIN +$56.16, Brier model 0.0213 vs Brier kalshi_mid 0.1296). The first model deployed live in Phase 1.",
+  "promotion_rule": "A challenger is promoted to champion when its rolling-mean Brier over the most recent N>=10 resolved trades is strictly lower than the current champion's, AND a 1-sided binomial sign test on per-trade Brier wins yields p < 0.10. Promotion is recorded in `history[]` below.",
+  "history": [
+    {
+      "model": "vendor_ensemble",
+      "champion_from": "2026-05-10T17:12:17Z",
+      "champion_to": null,
+      "promotion_reason": "initial",
+      "runs_as_champion": ["002"]
+    }
+  ],
+  "models": [
+    {
+      "name": "vendor_ensemble",
+      "role": "champion",
+      "method": "ensemble",
+      "description": "Mean of 4 vendor probabilities (ECMWF + GraphCast + GFS + JMA) blended with climatology by horizon. Trained-free: takes vendor outputs directly, no parameter fitting.",
+      "active_since": "2026-05-09",
+      "trained_at": null,
+      "feature_set": null
+    },
+    {
+      "name": "learned_v2",
+      "role": "challenger",
+      "method": "learned_v2",
+      "description": "sklearn LogisticRegression(L2, C=1.0) over 11 features (FEATURES_V2: 5 forecast-derived + 6 static geographic). Trained on resolved Kalshi events with chronological 70/30 split. See predictor/runs_learning/<ts>/run.json for fitted state.",
+      "active_since": "2026-05-12",
+      "trained_at": "20260512T134515Z",
+      "feature_set": "v2"
+    },
+    {
+      "name": "kalshi_mid_baseline",
+      "role": "baseline",
+      "method": "kalshi_mid",
+      "description": "Just the Kalshi market mid-price as the prediction. The lower bar: if a model can't beat this on average, it has no edge over the market itself.",
+      "active_since": "2026-05-13",
+      "trained_at": null,
+      "feature_set": null
+    }
+  ]
+}
