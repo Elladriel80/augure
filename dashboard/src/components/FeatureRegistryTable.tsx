@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 
 import type { FeatureRecord } from "@/lib/manifest";
 import { formatDelta, formatRunTimestamp } from "@/lib/manifest";
@@ -22,11 +23,37 @@ function deltaBarWidth(value: number | null, maxAbs: number): number {
   return Math.min(100, (Math.abs(value) / maxAbs) * 100);
 }
 
-interface Props {
-  features: FeatureRecord[];
+export interface FeatureTableLabels {
+  header_name: string;
+  header_hypothesis: string;
+  header_source: string;
+  header_added: string;
+  header_delta: string;
+  header_status: string;
+  modal_feature: string;
+  modal_hypothesis: string;
+  modal_status: string;
+  modal_date_added: string;
+  modal_source: string;
+  modal_current_delta: string;
+  modal_history: string;
+  modal_history_empty: string;
+  modal_history_run: string;
+  modal_history_feature_set: string;
+  modal_close: string;
+  modal_close_aria: string;
 }
 
-export function FeatureRegistryTable({ features }: Props) {
+interface Props {
+  features: FeatureRecord[];
+  labels: FeatureTableLabels;
+  /** Footer prose rendered as a ReactNode — built server-side because the
+   *  i18n dictionary stores it as a function and functions can't cross the
+   *  RSC → Client Component boundary. */
+  footer: ReactNode;
+}
+
+export function FeatureRegistryTable({ features, labels, footer }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>("delta");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [selected, setSelected] = useState<FeatureRecord | null>(null);
@@ -83,17 +110,17 @@ export function FeatureRegistryTable({ features }: Props) {
           <thead>
             <tr className="border-b border-border text-left text-muted">
               <SortHeader
-                label="Name"
+                label={labels.header_name}
                 col="name"
                 sortKey={sortKey}
                 sortDir={sortDir}
                 onClick={onSort}
               />
-              <th className="px-4 py-3">Hypothesis</th>
-              <th className="px-4 py-3">Source</th>
-              <th className="px-4 py-3">Added</th>
+              <th className="px-4 py-3">{labels.header_hypothesis}</th>
+              <th className="px-4 py-3">{labels.header_source}</th>
+              <th className="px-4 py-3">{labels.header_added}</th>
               <SortHeader
-                label="Brier Δ"
+                label={labels.header_delta}
                 col="delta"
                 sortKey={sortKey}
                 sortDir={sortDir}
@@ -101,7 +128,7 @@ export function FeatureRegistryTable({ features }: Props) {
                 align="right"
               />
               <SortHeader
-                label="Status"
+                label={labels.header_status}
                 col="status"
                 sortKey={sortKey}
                 sortDir={sortDir}
@@ -192,16 +219,12 @@ export function FeatureRegistryTable({ features }: Props) {
         </table>
       </div>
 
-      <p className="mt-2 text-xs text-muted font-mono">
-        Click a row for the full hypothesis, source link, and per-run history.
-        Brier Δ is the leave-one-out test-Brier delta from the latest run —
-        <span className="text-ok"> negative (↓) </span>= feature carried signal,
-        <span className="text-err"> positive (↑) </span>= net noise on this split.
-      </p>
+      <p className="mt-2 text-xs text-muted font-mono">{footer}</p>
 
       {selected && (
         <FeatureDetailModal
           feature={selected}
+          labels={labels}
           onClose={() => setSelected(null)}
         />
       )}
@@ -240,9 +263,11 @@ function SortHeader({
 
 function FeatureDetailModal({
   feature,
+  labels,
   onClose,
 }: {
   feature: FeatureRecord;
+  labels: FeatureTableLabels;
   onClose: () => void;
 }) {
   const url = extractUrl(feature.source);
@@ -258,22 +283,22 @@ function FeatureDetailModal({
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-muted">
-              Feature
+              {labels.modal_feature}
             </div>
             <div className="text-xl text-accent mt-1">{feature.name}</div>
           </div>
           <button
             onClick={onClose}
             className="text-muted hover:text-text text-sm border border-border rounded px-2 py-1"
-            aria-label="Close"
+            aria-label={labels.modal_close_aria}
           >
-            close
+            {labels.modal_close}
           </button>
         </div>
 
         <div>
           <div className="text-xs uppercase tracking-wider text-muted mb-1">
-            Hypothesis
+            {labels.modal_hypothesis}
           </div>
           <p className="text-sm text-text/90 leading-relaxed whitespace-pre-wrap">
             {feature.hypothesis}
@@ -283,19 +308,19 @@ function FeatureDetailModal({
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <div className="text-xs uppercase tracking-wider text-muted mb-1">
-              Status
+              {labels.modal_status}
             </div>
             <FeatureStatusBadge status={feature.current_status} />
           </div>
           <div>
             <div className="text-xs uppercase tracking-wider text-muted mb-1">
-              Date added
+              {labels.modal_date_added}
             </div>
             <div className="text-text/90">{feature.date_added}</div>
           </div>
           <div className="col-span-2">
             <div className="text-xs uppercase tracking-wider text-muted mb-1">
-              Source
+              {labels.modal_source}
             </div>
             {url ? (
               <a
@@ -312,7 +337,7 @@ function FeatureDetailModal({
           </div>
           <div className="col-span-2">
             <div className="text-xs uppercase tracking-wider text-muted mb-1">
-              Current Brier Δ
+              {labels.modal_current_delta}
             </div>
             <div className="text-text/90">
               {typeof feature.current_brier_delta === "number"
@@ -324,21 +349,19 @@ function FeatureDetailModal({
 
         <div>
           <div className="text-xs uppercase tracking-wider text-muted mb-2">
-            History
+            {labels.modal_history}
           </div>
           {feature.history.length === 0 ? (
-            <p className="text-xs text-muted">
-              Not yet measured in any training run.
-            </p>
+            <p className="text-xs text-muted">{labels.modal_history_empty}</p>
           ) : (
             <div className="overflow-x-auto rounded border border-border">
               <table className="w-full text-xs">
                 <thead>
                   <tr className="text-left text-muted border-b border-border">
-                    <th className="px-3 py-2">Run</th>
-                    <th className="px-3 py-2">Feature set</th>
-                    <th className="px-3 py-2 text-right">Brier Δ</th>
-                    <th className="px-3 py-2">Status</th>
+                    <th className="px-3 py-2">{labels.modal_history_run}</th>
+                    <th className="px-3 py-2">{labels.modal_history_feature_set}</th>
+                    <th className="px-3 py-2 text-right">{labels.header_delta}</th>
+                    <th className="px-3 py-2">{labels.modal_status}</th>
                   </tr>
                 </thead>
                 <tbody>

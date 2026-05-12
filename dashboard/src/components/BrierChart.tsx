@@ -1,3 +1,4 @@
+import { getDict } from "@/lib/i18n";
 import type { RunRecord } from "@/lib/manifest";
 
 interface Props {
@@ -32,12 +33,14 @@ function shortRunLabel(ts: string): string {
   return m ? `${m[1]}-${m[2]}` : ts.slice(0, 6);
 }
 
-export function BrierChart({ runs, kalshiReference }: Props) {
+export async function BrierChart({ runs, kalshiReference }: Props) {
+  const dict = await getDict();
+  const t = dict.components.brier_chart;
+
   if (runs.length === 0) {
     return (
       <div className="rounded-md border border-border bg-panel p-6 font-mono text-sm text-muted">
-        No training runs yet. The first <code className="text-text">train_learned.py</code>{" "}
-        execution will populate this chart.
+        {t.empty}
       </div>
     );
   }
@@ -239,7 +242,7 @@ export function BrierChart({ runs, kalshiReference }: Props) {
           fontSize="10"
           fill="#6b7480"
         >
-          run (UTC date)
+          {t.axis_x}
         </text>
         <text
           transform={`translate(14 ${PAD.top + INNER_H / 2}) rotate(-90)`}
@@ -247,18 +250,18 @@ export function BrierChart({ runs, kalshiReference }: Props) {
           fontSize="10"
           fill="#6b7480"
         >
-          Brier score (lower = better)
+          {t.axis_y}
         </text>
 
         {/* Legend */}
         <g transform={`translate(${PAD.left} ${PAD.top - 12})`}>
           <rect width="8" height="2" y={4} fill="#5fa8d3" />
           <text x="14" y="8" fontSize="11" fill="#e4e8ec">
-            learned (test)
+            {t.legend_learned}
           </text>
           <rect x="110" width="8" height="2" y={4} fill="#e2b341" />
           <text x="124" y="8" fontSize="11" fill="#e4e8ec">
-            kalshi_mid (test)
+            {t.legend_kalshi}
           </text>
         </g>
       </svg>
