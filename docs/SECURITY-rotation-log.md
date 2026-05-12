@@ -90,15 +90,29 @@ minimal relative to the impact of an unproven leak materialising later.
 - **Old credential revoked:** YES at https://etherscan.io/myapikey
 - **Operator:** Elladriel80
 
+### X / Twitter API credentials — deleted, not rotated
+
+- **Reason:** auto-posting to X is disabled (`ANNOUNCE_DISABLE_X=true` repo
+  variable) and not planned to be re-enabled in the short term. Rather than
+  rotating dormant secrets, the 4 secrets were deleted outright to reduce
+  attack surface to zero. If X auto-posting is reactivated later, new
+  credentials will be issued fresh.
+- **Old credentials:** GitHub Actions repository secrets `X_API_KEY`,
+  `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET`
+- **Action:** all 4 secrets deleted from
+  `Settings → Secrets and variables → Actions`
+- **Workflow impact:** none. `post-x.mjs` lines 33-37 implement a soft-skip
+  when any of the 4 env vars is missing (`process.exit(0)`). The
+  `announce-release` workflow continues to succeed on tag pushes, just
+  without the X-post step.
+- **At-rest credentials at X side:** the upstream X developer app tokens
+  remain valid at X — they were not regenerated on the X developer portal.
+  To fully neutralise the tokens, regenerate them on
+  https://developer.x.com/. Deferred unless we believe they leaked.
+- **Operator:** Elladriel80
+
 ### Not rotated this round
 
-- **X / Twitter API credentials** (4 secrets `X_API_KEY`, `X_API_SECRET`,
-  `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET` in GitHub Actions repo secrets):
-  never lived on local disk (entered directly into GitHub UI) — disk-leak
-  risk does not apply. Auto-posting to X is currently disabled
-  (`ANNOUNCE_DISABLE_X=true`) per project decision, so these credentials are
-  effectively dormant. Rotation deferred until either (a) X auto-posting is
-  re-enabled, or (b) at the next quarterly routine rotation.
 - **Admin EOA** (`0x9a94552DCB67F036af6eccc9111b749856ab8EEA`): never on
   disk, key material in hardware wallet only. No rotation needed until
   mainnet migration to a Safe multisig.
