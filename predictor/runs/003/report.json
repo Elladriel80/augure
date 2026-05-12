@@ -1,0 +1,121 @@
+{
+  "schema_version": 2,
+  "run_id": "003",
+  "type": "live",
+  "ts_utc": "2026-05-12T14:27:01Z",
+  "event": {
+    "ticker": "KXLOWTNYC-26MAY13",
+    "title": "Lowest temperature in New York City on May 13, 2026?",
+    "target_market_ticker": "KXLOWTNYC-26MAY13-B51.5",
+    "resolution_source": "NWS official daily climate report (per Kalshi rules)"
+  },
+  "champion_at_time_of_run": "vendor_ensemble",
+  "models": [
+    {
+      "name": "vendor_ensemble",
+      "role": "champion",
+      "method": "ensemble",
+      "p_yes": 0.14000464447021674,
+      "feature_set": null,
+      "trained_at": null,
+      "inputs_summary": {
+        "method": "ensemble"
+      }
+    },
+    {
+      "name": "learned_v2",
+      "role": "challenger",
+      "method": "learned_v2",
+      "p_yes": 0.1804343423586902,
+      "feature_set": "v2",
+      "trained_at": "20260512T134515Z",
+      "inputs_summary": {
+        "method": "learned_v2",
+        "trained_at": "20260512T134515Z",
+        "feature_set": "v2",
+        "run_json_path": "C:\\Users\\Jean-S\u00e9bastien\\Documents\\Claude\\Projects\\Assurance d\u00e9centralis\u00e9e (1)\\Aratea\\predictor\\runs_learning\\20260512T134515Z\\run.json"
+      }
+    },
+    {
+      "name": "kalshi_mid_baseline",
+      "role": "baseline",
+      "method": "kalshi_mid",
+      "p_yes": 0.345,
+      "feature_set": null,
+      "trained_at": null,
+      "inputs_summary": {
+        "method": "kalshi_mid",
+        "yes_mid_at_snapshot": 0.345
+      }
+    }
+  ],
+  "markets": [
+    {
+      "platform": "kalshi",
+      "ticker": "KXLOWTNYC-26MAY13-B51.5",
+      "url": "https://kalshi.com/markets/KXLOWTNYC",
+      "snapshot_pre": {
+        "yes_bid": 0.32,
+        "yes_ask": 0.37,
+        "yes_mid": 0.345,
+        "spread_cents": 5.0,
+        "ts_utc": "2026-05-12T14:27:01Z"
+      },
+      "edge_bps_by_model": {
+        "vendor_ensemble": -2050,
+        "learned_v2": -1646,
+        "kalshi_mid_baseline": 0
+      },
+      "champion_position": {
+        "model": "vendor_ensemble",
+        "method": "ensemble",
+        "side": "NO",
+        "size_usd": 100.0,
+        "entry_price_yes_cents": 34.5,
+        "entry_price_no_cents": 65.5,
+        "entry_price": 0.655,
+        "n_contracts": 152,
+        "cost_usd": 99.56,
+        "opened_at_utc": "2026-05-12T14:27:01Z",
+        "paper": true,
+        "ledger_bet_id": "20260512T142701Z000000"
+      },
+      "challenger_shadow_positions": [
+        {
+          "model": "learned_v2",
+          "method": "learned_v2",
+          "side": "NO",
+          "size_usd": 100.0,
+          "entry_price_yes_cents": 34.5,
+          "entry_price_no_cents": 65.5,
+          "entry_price": 0.655,
+          "n_contracts": 152,
+          "cost_usd": 99.56,
+          "shadow": true,
+          "note": "Same side/size as champion for Brier comparability. P&L theoretical only \u2014 no ledger row, no real exposure."
+        },
+        {
+          "model": "kalshi_mid_baseline",
+          "method": "kalshi_mid",
+          "side": "NO",
+          "size_usd": 100.0,
+          "entry_price_yes_cents": 34.5,
+          "entry_price_no_cents": 65.5,
+          "entry_price": 0.655,
+          "n_contracts": 152,
+          "cost_usd": 99.56,
+          "shadow": true,
+          "note": "Same side/size as champion for Brier comparability. P&L theoretical only \u2014 no ledger row, no real exposure."
+        }
+      ],
+      "resolution": {
+        "outcome": null,
+        "observed_value_f": null,
+        "ts_utc": null,
+        "pnl_usd": null
+      }
+    }
+  ],
+  "scoring": null,
+  "notes": "Run 003: first multi-model live capture. Champion vendor_ensemble (P=0.140) + challenger learned_v2 (P=0.180) + baseline kalshi_mid (P=0.325). Bin median, both models agree BUY NO."
+}
