@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-11T18:10:53Z",
+  "generated_at": "2026-05-12T13:27:51Z",
   "schema_version": 1,
   "features": [
     {
@@ -239,9 +239,9 @@
     }
   ],
   "paper_bets_summary": {
-    "n_open": 1,
-    "n_resolved": 0,
-    "pnl_usd_cumulative": 0.0,
+    "n_open": 0,
+    "n_resolved": 1,
+    "pnl_usd_cumulative": 56.16,
     "phase_1_counter": "1/50"
   },
   "kalshi_mid_reference": 0.028202976190476188
