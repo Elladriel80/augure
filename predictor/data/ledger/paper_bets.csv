@@ -1,0 +1,3 @@
+bet_id,placed_at_utc,market_ticker,event_ticker,target_date,side,stake_usd,entry_price,prob_model,prob_market_implied,edge,method,spec,resolved_at_utc,resolution,pnl_usd
+20260510T171217Z000000,2026-05-10T17:12:17Z,KXLOWTNYC-26MAY11-B50.5,KXLOWTNYC-26MAY11,2026-05-11,NO,100.0,0.36,0.146,0.36,-0.214,ensemble,NYC daily low temp 50.0-51.0F (bin B50.5),2026-05-12T12:46:16Z,no,56.16
+20260512T142701Z000000,2026-05-12T14:27:01Z,KXLOWTNYC-26MAY13-B51.5,KXLOWTNYC-26MAY13,2026-05-13,NO,100.0,0.345,0.14000464447021674,0.345,-0.20499535552978324,ensemble,51.0 <= temp_min <= 52.0 @ NYC on 2026-05-13,,,

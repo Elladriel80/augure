@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { BrierChart } from "@/components/BrierChart";
 import { FeatureRegistryTable } from "@/components/FeatureRegistryTable";
 import { LatestRunCard } from "@/components/LatestRunCard";
+import { LiveRunsTable } from "@/components/LiveRunsTable";
 import { RunHistoryTable } from "@/components/RunHistoryTable";
 import { loadManifest } from "@/lib/manifest.server";
 
@@ -33,6 +34,7 @@ export default async function PredictorPage() {
   }
 
   const { features, runs, paper_bets_summary, kalshi_mid_reference } = manifest;
+  const liveRuns = manifest.live_runs ?? [];
   const latestRun = runs.length > 0 ? [...runs].sort((a, b) => b.ts.localeCompare(a.ts))[0] : null;
   const activeCount = features.filter((f) => f.current_status === "active").length;
   const experimentalCount = features.filter(
@@ -75,8 +77,40 @@ export default async function PredictorPage() {
 
       <section>
         <h2 className="text-xl font-mono font-semibold mb-3">
-          A. Latest training run
+          A. Live runs (Kalshi paper trades)
         </h2>
+        <p className="text-sm text-muted mb-3 max-w-3xl">
+          Each row is a real paper trade on Kalshi. The champion takes the
+          position (real ledger row, real P&L); challengers and baselines run in
+          shadow mode for Brier comparison. ★ marks the best Brier on a given
+          run. The promotion rule (champion swap) needs a rolling-mean Brier
+          dominance over N≥10 resolved trades — single-run wins are anecdotal.
+        </p>
+        <LiveRunsTable runs={liveRuns} />
+      </section>
+
+      <section>
+        <h2 className="text-xl font-mono font-semibold mb-3">
+          B. Named factors
+        </h2>
+        <p className="text-sm text-muted mb-3 max-w-3xl">
+          Each row is a named hypothesis used by the learned predictor at
+          training time. Brier Δ is the leave-one-out test delta from the most
+          recent training run — sort by it to see what carried the model.
+        </p>
+        <FeatureRegistryTable features={features} />
+      </section>
+
+      <section>
+        <h2 className="text-xl font-mono font-semibold mb-3">
+          C. Latest training run
+        </h2>
+        <p className="text-sm text-muted mb-3 max-w-3xl">
+          Snapshot of the most recent sklearn fit of the learned predictor on
+          historical resolutions. This is <em>not</em> a paper trade — it&apos;s
+          a cross-validation pass to see whether the current feature set has
+          edge over kalshi_mid on past Kalshi events.
+        </p>
         {latestRun ? (
           <LatestRunCard run={latestRun} />
         ) : (
@@ -88,38 +122,26 @@ export default async function PredictorPage() {
 
       <section>
         <h2 className="text-xl font-mono font-semibold mb-3">
-          B. Named factors
+          D. Training run history
         </h2>
         <p className="text-sm text-muted mb-3 max-w-3xl">
-          Each row is a named hypothesis. Brier Δ is the leave-one-out test
-          delta from the most recent run — sort by it to see what carried the
-          model. Click a row for the full hypothesis, source, and per-run
-          history.
-        </p>
-        <FeatureRegistryTable features={features} />
-      </section>
-
-      <section>
-        <h2 className="text-xl font-mono font-semibold mb-3">
-          C. Run history
-        </h2>
-        <p className="text-sm text-muted mb-3 max-w-3xl">
-          Every training run, most recent first. A run with Brier test below
-          Brier kalshi_mid on the same rows means the model has signal beyond
-          the market mid.
+          Every sklearn training pass, most recent first. <em>This is not the
+          paper-trade history</em> — see section A for that. A training run with
+          Brier test below Brier kalshi_mid on the same rows means the model
+          has signal beyond the market mid in cross-validation.
         </p>
         <RunHistoryTable runs={runs} />
       </section>
 
       <section>
         <h2 className="text-xl font-mono font-semibold mb-3">
-          D. Brier trajectory
+          E. Training Brier trajectory
         </h2>
         <p className="text-sm text-muted mb-3 max-w-3xl">
           Learned model (test) vs kalshi_mid (same test rows) across all
-          runs. Dashed horizontal line is the most recent kalshi_mid Brier as
-          all-time reference; vertical dashed markers flag a feature-set bump
-          (v0 → v1 → v2 …).
+          training runs. Dashed horizontal line is the most recent kalshi_mid
+          Brier as all-time reference; vertical dashed markers flag a
+          feature-set bump (v0 → v1 → v2 …).
         </p>
         <BrierChart runs={runs} kalshiReference={kalshi_mid_reference} />
       </section>

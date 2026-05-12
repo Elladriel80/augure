@@ -21,14 +21,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span className="text-accent">dashboard</span>
             </Link>
             <nav className="flex gap-6 text-sm font-mono">
+              <Link href="/predictor" className="hover:text-accent">
+                predictor
+              </Link>
               <Link href="/" className="hover:text-accent">
                 token
               </Link>
               <Link href="/rounds" className="hover:text-accent">
                 rounds
-              </Link>
-              <Link href="/predictor" className="hover:text-accent">
-                predictor
               </Link>
               <a
                 href="https://github.com/Elladriel80/aratea"

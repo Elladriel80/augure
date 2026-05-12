@@ -35,6 +35,7 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUNS_DIR = REPO_ROOT / "predictor" / "runs_learning"
+LIVE_RUNS_DIR = REPO_ROOT / "predictor" / "runs"
 FEATURES_MD = REPO_ROOT / "predictor" / "src" / "learning" / "FEATURES.md"
 PAPER_BETS_CSV = REPO_ROOT / "predictor" / "data" / "ledger" / "paper_bets.csv"
 OUTPUT_PATH = REPO_ROOT / "dashboard" / "public" / "predictor_manifest.json"
@@ -243,6 +244,168 @@ def _shape_runs_for_dashboard(runs: list[dict[str, Any]]) -> list[dict[str, Any]
     return shaped
 
 
+def _normalize_live_run(report: dict[str, Any]) -> dict[str, Any] | None:
+    """Convert a Run report.json (v1 or v2 schema) into a uniform shape for the dashboard.
+
+    Returns None if the report is unusable (no markets, malformed, etc.).
+    Output shape is the same across schemas — the React layer doesn't
+    need to know whether the run is v1 or v2.
+    """
+    if not isinstance(report, dict) or "markets" not in report:
+        return None
+    markets = report.get("markets") or []
+    if not markets:
+        return None
+    market = markets[0]  # current convention: one target market per run
+
+    schema = int(report.get("schema_version", 1))
+    run_id = report.get("run_id") or "?"
+    ts_utc = report.get("ts_utc")
+
+    event = report.get("event") or {}
+    target_ticker = event.get("target_market_ticker") or market.get("ticker")
+
+    snap = market.get("snapshot_pre") or {}
+    kalshi_mid = snap.get("yes_mid")
+
+    # Position (champion's) + resolution
+    if schema >= 2:
+        pos = market.get("champion_position") or {}
+        champion_name = report.get("champion_at_time_of_run", "?")
+    else:
+        pos = market.get("position") or {}
+        champion_name = "vendor_ensemble"
+
+    resolution_raw = market.get("resolution") or {}
+    has_outcome = resolution_raw.get("outcome") is not None
+    status = "resolved" if has_outcome else "open"
+
+    # Per-model snapshot (predicted p_yes + Brier post-resolution)
+    models_out: list[dict[str, Any]] = []
+    scoring = report.get("scoring") or {}
+    by_model = (scoring.get("by_model") if isinstance(scoring, dict) else None) or {}
+
+    if schema >= 2:
+        for m in report.get("models") or []:
+            score = by_model.get(m["name"], {}) if has_outcome else {}
+            models_out.append({
+                "name": m["name"],
+                "role": m.get("role"),
+                "method": m.get("method"),
+                "p_yes": m.get("p_yes"),
+                "brier": score.get("brier"),
+                "won": score.get("won"),
+                "pnl_usd": score.get("pnl_usd"),
+                "pnl_type": score.get("pnl_type"),
+            })
+    else:
+        # v1 — synthesize models from the legacy `model` block + kalshi_mid baseline.
+        m_block = report.get("model") or {}
+        p_model = m_block.get("p_yes")
+        p_clim = m_block.get("p_yes_climatology")
+        b_model = scoring.get("brier_model") if isinstance(scoring, dict) else None
+        b_clim = scoring.get("brier_climatology") if isinstance(scoring, dict) else None
+        b_kalshi = scoring.get("brier_kalshi_mid_entry") if isinstance(scoring, dict) else None
+        outcome = resolution_raw.get("outcome")
+        outcome_bin = 1 if outcome == "yes" else (0 if outcome == "no" else None)
+
+        # Champion pnl (actual) computed from the position block
+        actual_pnl = resolution_raw.get("pnl_usd")
+        actual_won = resolution_raw.get("won")
+        models_out.append({
+            "name": "vendor_ensemble",
+            "role": "champion",
+            "method": "ensemble",
+            "p_yes": p_model,
+            "brier": b_model,
+            "won": actual_won,
+            "pnl_usd": actual_pnl,
+            "pnl_type": "actual" if actual_pnl is not None else None,
+        })
+        if p_clim is not None:
+            models_out.append({
+                "name": "climatology",
+                "role": "baseline",
+                "method": "climatology",
+                "p_yes": p_clim,
+                "brier": b_clim,
+                "won": None,
+                "pnl_usd": None,
+                "pnl_type": None,
+            })
+        if kalshi_mid is not None:
+            models_out.append({
+                "name": "kalshi_mid_baseline",
+                "role": "baseline",
+                "method": "kalshi_mid",
+                "p_yes": kalshi_mid,
+                "brier": b_kalshi,
+                "won": None,
+                "pnl_usd": None,
+                "pnl_type": None,
+            })
+
+    # Champion P&L (uniform across schemas)
+    if schema >= 2:
+        champion_pnl = resolution_raw.get("champion_pnl_usd")
+        champion_won = resolution_raw.get("champion_won")
+    else:
+        champion_pnl = resolution_raw.get("pnl_usd")
+        champion_won = resolution_raw.get("won")
+
+    return {
+        "run_id": run_id,
+        "schema_version": schema,
+        "ts_utc": ts_utc,
+        "event_ticker": event.get("ticker") or (target_ticker.rsplit("-", 1)[0] if target_ticker else "?"),
+        "event_title": event.get("title", "?"),
+        "target_market_ticker": target_ticker,
+        "champion_name": champion_name,
+        "kalshi_mid_at_entry": kalshi_mid,
+        "position": {
+            "side": pos.get("side"),
+            "n_contracts": pos.get("n_contracts"),
+            "entry_price": pos.get("entry_price"),
+            "size_usd": pos.get("size_usd"),
+            "entry_price_yes_cents": pos.get("entry_price_yes_cents"),
+            "entry_price_no_cents": pos.get("entry_price_no_cents"),
+        },
+        "models": models_out,
+        "resolution": {
+            "status": status,
+            "outcome": resolution_raw.get("outcome"),
+            "observed_range_f": resolution_raw.get("observed_range_f"),
+            "winning_bin_ticker": resolution_raw.get("winning_bin_ticker"),
+            "ts_utc": resolution_raw.get("ts_utc"),
+            "champion_pnl_usd": champion_pnl,
+            "champion_won": champion_won,
+        },
+    }
+
+
+def _load_live_runs() -> list[dict[str, Any]]:
+    """Read every `runs/<id>/report.json` and normalize them."""
+    if not LIVE_RUNS_DIR.exists():
+        return []
+    out: list[dict[str, Any]] = []
+    for sub in sorted(LIVE_RUNS_DIR.iterdir()):
+        if not sub.is_dir():
+            continue
+        report_file = sub / "report.json"
+        if not report_file.exists():
+            continue
+        try:
+            data = json.loads(report_file.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise SystemExit(f"malformed live report.json at {report_file}: {exc}")
+        norm = _normalize_live_run(data)
+        if norm is not None:
+            out.append(norm)
+    # Sort by run_id (zero-padded string compare works because we use 3-digit IDs)
+    out.sort(key=lambda r: r.get("run_id", ""))
+    return out
+
+
 def _paper_bets_summary() -> dict[str, Any]:
     """Aggregate counters from the paper-bet ledger. No row-level leakage."""
     if not PAPER_BETS_CSV.exists():
@@ -292,11 +455,14 @@ def main() -> int:
             latest_kalshi_bench = r["brier_kalshi_mid_test"]
             break
 
+    live_runs = _load_live_runs()
+
     manifest = {
         "generated_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "schema_version": 1,
+        "schema_version": 2,
         "features": features,
-        "runs": shaped_runs,
+        "runs": shaped_runs,             # learned-predictor training runs
+        "live_runs": live_runs,           # Kalshi paper trades (Run 001, 002, 003, ...)
         "paper_bets_summary": paper_bets,
         "kalshi_mid_reference": latest_kalshi_bench,
     }
@@ -307,7 +473,8 @@ def main() -> int:
     )
     print(
         f"wrote {OUTPUT_PATH.relative_to(REPO_ROOT)} "
-        f"({len(shaped_runs)} run(s), {len(features)} feature(s))"
+        f"({len(shaped_runs)} training run(s), {len(live_runs)} live run(s), "
+        f"{len(features)} feature(s))"
     )
     return 0
 

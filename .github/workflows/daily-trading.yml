@@ -1,0 +1,110 @@
+name: Daily Trading (auto)
+
+# Autonomous daily Kalshi paper-trading routine for the Aratea predictor.
+# Runs daily_auto.py which:
+#   1. Auto-finalizes any open runs that Kalshi has settled
+#   2. Auto-captures a new run for tomorrow's KXLOWTNYC event (if a bin
+#      clears the |edge| >= 0.10 and spread <= 0.05 thresholds)
+#   3. Rebuilds the dashboard manifest
+# Then commits + pushes the result so Vercel auto-deploys the dashboard.
+#
+# Idempotent. Failing to capture (event not yet published, no qualifying
+# bin) exits 0 — the workflow retries the next day.
+#
+# Security note: this workflow grants `contents: write` to GITHUB_TOKEN
+# only because it needs to push the captured report + updated ledger +
+# rebuilt manifest. Other workflows in the repo remain read-only by
+# default (Settings → Actions → Workflow permissions = "Read repository
+# contents and packages permissions"). PR forks cannot trigger this
+# workflow (schedule + workflow_dispatch only) so the surface area is
+# limited to the maintainer.
+
+on:
+  schedule:
+    # 14:00 UTC every day. That's 15:00 Paris (CET winter), 16:00 Paris (CEST summer).
+    # Kalshi typically publishes the J+1 NYC LOWT event well before this time,
+    # and we leave a buffer for Open-Meteo morning runs to be available.
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (do not write report.json, ledger, manifest, or push)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  # Prevent overlap if a manual workflow_dispatch lands while a cron run is in flight.
+  group: daily-trading
+  cancel-in-progress: false
+
+jobs:
+  daily-auto:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Need full history for git operations later in the job.
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Install dependencies
+        working-directory: predictor
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Defensive: ensure sklearn + numpy + requests are present even if
+          # requirements.txt is incomplete or absent.
+          pip install scikit-learn numpy requests
+
+      - name: Run daily_auto
+        id: auto
+        working-directory: ${{ github.workspace }}
+        run: |
+          DRY_RUN_FLAG=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            DRY_RUN_FLAG="--dry-run"
+          fi
+          python predictor/scripts/daily_auto.py $DRY_RUN_FLAG
+
+      - name: Configure git identity
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          git config user.name  "aratea-bot"
+          git config user.email "aratea-bot@users.noreply.github.com"
+
+      - name: Detect changes
+        if: ${{ inputs.dry_run != true }}
+        id: diff
+        run: |
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No changes to commit."
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            git status --short
+          fi
+
+      - name: Commit and push
+        if: ${{ inputs.dry_run != true && steps.diff.outputs.has_changes == 'true' }}
+        run: |
+          DATE_ISO=$(date -u +%Y-%m-%d)
+          git add predictor/runs predictor/data/ledger/paper_bets.csv dashboard/public/predictor_manifest.json
+          git status --short
+          git commit -m "chore(auto): daily run ${DATE_ISO} (finalize + capture + manifest)" || {
+            echo "Nothing staged after add; that's OK."
+            exit 0
+          }
+          git push origin HEAD:main

@@ -52,11 +52,58 @@ export interface PaperBetsSummary {
   phase_1_counter: string;
 }
 
+export type LiveRunRole = "champion" | "challenger" | "baseline";
+
+export interface LiveRunModel {
+  name: string;
+  role: LiveRunRole | string | null;
+  method: string | null;
+  p_yes: number | null;
+  brier: number | null;
+  won: boolean | null;
+  pnl_usd: number | null;
+  pnl_type: "actual" | "theoretical" | string | null;
+}
+
+export interface LiveRunPosition {
+  side: "YES" | "NO" | string | null;
+  n_contracts: number | null;
+  entry_price: number | null;
+  size_usd: number | null;
+  entry_price_yes_cents: number | null;
+  entry_price_no_cents: number | null;
+}
+
+export interface LiveRunResolution {
+  status: "open" | "resolved" | string;
+  outcome: "yes" | "no" | null;
+  observed_range_f: [number, number] | null;
+  winning_bin_ticker: string | null;
+  ts_utc: string | null;
+  champion_pnl_usd: number | null;
+  champion_won: boolean | null;
+}
+
+export interface LiveRunRecord {
+  run_id: string;
+  schema_version: number;
+  ts_utc: string | null;
+  event_ticker: string;
+  event_title: string;
+  target_market_ticker: string;
+  champion_name: string;
+  kalshi_mid_at_entry: number | null;
+  position: LiveRunPosition;
+  models: LiveRunModel[];
+  resolution: LiveRunResolution;
+}
+
 export interface PredictorManifest {
   generated_at: string;
   schema_version: number;
   features: FeatureRecord[];
   runs: RunRecord[];
+  live_runs?: LiveRunRecord[];
   paper_bets_summary: PaperBetsSummary;
   kalshi_mid_reference: number | null;
 }

@@ -6,6 +6,10 @@ data/markets/*.json
 data/forecasts/*.json
 data/forecasts/nws_ndfd/*.json
 data/ledger/*.csv
+# But DO track the paper-trading ledger — it's the source of truth for
+# the dashboard's paper_bets_summary and for daily_auto.py's open-runs
+# scan. No PII or secret data: just contract tickers, sizes, P&L.
+!data/ledger/paper_bets.csv
 data/geographic/ne_*.geojson
 !data/**/.gitkeep
 .env
