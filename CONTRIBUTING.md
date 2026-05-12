@@ -16,6 +16,80 @@ Aratea rewards labor value brought to the project, in any form: code, data, rese
    - **Cash** — BTC transfer to the published multisig address. Subscription window is monthly; cash is **subject to ratification** like any other contribution and may be refused with written rationale.
 4. **Cooldown**: your first contribution must be merged > 30 days before you become eligible for mint. This filters drive-by participants.
 
+## Local setup
+
+Pick the module that matches your change and run only the relevant checks.
+
+### Predictor
+
+```bash
+cd predictor
+python -m venv .venv
+.venv\Scripts\activate   # Windows
+.venv/bin/activate       # Linux / macOS
+pip install -r requirements.lock --require-hashes
+python scripts/test_ensemble.py
+python scripts/test_resolution.py
+python scripts/test_microstructure.py
+```
+
+### Contracts
+
+```bash
+cd contracts
+forge install --no-commit foundry-rs/forge-std@v1.9.4 OpenZeppelin/openzeppelin-contracts@v5.1.0
+forge build
+forge test -vvv
+```
+
+### Dashboard
+
+```bash
+cd dashboard
+cp .env.example .env.local
+npm install
+npm run typecheck
+npm run build
+```
+
+### Static site and docs
+
+No build step is required for `site/` or most Markdown-only changes. Use the
+pre-commit hooks below for hygiene checks.
+
+## Code style and safety checks
+
+Before opening a PR:
+
+```bash
+pip install pre-commit
+pre-commit run --all-files
+```
+
+The hooks run secret scanning and basic file hygiene checks. Do not bypass them
+unless a maintainer explicitly asks you to do so and the reason is documented in
+the PR.
+
+Never commit real `.env` files, webhook URLs, private keys, RPC keys, wallet
+seeds, API tokens, or private datasets. Use the `.env.example` files as
+documentation only.
+
+## How to propose a patch
+
+1. Open or pick an issue before starting non-trivial work.
+2. Keep the PR scoped to one module and one problem.
+3. Link the issue in the PR description.
+4. Explain the artifact value: what changed, why it matters, and how it can be
+   verified from Git-visible evidence.
+5. Include the commands you ran and their result.
+6. If a command cannot be run locally, explain why and name the smallest
+   reviewer-side check that would cover the change.
+
+Good first issues are tracked in
+[`docs/contributor-starter-issues.md`](docs/contributor-starter-issues.md).
+The future bounty policy placeholder is
+[`docs/bounty-mechanism.md`](docs/bounty-mechanism.md).
+
 ## What is NOT valued
 
 - Promises, intentions, brainstorms only.
