@@ -177,10 +177,16 @@ def _select_target_bin(ev, champion_p_yes_by_ticker: dict[str, float]) -> Option
       - be parseable
       - have strike_type 'between' (median bin, not a tail T-bin)
       - have both yes_bid and yes_ask non-null (tradable)
+      - be liquid: yes_bid > MIN_QUOTE and yes_ask < MAX_QUOTE
+        (skips bins where market makers haven't posted yet — e.g. event
+        just published, both quotes still at 0 → yes_mid 0 → can't trade)
       - spread <= SPREAD_THRESHOLD
       - |edge_vs_mid| >= EDGE_THRESHOLD
     Among qualifying bins, the one with the largest |edge| wins.
     """
+    MIN_QUOTE = 0.02  # below = effectively no bid
+    MAX_QUOTE = 0.98  # above = effectively no ask
+
     candidates = []
     for m in ev.markets:
         raw = next((r for r in ev.raw.get("markets", []) if r.get("ticker") == m.ticker), None)
@@ -192,10 +198,18 @@ def _select_target_bin(ev, champion_p_yes_by_ticker: dict[str, float]) -> Option
         ya = m.yes_ask
         if yb is None or ya is None:
             continue
-        spread = float(ya) - float(yb)
+        yb_f = float(yb)
+        ya_f = float(ya)
+        # Liquidity check: a bin with yes_bid=0 (or yes_ask=1) means quotes
+        # haven't been posted yet — yes_mid would be 0 (or 1) and we can't
+        # size a position against that price. Skip until the market is
+        # actually tradable.
+        if yb_f < MIN_QUOTE or ya_f > MAX_QUOTE:
+            continue
+        spread = ya_f - yb_f
         if spread > SPREAD_THRESHOLD:
             continue
-        yes_mid = (float(yb) + float(ya)) / 2.0
+        yes_mid = (yb_f + ya_f) / 2.0
         p_champ = champion_p_yes_by_ticker.get(m.ticker)
         if p_champ is None:
             continue
