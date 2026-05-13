@@ -1,3 +1,4 @@
+import { getDict } from "@/lib/i18n";
 import { formatBrier, formatDelta, formatRunTimestamp } from "@/lib/manifest";
 import type { RunRecord } from "@/lib/manifest";
 import { VerdictBadge } from "./VerdictBadge";
@@ -6,7 +7,10 @@ interface Props {
   run: RunRecord;
 }
 
-export function LatestRunCard({ run }: Props) {
+export async function LatestRunCard({ run }: Props) {
+  const dict = await getDict();
+  const t = dict.components.latest_card;
+
   const gapNegative =
     typeof run.gap_vs_kalshi_mid === "number" && run.gap_vs_kalshi_mid < 0;
   const gapToneClass = gapNegative
@@ -20,10 +24,10 @@ export function LatestRunCard({ run }: Props) {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <div className="text-xs uppercase tracking-wider text-muted">
-            Latest training run
+            {t.title}
           </div>
           <div className="text-lg font-mono mt-1">
-            feature set{" "}
+            {t.feature_set}{" "}
             <span className="text-accent">{run.feature_set ?? "—"}</span>
             <span className="text-muted"> · </span>
             <span className="text-muted">{formatRunTimestamp(run.ts)}</span>
@@ -60,7 +64,7 @@ export function LatestRunCard({ run }: Props) {
 
       {run.notes ? (
         <div className="text-xs text-muted font-mono leading-relaxed border-t border-border pt-3">
-          <span className="uppercase tracking-wider text-muted/70">notes</span>
+          <span className="uppercase tracking-wider text-muted/70">{t.notes}</span>
           <p className="mt-1 text-text/80 whitespace-pre-wrap">{run.notes}</p>
         </div>
       ) : null}

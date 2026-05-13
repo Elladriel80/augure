@@ -1,3 +1,4 @@
+import { getDict } from "@/lib/i18n";
 import {
   formatBrier,
   formatDelta,
@@ -6,11 +7,14 @@ import {
 import type { RunRecord } from "@/lib/manifest";
 import { VerdictBadge } from "./VerdictBadge";
 
-export function RunHistoryTable({ runs }: { runs: RunRecord[] }) {
+export async function RunHistoryTable({ runs }: { runs: RunRecord[] }) {
+  const dict = await getDict();
+  const t = dict.components.history_table;
+
   if (runs.length === 0) {
     return (
       <div className="rounded-md border border-border bg-panel p-4 text-sm text-muted font-mono">
-        No training runs yet.
+        {t.empty}
       </div>
     );
   }
@@ -20,14 +24,14 @@ export function RunHistoryTable({ runs }: { runs: RunRecord[] }) {
       <table className="w-full text-sm font-mono">
         <thead>
           <tr className="border-b border-border text-left text-muted">
-            <th className="px-4 py-3">When (UTC)</th>
-            <th className="px-4 py-3">Feature set</th>
-            <th className="px-4 py-3 text-right">n_test</th>
-            <th className="px-4 py-3 text-right">Brier test</th>
-            <th className="px-4 py-3 text-right">Brier kalshi_mid</th>
-            <th className="px-4 py-3 text-right">Gap</th>
-            <th className="px-4 py-3">Verdict</th>
-            <th className="px-4 py-3">Notes</th>
+            <th className="px-4 py-3">{t.header_when}</th>
+            <th className="px-4 py-3">{t.header_feature_set}</th>
+            <th className="px-4 py-3 text-right">{t.header_n_test}</th>
+            <th className="px-4 py-3 text-right">{t.header_brier_test}</th>
+            <th className="px-4 py-3 text-right">{t.header_brier_kalshi_mid}</th>
+            <th className="px-4 py-3 text-right">{t.header_gap}</th>
+            <th className="px-4 py-3">{t.header_verdict}</th>
+            <th className="px-4 py-3">{t.header_notes}</th>
           </tr>
         </thead>
         <tbody>

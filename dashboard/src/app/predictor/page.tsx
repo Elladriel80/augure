@@ -5,6 +5,7 @@ import { FeatureRegistryTable } from "@/components/FeatureRegistryTable";
 import { LatestRunCard } from "@/components/LatestRunCard";
 import { LiveRunsTable } from "@/components/LiveRunsTable";
 import { RunHistoryTable } from "@/components/RunHistoryTable";
+import { getDict } from "@/lib/i18n";
 import { loadManifest } from "@/lib/manifest.server";
 
 export const metadata: Metadata = {
@@ -14,21 +15,22 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export const dynamic = "force-static";
+// Note: this page used to be `force-static`. Reading the locale cookie via
+// getDict() promotes it to dynamic — that's fine, the manifest is loaded from
+// disk and there are no per-request chain calls here.
+export const dynamic = "force-dynamic";
 
 export default async function PredictorPage() {
+  const dict = await getDict();
   const manifest = await loadManifest();
 
   if (!manifest) {
     return (
       <div className="rounded-md border border-warn/40 bg-warn/10 p-6 font-mono">
-        <h1 className="text-xl mb-2 text-warn">Predictor manifest not found</h1>
-        <p className="text-sm text-muted">
-          The build step that generates{" "}
-          <code className="text-text">public/predictor_manifest.json</code> did
-          not run. Run <code className="text-text">npm run manifest</code> (or a
-          full <code className="text-text">npm run build</code>) and reload.
-        </p>
+        <h1 className="text-xl mb-2 text-warn">
+          {dict.predictor.manifest_missing_title}
+        </h1>
+        <p className="text-sm text-muted">{dict.predictor.manifest_missing_body}</p>
       </div>
     );
   }
@@ -46,102 +48,108 @@ export default async function PredictorPage() {
     <div className="space-y-10">
       <section>
         <h1 className="text-2xl font-mono font-semibold mb-2">
-          Predictor — learning loop
+          {dict.predictor.title}
         </h1>
-        <p className="text-sm text-muted max-w-3xl">
-          Aratea is a weather-factor discovery engine. Every named feature here
-          is a hypothesis; every training run measures whether it carries
-          signal. The bench is the same row-set <code className="text-text">
-          kalshi_mid</code> Brier — beat the market, on its own ground.
-        </p>
+        <p className="text-sm text-muted max-w-3xl">{dict.predictor.intro}</p>
         <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3 text-sm font-mono">
-          <Counter label="Features tracked" value={features.length} />
-          <Counter label="Active" value={activeCount} tone="text-ok" />
           <Counter
-            label="Experimental"
+            label={dict.predictor.counters.features_tracked}
+            value={features.length}
+          />
+          <Counter
+            label={dict.predictor.counters.active}
+            value={activeCount}
+            tone="text-ok"
+          />
+          <Counter
+            label={dict.predictor.counters.experimental}
             value={experimentalCount}
             tone="text-accent"
           />
-          <Counter label="Dropped" value={droppedCount} tone="text-err" />
           <Counter
-            label="Paper bets (open / resolved)"
+            label={dict.predictor.counters.dropped}
+            value={droppedCount}
+            tone="text-err"
+          />
+          <Counter
+            label={dict.predictor.counters.paper_bets}
             value={`${paper_bets_summary.n_open} / ${paper_bets_summary.n_resolved}`}
-            hint={`Phase 1: ${paper_bets_summary.phase_1_counter}`}
+            hint={dict.predictor.counters.phase_1_hint(
+              paper_bets_summary.phase_1_counter,
+            )}
           />
         </div>
         <p className="mt-3 text-[11px] text-muted/80 font-mono">
-          Manifest generated at {manifest.generated_at} (schema v
-          {manifest.schema_version}).
+          {dict.predictor.manifest_generated(
+            manifest.generated_at,
+            manifest.schema_version,
+          )}
         </p>
       </section>
 
       <section>
         <h2 className="text-xl font-mono font-semibold mb-3">
-          A. Live runs (Kalshi paper trades)
+          {dict.predictor.sections.live_title}
         </h2>
         <p className="text-sm text-muted mb-3 max-w-3xl">
-          Each row is a real paper trade on Kalshi. The champion takes the
-          position (real ledger row, real P&L); challengers and baselines run in
-          shadow mode for Brier comparison. ★ marks the best Brier on a given
-          run. The promotion rule (champion swap) needs a rolling-mean Brier
-          dominance over N≥10 resolved trades — single-run wins are anecdotal.
+          {dict.predictor.sections.live_desc}
         </p>
         <LiveRunsTable runs={liveRuns} />
       </section>
 
       <section>
         <h2 className="text-xl font-mono font-semibold mb-3">
-          B. Named factors
+          {dict.predictor.sections.factors_title}
         </h2>
         <p className="text-sm text-muted mb-3 max-w-3xl">
-          Each row is a named hypothesis used by the learned predictor at
-          training time. Brier Δ is the leave-one-out test delta from the most
-          recent training run — sort by it to see what carried the model.
+          {dict.predictor.sections.factors_desc}
         </p>
-        <FeatureRegistryTable features={features} />
+        <FeatureRegistryTable
+          features={features}
+          labels={dict.components.feature_table}
+          footer={dict.components.feature_table_footer(
+            <span className="text-ok">
+              {dict.components.feature_table_footer_carried}
+            </span>,
+            <span className="text-err">
+              {dict.components.feature_table_footer_noise}
+            </span>,
+          )}
+        />
       </section>
 
       <section>
         <h2 className="text-xl font-mono font-semibold mb-3">
-          C. Latest training run
+          {dict.predictor.sections.latest_title}
         </h2>
         <p className="text-sm text-muted mb-3 max-w-3xl">
-          Snapshot of the most recent sklearn fit of the learned predictor on
-          historical resolutions. This is <em>not</em> a paper trade — it&apos;s
-          a cross-validation pass to see whether the current feature set has
-          edge over kalshi_mid on past Kalshi events.
+          {dict.predictor.sections.latest_desc}
         </p>
         {latestRun ? (
           <LatestRunCard run={latestRun} />
         ) : (
           <div className="rounded-md border border-border bg-panel p-4 text-sm text-muted font-mono">
-            No training runs yet.
+            {dict.predictor.sections.latest_empty}
           </div>
         )}
       </section>
 
       <section>
         <h2 className="text-xl font-mono font-semibold mb-3">
-          D. Training run history
+          {dict.predictor.sections.history_title}
         </h2>
         <p className="text-sm text-muted mb-3 max-w-3xl">
-          Every sklearn training pass, most recent first. <em>This is not the
-          paper-trade history</em> — see section A for that. A training run with
-          Brier test below Brier kalshi_mid on the same rows means the model
-          has signal beyond the market mid in cross-validation.
+          {dict.predictor.sections.history_desc}
         </p>
         <RunHistoryTable runs={runs} />
       </section>
 
       <section>
         <h2 className="text-xl font-mono font-semibold mb-3">
-          E. Training Brier trajectory
+          {dict.predictor.sections.brier_title}
         </h2>
         <p className="text-sm text-muted mb-3 max-w-3xl">
-          Learned model (test) vs kalshi_mid (same test rows) across all
-          training runs. Dashed horizontal line is the most recent kalshi_mid
-          Brier as all-time reference; vertical dashed markers flag a
-          feature-set bump (v0 → v1 → v2 …).
+          {dict.predictor.sections.brier_desc}
         </p>
         <BrierChart runs={runs} kalshiReference={kalshi_mid_reference} />
       </section>

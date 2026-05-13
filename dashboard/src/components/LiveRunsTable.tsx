@@ -1,3 +1,4 @@
+import { getDict } from "@/lib/i18n";
 import type { LiveRunRecord, LiveRunModel } from "@/lib/manifest";
 import { formatBrier } from "@/lib/manifest";
 
@@ -67,22 +68,28 @@ function OutcomeBadge({
   status,
   outcome,
   won,
+  labels,
 }: {
   status: string;
   outcome: string | null;
   won: boolean | null;
+  labels: {
+    pending: string;
+    win: (outcome: string) => string;
+    loss: (outcome: string) => string;
+  };
 }) {
   if (status === "open" || outcome === null) {
     return (
       <span className="inline-block rounded-md border border-warn/40 bg-warn/10 px-2 py-0.5 text-[11px] font-mono text-warn">
-        PENDING
+        {labels.pending}
       </span>
     );
   }
   const tone = won
     ? "border-ok/40 bg-ok/10 text-ok"
     : "border-err/40 bg-err/10 text-err";
-  const label = won ? `WIN (${outcome.toUpperCase()})` : `LOSS (${outcome.toUpperCase()})`;
+  const label = won ? labels.win(outcome) : labels.loss(outcome);
   return (
     <span className={`inline-block rounded-md border px-2 py-0.5 text-[11px] font-mono ${tone}`}>
       {label}
@@ -90,12 +97,14 @@ function OutcomeBadge({
   );
 }
 
-export function LiveRunsTable({ runs }: { runs: LiveRunRecord[] }) {
+export async function LiveRunsTable({ runs }: { runs: LiveRunRecord[] }) {
+  const dict = await getDict();
+  const t = dict.components.live_table;
+
   if (runs.length === 0) {
     return (
       <div className="rounded-md border border-border bg-panel p-4 text-sm text-muted font-mono">
-        No live paper trades captured yet. The first one will be the next run of
-        <code className="text-text"> daily_auto.py</code>.
+        {t.empty}
       </div>
     );
   }
@@ -106,16 +115,16 @@ export function LiveRunsTable({ runs }: { runs: LiveRunRecord[] }) {
       <table className="w-full text-sm font-mono">
         <thead>
           <tr className="border-b border-border text-left text-muted">
-            <th className="px-3 py-3">Run</th>
-            <th className="px-3 py-3">When</th>
-            <th className="px-3 py-3">Event / Bin</th>
-            <th className="px-3 py-3">Side</th>
-            <th className="px-3 py-3 text-right">Champion p</th>
-            <th className="px-3 py-3 text-right">Challenger p</th>
-            <th className="px-3 py-3 text-right">Baseline p</th>
-            <th className="px-3 py-3 text-right">kalshi_mid</th>
-            <th className="px-3 py-3">Outcome</th>
-            <th className="px-3 py-3 text-right">P&L paper</th>
+            <th className="px-3 py-3">{t.header_run}</th>
+            <th className="px-3 py-3">{t.header_when}</th>
+            <th className="px-3 py-3">{t.header_event}</th>
+            <th className="px-3 py-3">{t.header_side}</th>
+            <th className="px-3 py-3 text-right">{t.header_champion}</th>
+            <th className="px-3 py-3 text-right">{t.header_challenger}</th>
+            <th className="px-3 py-3 text-right">{t.header_baseline}</th>
+            <th className="px-3 py-3 text-right">{t.header_kalshi_mid}</th>
+            <th className="px-3 py-3">{t.header_outcome}</th>
+            <th className="px-3 py-3 text-right">{t.header_pnl}</th>
           </tr>
         </thead>
         <tbody>
@@ -123,8 +132,6 @@ export function LiveRunsTable({ runs }: { runs: LiveRunRecord[] }) {
             const champion = r.models.find((m) => m.role === "champion");
             const challengers = r.models.filter((m) => m.role === "challenger");
             const baselines = r.models.filter((m) => m.role === "baseline");
-            // Take the first challenger / baseline for the table cell.
-            // (Until more challengers/baselines arrive, this is one each.)
             const challenger = challengers[0];
             const baseline = baselines[0];
 
@@ -179,6 +186,11 @@ export function LiveRunsTable({ runs }: { runs: LiveRunRecord[] }) {
                     status={r.resolution.status}
                     outcome={r.resolution.outcome}
                     won={r.resolution.champion_won}
+                    labels={{
+                      pending: t.pending,
+                      win: t.win,
+                      loss: t.loss,
+                    }}
                   />
                 </td>
                 <td className={`px-3 py-3 text-right ${pnl.tone}`}>
@@ -190,8 +202,7 @@ export function LiveRunsTable({ runs }: { runs: LiveRunRecord[] }) {
         </tbody>
       </table>
       <div className="border-t border-border/50 px-3 py-2 text-[10px] text-muted font-mono">
-        ★ = best Brier this run · B = Brier score per model · P&L = champion only
-        (challengers and baselines are shadow; no real exposure).
+        {t.footer}
       </div>
     </div>
   );

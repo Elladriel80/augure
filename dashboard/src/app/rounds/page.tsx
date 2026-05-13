@@ -3,18 +3,19 @@ import Link from "next/link";
 import { StatusBadge } from "@/components/StatusBadge";
 import { isDeployed, RoundStatus } from "@/lib/contracts";
 import { formatTokenAmount, formatUtcDate, shortAddress } from "@/lib/format";
+import { getDict } from "@/lib/i18n";
 import { fetchAllRounds, windowEnd } from "@/lib/rounds";
 
 export const dynamic = "force-dynamic";
 
 export default async function RoundsPage() {
+  const dict = await getDict();
+
   if (!isDeployed()) {
     return (
       <div className="rounded-md border border-warn/40 bg-warn/10 p-6 font-mono">
-        <h1 className="text-xl mb-2 text-warn">Contracts not yet deployed</h1>
-        <p className="text-sm text-muted">
-          The dashboard will list rounds once the M4 deployment script has run.
-        </p>
+        <h1 className="text-xl mb-2 text-warn">{dict.common.not_deployed_title}</h1>
+        <p className="text-sm text-muted">{dict.common.not_deployed_body}</p>
       </div>
     );
   }
@@ -24,28 +25,31 @@ export default async function RoundsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-mono font-semibold mb-2">Rounds</h1>
-        <p className="text-sm text-muted">
-          Every round committed to the registry, ordered by proposal date (most recent first).
-        </p>
+        <h1 className="text-2xl font-mono font-semibold mb-2">
+          {dict.rounds.title}
+        </h1>
+        <p className="text-sm text-muted">{dict.rounds.intro}</p>
       </div>
 
       {rounds.length === 0 ? (
         <div className="rounded-md border border-border bg-panel p-6 font-mono text-muted">
-          No rounds proposed yet. The first one will appear here once the founder runs{" "}
-          <code className="text-text">script/ProposeGenesisRound.s.sol</code>.
+          {dict.rounds.empty}
         </div>
       ) : (
         <div className="overflow-x-auto rounded-md border border-border bg-panel">
           <table className="w-full text-sm font-mono">
             <thead>
               <tr className="border-b border-border text-left text-muted">
-                <th className="px-4 py-3">Round</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Proposed</th>
-                <th className="px-4 py-3">Window ends</th>
-                <th className="px-4 py-3 text-right">Total amount</th>
-                <th className="px-4 py-3 text-right">Beneficiaries</th>
+                <th className="px-4 py-3">{dict.rounds.table.round}</th>
+                <th className="px-4 py-3">{dict.rounds.table.status}</th>
+                <th className="px-4 py-3">{dict.rounds.table.proposed}</th>
+                <th className="px-4 py-3">{dict.rounds.table.window_ends}</th>
+                <th className="px-4 py-3 text-right">
+                  {dict.rounds.table.total_amount}
+                </th>
+                <th className="px-4 py-3 text-right">
+                  {dict.rounds.table.beneficiaries}
+                </th>
               </tr>
             </thead>
             <tbody>
