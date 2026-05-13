@@ -52,7 +52,12 @@ jobs:
         with:
           # Need full history for git operations later in the job.
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Use a fine-grained PAT (stored as BOT_PAT secret) so the push at
+          # the end of the job runs as a user that the main branch ruleset
+          # bypass list accepts. The default GITHUB_TOKEN is github-actions[bot]
+          # and is rejected by "Require pull request" enforcement. The PAT
+          # is associated with the repo admin who already has bypass rights.
+          token: ${{ secrets.BOT_PAT }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
