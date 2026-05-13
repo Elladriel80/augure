@@ -27,7 +27,6 @@ When activated, bounties should:
 The bounty mechanism will not reward:
 
 - spam PRs or duplicated low-quality submissions;
-- auto-generated work without documented human review;
 - private claims that are not visible in Git history;
 - work that requires committing secrets, private keys, wallet seeds, or private
   datasets;

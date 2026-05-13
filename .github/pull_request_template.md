@@ -33,3 +33,5 @@ Result:
 
 If this PR is intended to be considered in a monthly valuation round, summarize
 the Git-visible artifact value in one or two sentences.
+
+If the PR is not intended for a valuation round (e.g. drive-by docs fixes), leave this section as `n/a - not submitted for valuation`.

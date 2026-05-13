@@ -26,7 +26,7 @@ Pick the module that matches your change and run only the relevant checks.
 cd predictor
 python -m venv .venv
 .venv\Scripts\activate   # Windows
-.venv/bin/activate       # Linux / macOS
+source .venv/bin/activate              # Linux / macOS
 pip install -r requirements.lock --require-hashes
 python scripts/test_ensemble.py
 python scripts/test_resolution.py
