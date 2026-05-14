@@ -1,0 +1,121 @@
+{
+  "schema_version": 2,
+  "run_id": "005",
+  "type": "live",
+  "ts_utc": "2026-05-14T19:45:40Z",
+  "event": {
+    "ticker": "KXLOWTNYC-26MAY15",
+    "title": "Lowest temperature in New York City on May 15, 2026?",
+    "target_market_ticker": "KXLOWTNYC-26MAY15-B49.5",
+    "resolution_source": "NWS official daily climate report (per Kalshi rules)"
+  },
+  "champion_at_time_of_run": "vendor_ensemble",
+  "models": [
+    {
+      "name": "vendor_ensemble",
+      "role": "champion",
+      "method": "ensemble",
+      "p_yes": 0.14912467855229594,
+      "feature_set": null,
+      "trained_at": null,
+      "inputs_summary": {
+        "method": "ensemble"
+      }
+    },
+    {
+      "name": "learned_v2",
+      "role": "challenger",
+      "method": "learned_v2",
+      "p_yes": 0.1859856119373938,
+      "feature_set": "v2",
+      "trained_at": "20260512T134515Z",
+      "inputs_summary": {
+        "method": "learned_v2",
+        "trained_at": "20260514T141925Z",
+        "feature_set": "v2",
+        "run_json_path": "/home/runner/work/Aratea/Aratea/predictor/runs_learning/20260514T141925Z/run.json"
+      }
+    },
+    {
+      "name": "kalshi_mid_baseline",
+      "role": "baseline",
+      "method": "kalshi_mid",
+      "p_yes": 0.345,
+      "feature_set": null,
+      "trained_at": null,
+      "inputs_summary": {
+        "method": "kalshi_mid",
+        "yes_mid_at_snapshot": 0.345
+      }
+    }
+  ],
+  "markets": [
+    {
+      "platform": "kalshi",
+      "ticker": "KXLOWTNYC-26MAY15-B49.5",
+      "url": "https://kalshi.com/markets/KXLOWTNYC",
+      "snapshot_pre": {
+        "yes_bid": 0.34,
+        "yes_ask": 0.35,
+        "yes_mid": 0.345,
+        "spread_cents": 1.0,
+        "ts_utc": "2026-05-14T19:45:40Z"
+      },
+      "edge_bps_by_model": {
+        "vendor_ensemble": -1959,
+        "learned_v2": -1590,
+        "kalshi_mid_baseline": 0
+      },
+      "champion_position": {
+        "model": "vendor_ensemble",
+        "method": "ensemble",
+        "side": "NO",
+        "size_usd": 100.0,
+        "entry_price_yes_cents": 34.5,
+        "entry_price_no_cents": 65.5,
+        "entry_price": 0.655,
+        "n_contracts": 152,
+        "cost_usd": 99.56,
+        "opened_at_utc": "2026-05-14T19:45:40Z",
+        "paper": true,
+        "ledger_bet_id": "20260514T194540Z000000"
+      },
+      "challenger_shadow_positions": [
+        {
+          "model": "learned_v2",
+          "method": "learned_v2",
+          "side": "NO",
+          "size_usd": 100.0,
+          "entry_price_yes_cents": 34.5,
+          "entry_price_no_cents": 65.5,
+          "entry_price": 0.655,
+          "n_contracts": 152,
+          "cost_usd": 99.56,
+          "shadow": true,
+          "note": "Auto-captured by daily_auto.py. Same side/size as champion for Brier comparability."
+        },
+        {
+          "model": "kalshi_mid_baseline",
+          "method": "kalshi_mid",
+          "side": "NO",
+          "size_usd": 100.0,
+          "entry_price_yes_cents": 34.5,
+          "entry_price_no_cents": 65.5,
+          "entry_price": 0.655,
+          "n_contracts": 152,
+          "cost_usd": 99.56,
+          "shadow": true,
+          "note": "Auto-captured by daily_auto.py. Same side/size as champion for Brier comparability."
+        }
+      ],
+      "resolution": {
+        "outcome": null,
+        "observed_value_f": null,
+        "ts_utc": null,
+        "pnl_usd": null
+      }
+    }
+  ],
+  "scoring": null,
+  "notes": "Auto-captured by daily_auto.py on 2026-05-14T19:45:40Z. Selection rule: median-bin with max |edge_vs_mid| (threshold 0.1), spread<=0.05. Champion vendor_ensemble edge=-0.196, side=NO."
+}
