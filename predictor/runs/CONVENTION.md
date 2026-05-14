@@ -16,28 +16,38 @@ Where `NNN` is a zero-padded integer starting at `001`. Runs are
 numbered in the order they are executed, regardless of calendar gap.
 
 A run = a single model prediction, which can target **one or several
-markets across one or several venues**. If we open a paper position
-on the same event on Kalshi *and* Polymarket, both go under the same
-`NNN` as separate entries in the `markets` array — not separate runs.
+markets across one or several venues**. The schema keeps `markets[]`
+plural for forward compatibility, but Phase 1 has converged to a
+single venue (Kalshi).
 
 ## 2. Supported platforms
 
 | Platform | Status | Resolution source |
 |---|---|---|
-| `kalshi` | Phase 1 priority — mature weather markets, real liquidity, NWS-resolved | NWS official station observations |
-| `polymarket` | Phase 1 secondary — predictor integration follows | On-chain oracle, typically UMA |
+| `kalshi` | **Phase 1 primary and only venue.** Daily weather bin markets, real liquidity, NWS-resolved | NWS official station observations |
+| `polymarket` | **Dropped on 2026-05-14.** See note below. | (would have been UMA on-chain oracle) |
 
-The two venues are kept on equal structural footing in `report.json`
-because we expect to:
+**Why Polymarket was dropped for Phase 1:**
 
-1. Validate the predictive edge on **two independent venues**,
-2. Detect **cross-venue divergences** (Kalshi vs Polymarket implied
-   probabilities on the same event) as a bonus signal.
+1. **No recurring daily weather markets.** Polymarket has only ad-hoc
+   events (hurricane landfall, seasonal snow accumulation) — no
+   per-city per-day bin structure equivalent to Kalshi LOWT/HIGHT.
+   Each Polymarket trade would be on a different event class,
+   preventing the accumulation of a statistically comparable N for
+   the meta-ensemble validation.
+2. **Structural pricing biases.** Polymarket's investor base is
+   crypto-native and US-geofenced. Implied probabilities reflect that
+   subset's beliefs and risk appetite, not a market-truth proxy on
+   weather. Using Polymarket-mid as a benchmark would muddy the
+   "beat the market on its own ground" criterion.
+3. **Settlement friction without methodological gain.** UMA Oracle
+   resolves 2–7 days after the event, with a dispute window. Kalshi
+   auto-settles on NWS publication. The added operational overhead
+   buys nothing for the Phase 1 statistical goal.
 
-The on-chain resolution mechanism on Polymarket (UMA) is materially
-different from Kalshi's NWS-tied settlement. Each market entry must
-log its `resolution_source` so a future audit can tell where the
-truth came from.
+The schema below still tolerates `"polymarket"` in `markets[].platform`
+to avoid retroactively breaking historical runs that referenced it.
+New runs target Kalshi only.
 
 ## 3. Required content per run
 

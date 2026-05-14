@@ -7,13 +7,23 @@ position has to leave a trace here.
 
 ## Supported platforms
 
-- **Kalshi** — Phase 1 priority. Mature weather markets, real
-  liquidity, NWS-tied resolution.
-- **Polymarket** — Phase 1 secondary. The log schema supports it from
-  the start; predictor-side integration follows in a separate ticket.
+- **Kalshi** — Phase 1 primary and only venue. Mature daily weather
+  bin markets, real liquidity, NWS-tied automatic resolution.
+- **Polymarket** — *Evaluated and dropped for Phase 1 on 2026-05-14*.
+  Three blocking reasons: (i) no recurring daily weather markets
+  (only ad-hoc events like hurricane / seasonal snow), which prevents
+  building a statistically comparable N over time; (ii) crypto-native
+  and US-geofenced investor base introduces structural pricing biases
+  that disqualify the Polymarket mid as a market-truth benchmark for
+  weather; (iii) UMA oracle settlement (2–7 days, disputable) adds
+  operational friction with no methodological gain over NWS auto-
+  settlement.
 
-A single run can target one event across one or several venues. The
-schema treats venues as equal entries in `markets[]`.
+  The log schema below still tolerates multiple venues in `markets[]`
+  for forward compatibility, but the predictor and `daily_auto.py`
+  currently target Kalshi only. If a future phase brings markets that
+  Kalshi doesn't list, we'll revisit per-venue, not as a blanket
+  re-onboarding.
 
 ## Layout
 
