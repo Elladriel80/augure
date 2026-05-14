@@ -109,13 +109,71 @@
         }
       ],
       "resolution": {
-        "outcome": null,
+        "outcome": "no",
         "observed_value_f": null,
-        "ts_utc": null,
-        "pnl_usd": null
+        "observed_range_f": [
+          53.0,
+          54.0
+        ],
+        "winning_bin_ticker": "KXLOWTNYC-26MAY13-B53.5",
+        "ts_utc": "2026-05-14T12:32:29Z",
+        "champion_pnl_usd": 52.44,
+        "champion_payout_usd": 152.0,
+        "champion_cost_usd": 99.56,
+        "champion_won": true
       }
     }
   ],
-  "scoring": null,
+  "scoring": {
+    "outcome": "no",
+    "by_model": {
+      "vendor_ensemble": {
+        "role": "champion",
+        "method": "ensemble",
+        "p_yes": 0.14,
+        "brier": 0.0196,
+        "won": true,
+        "pnl_usd": 52.44,
+        "pnl_type": "actual"
+      },
+      "learned_v2": {
+        "role": "challenger",
+        "method": "learned_v2",
+        "p_yes": 0.1804,
+        "brier": 0.0326,
+        "won": true,
+        "pnl_usd": 52.44,
+        "pnl_type": "theoretical"
+      },
+      "kalshi_mid_baseline": {
+        "role": "baseline",
+        "method": "kalshi_mid",
+        "p_yes": 0.345,
+        "brier": 0.119,
+        "won": true,
+        "pnl_usd": 52.44,
+        "pnl_type": "theoretical"
+      }
+    },
+    "ranking_by_brier": [
+      {
+        "model": "vendor_ensemble",
+        "brier": 0.0196
+      },
+      {
+        "model": "learned_v2",
+        "brier": 0.0326
+      },
+      {
+        "model": "kalshi_mid_baseline",
+        "brier": 0.119
+      }
+    ],
+    "best_brier_model": "vendor_ensemble",
+    "champion_at_time_of_run": "vendor_ensemble",
+    "champion_is_best": true,
+    "n_datapoints": 1,
+    "note": "Run 003 multi-model trade. Single point \u2014 directional only, not statistically significant. The champion promotion rule requires N>=10 with sign test p<0.10."
+  },
   "notes": "Run 003: first multi-model live capture. Champion vendor_ensemble (P=0.140) + challenger learned_v2 (P=0.180) + baseline kalshi_mid (P=0.325). Bin median, both models agree BUY NO."
 }

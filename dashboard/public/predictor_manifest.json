@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-14T06:37:37Z",
+  "generated_at": "2026-05-14T12:32:39Z",
   "schema_version": 2,
   "features": [
     {
@@ -426,40 +426,43 @@
           "role": "champion",
           "method": "ensemble",
           "p_yes": 0.14000464447021674,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.0196,
+          "won": true,
+          "pnl_usd": 52.44,
+          "pnl_type": "actual"
         },
         {
           "name": "learned_v2",
           "role": "challenger",
           "method": "learned_v2",
           "p_yes": 0.1804343423586902,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.0326,
+          "won": true,
+          "pnl_usd": 52.44,
+          "pnl_type": "theoretical"
         },
         {
           "name": "kalshi_mid_baseline",
           "role": "baseline",
           "method": "kalshi_mid",
           "p_yes": 0.345,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.119,
+          "won": true,
+          "pnl_usd": 52.44,
+          "pnl_type": "theoretical"
         }
       ],
       "resolution": {
-        "status": "open",
-        "outcome": null,
-        "observed_range_f": null,
-        "winning_bin_ticker": null,
-        "ts_utc": null,
-        "champion_pnl_usd": null,
-        "champion_won": null
+        "status": "resolved",
+        "outcome": "no",
+        "observed_range_f": [
+          53.0,
+          54.0
+        ],
+        "winning_bin_ticker": "KXLOWTNYC-26MAY13-B53.5",
+        "ts_utc": "2026-05-14T12:32:29Z",
+        "champion_pnl_usd": 52.44,
+        "champion_won": true
       }
     },
     {
@@ -523,9 +526,9 @@
     }
   ],
   "paper_bets_summary": {
-    "n_open": 2,
-    "n_resolved": 1,
-    "pnl_usd_cumulative": 56.16,
+    "n_open": 1,
+    "n_resolved": 2,
+    "pnl_usd_cumulative": 108.6,
     "phase_1_counter": "3/50"
   },
   "kalshi_mid_reference": 0.07640307692307692
