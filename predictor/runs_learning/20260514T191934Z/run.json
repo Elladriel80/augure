@@ -1,0 +1,125 @@
+{
+  "schema_version": 3,
+  "timestamp_utc": "20260514T191934Z",
+  "feature_set_used": "v2",
+  "feature_names": [
+    "p_climatology",
+    "p_forecast_blend",
+    "p_ensemble",
+    "forecast_spread",
+    "days_ahead",
+    "urban_density_5km",
+    "water_pct_10km",
+    "forest_pct_5km",
+    "elevation_m",
+    "distance_to_coast_km",
+    "latitude"
+  ],
+  "model_class": "sklearn.linear_model.LogisticRegression",
+  "model_hyperparams": {
+    "penalty": "l2",
+    "C": 1.0,
+    "solver": "lbfgs",
+    "max_iter": 2000,
+    "random_state": 42
+  },
+  "n_train": 312,
+  "n_test": 84,
+  "split_key": "target_date",
+  "train_frac": 0.7,
+  "train_split_range": [
+    "2026-05-08",
+    "2026-05-12"
+  ],
+  "test_split_range": [
+    "2026-05-13",
+    "2026-05-13"
+  ],
+  "n_distinct_test_split_values": 1,
+  "promotable": false,
+  "promotable_min_cardinality": 3,
+  "train_date_range": [
+    "20260508T102045Z",
+    "20260512T144111Z"
+  ],
+  "test_date_range": [
+    "20260512T144111Z",
+    "20260512T144111Z"
+  ],
+  "brier_train": 0.12821456496523018,
+  "brier_test": 0.1323323381372315,
+  "brier_kalshi_mid_test": 0.13049404761904762,
+  "log_loss_train": 0.40679456241828205,
+  "log_loss_test": 0.42217348160711665,
+  "log_loss_kalshi_mid_test": 0.4071264657457037,
+  "intercept": -1.8648037004031963,
+  "feature_means": {
+    "p_climatology": 0.1682464454976303,
+    "p_forecast_blend": 0.16645686099991852,
+    "p_ensemble": 0.1665465804449344,
+    "forecast_spread": 0.09625012557503988,
+    "days_ahead": 0.2692307692307692,
+    "urban_density_5km": 18596.55769230769,
+    "water_pct_10km": 1401.1346153846155,
+    "forest_pct_5km": 46.94230769230769,
+    "elevation_m": 325.822827426346,
+    "distance_to_coast_km": 385.52854136295565,
+    "latitude": 35.55627115384613
+  },
+  "feature_stds": {
+    "p_climatology": 0.1730461160237836,
+    "p_forecast_blend": 0.12414910817586339,
+    "p_ensemble": 0.11615349784937833,
+    "forecast_spread": 0.11695804208421968,
+    "days_ahead": 0.4435600997950303,
+    "urban_density_5km": 17071.1776444904,
+    "water_pct_10km": 725.781780852316,
+    "forest_pct_5km": 50.68014838996035,
+    "elevation_m": 565.7429389157157,
+    "distance_to_coast_km": 487.30425863650186,
+    "latitude": 6.2782367761221405
+  },
+  "feature_importances": {
+    "p_ensemble": 1.0706883853217444,
+    "p_forecast_blend": -0.8740347448203064,
+    "p_climatology": -0.400371107975315,
+    "forecast_spread": -0.13401564950559322,
+    "urban_density_5km": -0.03432200336472532,
+    "distance_to_coast_km": 0.015547906480273623,
+    "latitude": -0.010937744901438859,
+    "water_pct_10km": 0.006667621325221283,
+    "forest_pct_5km": 0.004184702511716615,
+    "elevation_m": 0.0033798983431342845,
+    "days_ahead": -0.002786213077964841
+  },
+  "feature_brier_deltas": {
+    "p_climatology": 0.001505917111180255,
+    "p_forecast_blend": -0.0020918905275705557,
+    "p_ensemble": 0.004125653236349031,
+    "forecast_spread": 0.0007755454536564343,
+    "days_ahead": -2.2200763120705513e-05,
+    "urban_density_5km": 2.615579531722867e-05,
+    "water_pct_10km": -1.4111033205560508e-05,
+    "forest_pct_5km": 5.53383133919394e-06,
+    "elevation_m": 1.7644623099527523e-05,
+    "distance_to_coast_km": -2.169627887083081e-05,
+    "latitude": 7.98309527541563e-06
+  },
+  "kept_features": [
+    "p_climatology",
+    "p_forecast_blend",
+    "p_ensemble",
+    "forecast_spread",
+    "days_ahead",
+    "urban_density_5km",
+    "water_pct_10km",
+    "forest_pct_5km",
+    "elevation_m",
+    "distance_to_coast_km",
+    "latitude"
+  ],
+  "dropped_features": [],
+  "methodology": "Leave-one-out Brier delta: for each feature, refit the model without it on the same train/test split and record (brier_test_without - brier_test_full). Positive = removing the feature hurt accuracy = feature carried signal.",
+  "inference_formula": "p_yes = sigmoid(intercept + sum_i coef_i * (x_i - mean_i) / std_i) where coef_i = feature_importances[i], mean_i = feature_means[i], std_i = feature_stds[i]. sigmoid(z) = 1 / (1 + exp(-z)).",
+  "notes": "Phase A.2 rerun under clean target_date split; supersedes invalidated 20260514T141925Z. Decision-gate run for the temporal-split fix."
+}
