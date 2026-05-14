@@ -21,10 +21,17 @@ name: Daily Trading (auto)
 
 on:
   schedule:
-    # 14:00 UTC every day. That's 15:00 Paris (CET winter), 16:00 Paris (CEST summer).
-    # Kalshi typically publishes the J+1 NYC LOWT event well before this time,
-    # and we leave a buffer for Open-Meteo morning runs to be available.
-    - cron: '0 14 * * *'
+    # 18:00 UTC every day. That's 19:00 Paris (CET winter), 20:00 Paris (CEST summer).
+    # Chosen so that:
+    #   - NWS Central Park has already published the daily climate report
+    #     for "yesterday" (typically 11-13h UTC), letting auto-finalize close
+    #     out the previous open run without a one-day lag.
+    #   - Kalshi bins for the J+1 event have had a full US trading day to
+    #     attract market-maker quotes, so the |edge|/spread thresholds in
+    #     auto-capture are reachable instead of systematically skipping the
+    #     fresh-publish illiquid window.
+    # Earlier (14h UTC) saw both finalize and capture systematically skip.
+    - cron: '0 18 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
