@@ -3,7 +3,7 @@
   "current_champion": "vendor_ensemble",
   "champion_since": "2026-05-10T17:12:17Z",
   "champion_reason_initial": "Used for Run 002 (NYC LOWT bin B50.5, WIN +$56.16, Brier model 0.0213 vs Brier kalshi_mid 0.1296). The first model deployed live in Phase 1.",
-  "promotion_rule": "A challenger is promoted to champion when its rolling-mean Brier over the most recent N>=10 resolved trades is strictly lower than the current champion's, AND a 1-sided binomial sign test on per-trade Brier wins yields p < 0.10. Promotion is recorded in `history[]` below.",
+  "promotion_rule": "A challenger is promoted to champion when (1) its source training run has `promotable: true` in run.json (n_distinct_test_split_values >= 3), AND (2) its rolling-mean Brier over the most recent N>=10 resolved trades is strictly lower than the current champion's, AND (3) a 1-sided binomial sign test on per-trade Brier wins yields p < 0.10. Promotion is recorded in `history[]` below. Editors MUST reject any promotion attempt sourced from a run with `promotable: false`.",
   "history": [
     {
       "model": "vendor_ensemble",

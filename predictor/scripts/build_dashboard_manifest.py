@@ -45,12 +45,20 @@ PHASE_1_TARGET = 50
 
 
 def _load_runs() -> list[dict[str, Any]]:
-    """Read every `run.json` under runs_learning/, oldest first."""
+    """Read every `run.json` under runs_learning/, oldest first.
+
+    Directories whose name starts with `_` are skipped — convention
+    reserves them for non-runs (e.g. `_invalidated/` for runs withdrawn
+    after a methodological correctif). See
+    `predictor/runs_learning/_invalidated/<ts>/INVALIDATION.md`.
+    """
     if not RUNS_DIR.exists():
         return []
     runs: list[dict[str, Any]] = []
     for sub in sorted(RUNS_DIR.iterdir()):
         if not sub.is_dir():
+            continue
+        if sub.name.startswith("_"):
             continue
         run_file = sub / "run.json"
         if not run_file.exists():
@@ -230,6 +238,16 @@ def _shape_runs_for_dashboard(runs: list[dict[str, Any]]) -> list[dict[str, Any]
                 "n_test": run.get("n_test"),
                 "train_date_range": run.get("train_date_range"),
                 "test_date_range": run.get("test_date_range"),
+                "split_key": run.get("split_key"),
+                "train_split_range": run.get("train_split_range"),
+                "test_split_range": run.get("test_split_range"),
+                "n_distinct_test_split_values": run.get(
+                    "n_distinct_test_split_values"
+                ),
+                "promotable": run.get("promotable"),
+                "promotable_min_cardinality": run.get(
+                    "promotable_min_cardinality"
+                ),
                 "brier_train": run.get("brier_train"),
                 "brier_test": brier_test,
                 "brier_kalshi_mid_test": brier_kalshi,
