@@ -70,6 +70,19 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+### Environment Variables
+
+> All `NEXT_PUBLIC_*` variables are exposed in the browser bundle. **These are not secrets** — they are public configuration values needed for the dashboard to connect to the chain.
+
+| Variable | Required | Description | Default |
+|----------|----------|-------------|---------|
+| `NEXT_PUBLIC_RPC_URL` | ✅ | Arbitrum Sepolia RPC endpoint (public or private) | `https://sepolia-rollup.arbitrum.io/rpc` |
+| `NEXT_PUBLIC_CHAIN_ID` | ✅ | Chain ID for the target network | `421614` (Arbitrum Sepolia) |
+| `NEXT_PUBLIC_TOKEN_ADDRESS` | ✅ | Deployed `AugPocToken` contract address | `0x000...000` (unset) |
+| `NEXT_PUBLIC_REGISTRY_ADDRESS` | ✅ | Deployed `RoundRegistry` contract address | `0x000...000` (unset) |
+| `NEXT_PUBLIC_DEPLOY_BLOCK` | ✅ | Block number to start scanning events from | `0` |
+| `NEXT_PUBLIC_EXPLORER_URL` | ❌ | Block explorer URL override | `https://sepolia.arbiscan.io` |
+
 ### Anvil (local fork)
 
 For development against a local fork of Arbitrum Sepolia:
