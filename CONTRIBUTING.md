@@ -4,6 +4,28 @@
 
 Aratea rewards labor value brought to the project, in any form: code, data, research, design, documentation, capital. The system is **fact-only**: only what is committed to Git counts.
 
+## No third-party bounty platforms
+
+Aratea has its own labor-value compensation mechanism through the
+project's monthly minting rounds (see
+[`docs/bounty-mechanism.md`](docs/bounty-mechanism.md) and
+[`rounds/HOURLY_RATES.md`](rounds/HOURLY_RATES.md)). This is **internal to
+the project** and fully described in this repository.
+
+This repository is **not** registered on Opire, Algora, or any
+similar third-party bounty platform. Pull requests that:
+
+- claim a bounty via an external platform,
+- request payment to a PayPal address, crypto wallet, or any
+  third-party service in the PR body or comments,
+- are filed by automated AI-agent farming accounts that target
+  `good-first-issue` labels at volume across many repositories,
+
+will be **closed without review**. Repeat offenders are blocked at
+the repository level. This is independent from the project's own
+ratification mechanism, which applies only to contributions made via
+the normal PR process described below.
+
 ## Steps to participate
 
 1. **Read** [`README.md`](README.md), [`rounds/RUBRIC.md`](rounds/RUBRIC.md), and [`rounds/HOURLY_RATES.md`](rounds/HOURLY_RATES.md). The economic model is unconventional — make sure it suits you before investing time.
@@ -98,6 +120,9 @@ The future bounty policy placeholder is
 - Self-declared hours or narrative submissions: the system does not accept them.
 - Auto-generated code without documented human curation.
 - Visible gaming of metrics (split commits, padded diffs, sock-puppet reviews).
+- PRs from automated farming accounts (templated "Implementation Complete"
+  bodies, bounty-platform claims, AI-agent signatures, generic handles
+  with no real activity history).
 
 ## Best practices
 
