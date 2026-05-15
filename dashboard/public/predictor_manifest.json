@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-14T19:45:40Z",
+  "generated_at": "2026-05-15T19:38:26Z",
   "schema_version": 2,
   "features": [
     {
@@ -8,7 +8,7 @@
       "source": "derived from `predictors/climatology.py` (Open-Meteo historical)",
       "date_added": "2026-05-09",
       "current_status": "experimental",
-      "current_brier_delta": -0.003741090560602206,
+      "current_brier_delta": 0.001505917111180255,
       "current_brier_delta_raw": "-0.0037",
       "history": [
         {
@@ -24,9 +24,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": -0.003741090560602206,
+          "brier_delta": 0.001505917111180255,
           "status": "active"
         }
       ]
@@ -37,7 +37,7 @@
       "source": "derived from `predictors/forecast_blend.py`",
       "date_added": "2026-05-09",
       "current_status": "active",
-      "current_brier_delta": 0.0017236452764407828,
+      "current_brier_delta": -0.0020918905275705557,
       "current_brier_delta_raw": "+0.0017",
       "history": [
         {
@@ -53,9 +53,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": 0.0017236452764407828,
+          "brier_delta": -0.0020918905275705557,
           "status": "active"
         }
       ]
@@ -66,7 +66,7 @@
       "source": "derived from `predictors/ensemble.py`",
       "date_added": "2026-05-09",
       "current_status": "active",
-      "current_brier_delta": 0.002033104005133818,
+      "current_brier_delta": 0.004125653236349031,
       "current_brier_delta_raw": "+0.0020",
       "history": [
         {
@@ -82,9 +82,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": 0.002033104005133818,
+          "brier_delta": 0.004125653236349031,
           "status": "active"
         }
       ]
@@ -95,7 +95,7 @@
       "source": "derived from `predictions.ensemble.inputs.individual_probs`",
       "date_added": "2026-05-09",
       "current_status": "active",
-      "current_brier_delta": 0.0012334062519937516,
+      "current_brier_delta": 0.0007755454536564343,
       "current_brier_delta_raw": "+0.0012",
       "history": [
         {
@@ -111,9 +111,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": 0.0012334062519937516,
+          "brier_delta": 0.0007755454536564343,
           "status": "active"
         }
       ]
@@ -124,7 +124,7 @@
       "source": "derived from `predictions.forecast_blend.inputs.days_ahead`",
       "date_added": "2026-05-09",
       "current_status": "experimental",
-      "current_brier_delta": 9.008688199846349e-05,
+      "current_brier_delta": -2.2200763120705513e-05,
       "current_brier_delta_raw": "+0.0001",
       "history": [
         {
@@ -140,9 +140,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": 9.008688199846349e-05,
+          "brier_delta": -2.2200763120705513e-05,
           "status": "active"
         }
       ]
@@ -163,7 +163,7 @@
       "source": "OSM Overpass API",
       "date_added": "2026-05-11",
       "current_status": "experimental",
-      "current_brier_delta": 1.806022945893826e-05,
+      "current_brier_delta": 2.615579531722867e-05,
       "current_brier_delta_raw": "+0.0000",
       "history": [
         {
@@ -179,9 +179,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": 1.806022945893826e-05,
+          "brier_delta": 2.615579531722867e-05,
           "status": "active"
         }
       ]
@@ -192,7 +192,7 @@
       "source": "OSM Overpass API",
       "date_added": "2026-05-11",
       "current_status": "experimental",
-      "current_brier_delta": -0.00023652921733047227,
+      "current_brier_delta": -1.4111033205560508e-05,
       "current_brier_delta_raw": "-0.0002",
       "history": [
         {
@@ -208,9 +208,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": -0.00023652921733047227,
+          "brier_delta": -1.4111033205560508e-05,
           "status": "active"
         }
       ]
@@ -221,7 +221,7 @@
       "source": "OSM Overpass API",
       "date_added": "2026-05-11",
       "current_status": "experimental",
-      "current_brier_delta": -0.0001959822837100944,
+      "current_brier_delta": 5.53383133919394e-06,
       "current_brier_delta_raw": "-0.0002",
       "history": [
         {
@@ -237,9 +237,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": -0.0001959822837100944,
+          "brier_delta": 5.53383133919394e-06,
           "status": "active"
         }
       ]
@@ -250,7 +250,7 @@
       "source": "USGS EPQS `https://epqs.nationalmap.gov/v1/json`",
       "date_added": "2026-05-11",
       "current_status": "experimental",
-      "current_brier_delta": 3.0273320802964854e-05,
+      "current_brier_delta": 1.7644623099527523e-05,
       "current_brier_delta_raw": "+0.0000",
       "history": [
         {
@@ -266,9 +266,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": 3.0273320802964854e-05,
+          "brier_delta": 1.7644623099527523e-05,
           "status": "active"
         }
       ]
@@ -279,7 +279,7 @@
       "source": "Natural Earth `ne_50m_coastline.geojson`",
       "date_added": "2026-05-11",
       "current_status": "experimental",
-      "current_brier_delta": -0.0003065742112536296,
+      "current_brier_delta": -2.169627887083081e-05,
       "current_brier_delta_raw": "-0.0003",
       "history": [
         {
@@ -295,9 +295,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": -0.0003065742112536296,
+          "brier_delta": -2.169627887083081e-05,
           "status": "active"
         }
       ]
@@ -308,7 +308,7 @@
       "source": "NWS_STATIONS table",
       "date_added": "2026-05-11",
       "current_status": "experimental",
-      "current_brier_delta": 2.1583325957891253e-05,
+      "current_brier_delta": 7.98309527541563e-06,
       "current_brier_delta_raw": "+0.0000",
       "history": [
         {
@@ -324,9 +324,9 @@
           "status": "active"
         },
         {
-          "run_ts": "20260514T141925Z",
+          "run_ts": "20260514T191934Z",
           "feature_set": "v2",
-          "brier_delta": 2.1583325957891253e-05,
+          "brier_delta": 7.98309527541563e-06,
           "status": "active"
         }
       ]
@@ -359,6 +359,12 @@
         "20260510T171217Z",
         "20260510T171217Z"
       ],
+      "split_key": null,
+      "train_split_range": null,
+      "test_split_range": null,
+      "n_distinct_test_split_values": null,
+      "promotable": null,
+      "promotable_min_cardinality": null,
       "brier_train": 0.13149111099338748,
       "brier_test": 0.12604134183736937,
       "brier_kalshi_mid_test": 0.028202976190476188,
@@ -395,6 +401,12 @@
         "20260510T171217Z",
         "20260510T171217Z"
       ],
+      "split_key": null,
+      "train_split_range": null,
+      "test_split_range": null,
+      "n_distinct_test_split_values": null,
+      "promotable": null,
+      "promotable_min_cardinality": null,
       "brier_train": 0.12595088354309814,
       "brier_test": 0.1301343567059395,
       "brier_kalshi_mid_test": 0.07640307692307692,
@@ -406,7 +418,7 @@
       "notes": "schema v2: add intercept + feature_means/stds for live inference"
     },
     {
-      "ts": "20260514T141925Z",
+      "ts": "20260514T191934Z",
       "feature_set": "v2",
       "feature_names": [
         "p_climatology",
@@ -421,8 +433,8 @@
         "distance_to_coast_km",
         "latitude"
       ],
-      "n_train": 268,
-      "n_test": 116,
+      "n_train": 312,
+      "n_test": 84,
       "train_date_range": [
         "20260508T102045Z",
         "20260512T144111Z"
@@ -431,15 +443,27 @@
         "20260512T144111Z",
         "20260512T144111Z"
       ],
-      "brier_train": 0.1249593584973178,
-      "brier_test": 0.14161106070386123,
-      "brier_kalshi_mid_test": 0.07518232758620692,
-      "log_loss_train": 0.39102333351357205,
-      "log_loss_test": 0.4624428267195072,
-      "log_loss_kalshi_mid_test": 0.23544129928647578,
-      "gap_vs_kalshi_mid": 0.0664287331176543,
+      "split_key": "target_date",
+      "train_split_range": [
+        "2026-05-08",
+        "2026-05-12"
+      ],
+      "test_split_range": [
+        "2026-05-13",
+        "2026-05-13"
+      ],
+      "n_distinct_test_split_values": 1,
+      "promotable": false,
+      "promotable_min_cardinality": 3,
+      "brier_train": 0.12821456496523018,
+      "brier_test": 0.1323323381372315,
+      "brier_kalshi_mid_test": 0.13049404761904762,
+      "log_loss_train": 0.40679456241828205,
+      "log_loss_test": 0.42217348160711665,
+      "log_loss_kalshi_mid_test": 0.4071264657457037,
+      "gap_vs_kalshi_mid": 0.0018382905181838771,
       "verdict": "MARKET",
-      "notes": "retrain after Run 002 (WIN +56.16) and Run 003 (WIN +52.44) added to resolutions"
+      "notes": "Phase A.2 rerun under clean target_date split; supersedes invalidated 20260514T141925Z. Decision-gate run for the temporal-split fix."
     }
   ],
   "live_runs": [
@@ -590,40 +614,43 @@
           "role": "champion",
           "method": "ensemble",
           "p_yes": 0.1406617805329034,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.7385,
+          "won": false,
+          "pnl_usd": -99.96,
+          "pnl_type": "actual"
         },
         {
           "name": "learned_v2",
           "role": "challenger",
           "method": "learned_v2",
           "p_yes": 0.1709720433815333,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.6873,
+          "won": false,
+          "pnl_usd": -99.96,
+          "pnl_type": "theoretical"
         },
         {
           "name": "kalshi_mid_baseline",
           "role": "baseline",
           "method": "kalshi_mid",
           "p_yes": 0.32,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.4624,
+          "won": false,
+          "pnl_usd": -99.96,
+          "pnl_type": "theoretical"
         }
       ],
       "resolution": {
-        "status": "open",
-        "outcome": null,
-        "observed_range_f": null,
-        "winning_bin_ticker": null,
-        "ts_utc": null,
-        "champion_pnl_usd": null,
-        "champion_won": null
+        "status": "resolved",
+        "outcome": "yes",
+        "observed_range_f": [
+          52.0,
+          53.0
+        ],
+        "winning_bin_ticker": "KXLOWTNYC-26MAY14-B52.5",
+        "ts_utc": "2026-05-15T19:38:23Z",
+        "champion_pnl_usd": -99.96,
+        "champion_won": false
       }
     },
     {
@@ -684,13 +711,72 @@
         "champion_pnl_usd": null,
         "champion_won": null
       }
+    },
+    {
+      "run_id": "006",
+      "schema_version": 2,
+      "ts_utc": "2026-05-15T19:38:26Z",
+      "event_ticker": "KXLOWTNYC-26MAY16",
+      "event_title": "Lowest temperature in New York City on May 16, 2026?",
+      "target_market_ticker": "KXLOWTNYC-26MAY16-B53.5",
+      "champion_name": "vendor_ensemble",
+      "kalshi_mid_at_entry": 0.395,
+      "position": {
+        "side": "NO",
+        "n_contracts": 165,
+        "entry_price": 0.605,
+        "size_usd": 100.0,
+        "entry_price_yes_cents": 39.5,
+        "entry_price_no_cents": 60.5
+      },
+      "models": [
+        {
+          "name": "vendor_ensemble",
+          "role": "champion",
+          "method": "ensemble",
+          "p_yes": 0.16838613251205714,
+          "brier": null,
+          "won": null,
+          "pnl_usd": null,
+          "pnl_type": null
+        },
+        {
+          "name": "learned_v2",
+          "role": "challenger",
+          "method": "learned_v2",
+          "p_yes": 0.21873331295759707,
+          "brier": null,
+          "won": null,
+          "pnl_usd": null,
+          "pnl_type": null
+        },
+        {
+          "name": "kalshi_mid_baseline",
+          "role": "baseline",
+          "method": "kalshi_mid",
+          "p_yes": 0.395,
+          "brier": null,
+          "won": null,
+          "pnl_usd": null,
+          "pnl_type": null
+        }
+      ],
+      "resolution": {
+        "status": "open",
+        "outcome": null,
+        "observed_range_f": null,
+        "winning_bin_ticker": null,
+        "ts_utc": null,
+        "champion_pnl_usd": null,
+        "champion_won": null
+      }
     }
   ],
   "paper_bets_summary": {
     "n_open": 2,
-    "n_resolved": 2,
-    "pnl_usd_cumulative": 108.6,
-    "phase_1_counter": "4/50"
+    "n_resolved": 3,
+    "pnl_usd_cumulative": 8.64,
+    "phase_1_counter": "5/50"
   },
-  "kalshi_mid_reference": 0.07518232758620692
+  "kalshi_mid_reference": 0.13049404761904762
 }

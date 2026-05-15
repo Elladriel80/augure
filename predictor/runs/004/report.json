@@ -109,13 +109,71 @@
         }
       ],
       "resolution": {
-        "outcome": null,
+        "outcome": "yes",
         "observed_value_f": null,
-        "ts_utc": null,
-        "pnl_usd": null
+        "observed_range_f": [
+          52.0,
+          53.0
+        ],
+        "winning_bin_ticker": "KXLOWTNYC-26MAY14-B52.5",
+        "ts_utc": "2026-05-15T19:38:23Z",
+        "champion_pnl_usd": -99.96,
+        "champion_payout_usd": 0.0,
+        "champion_cost_usd": 99.96,
+        "champion_won": false
       }
     }
   ],
-  "scoring": null,
+  "scoring": {
+    "outcome": "yes",
+    "by_model": {
+      "vendor_ensemble": {
+        "role": "champion",
+        "method": "ensemble",
+        "p_yes": 0.1407,
+        "brier": 0.7385,
+        "won": false,
+        "pnl_usd": -99.96,
+        "pnl_type": "actual"
+      },
+      "learned_v2": {
+        "role": "challenger",
+        "method": "learned_v2",
+        "p_yes": 0.171,
+        "brier": 0.6873,
+        "won": false,
+        "pnl_usd": -99.96,
+        "pnl_type": "theoretical"
+      },
+      "kalshi_mid_baseline": {
+        "role": "baseline",
+        "method": "kalshi_mid",
+        "p_yes": 0.32,
+        "brier": 0.4624,
+        "won": false,
+        "pnl_usd": -99.96,
+        "pnl_type": "theoretical"
+      }
+    },
+    "ranking_by_brier": [
+      {
+        "model": "kalshi_mid_baseline",
+        "brier": 0.4624
+      },
+      {
+        "model": "learned_v2",
+        "brier": 0.6873
+      },
+      {
+        "model": "vendor_ensemble",
+        "brier": 0.7385
+      }
+    ],
+    "best_brier_model": "kalshi_mid_baseline",
+    "champion_at_time_of_run": "vendor_ensemble",
+    "champion_is_best": false,
+    "n_datapoints": 1,
+    "note": "Run 004 multi-model trade. Single point \u2014 directional only, not statistically significant. The champion promotion rule requires N>=10 with sign test p<0.10."
+  },
   "notes": "Auto-captured by daily_auto.py on 2026-05-13T14:29:25Z. Selection rule: median-bin with max |edge_vs_mid| (threshold 0.1), spread<=0.05. Champion vendor_ensemble edge=-0.179, side=NO."
 }
