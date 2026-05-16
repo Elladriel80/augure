@@ -1,0 +1,90 @@
+name: oracle-poc-contracts-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'oracle-poc/contracts/**'
+      - '.github/workflows/oracle-poc-contracts-ci.yml'
+  pull_request:
+    paths:
+      - 'oracle-poc/contracts/**'
+      - '.github/workflows/oracle-poc-contracts-ci.yml'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: oracle-poc/contracts
+
+jobs:
+  build-and-test:
+    name: Build, format-check, test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install dependencies (forge install)
+        run: |
+          forge install --no-git foundry-rs/forge-std@v1.9.4
+          forge install --no-git OpenZeppelin/openzeppelin-contracts@v5.1.0
+
+      - name: Format check
+        run: forge fmt --check
+
+      - name: Build
+        run: forge build --sizes
+
+      - name: Run tests
+        run: forge test -vvv
+
+      - name: Coverage report
+        run: forge coverage --report summary --report lcov
+        continue-on-error: true
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oracle-poc-coverage-lcov
+          path: oracle-poc/contracts/lcov.info
+          if-no-files-found: ignore
+
+  static-analysis:
+    name: Slither static analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install dependencies (forge install)
+        run: |
+          forge install --no-git foundry-rs/forge-std@v1.9.4
+          forge install --no-git OpenZeppelin/openzeppelin-contracts@v5.1.0
+
+      - name: Run Slither
+        uses: crytic/slither-action@v0.4.0
+        id: slither
+        with:
+          target: oracle-poc/contracts/
+          slither-config: oracle-poc/contracts/slither.config.json
+          fail-on: medium
+          slither-version: 0.10.4
