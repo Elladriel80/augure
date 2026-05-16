@@ -1,0 +1,44 @@
+name: oracle-poc-keeper-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'oracle-poc/keeper/**'
+      - '.github/workflows/oracle-poc-keeper-ci.yml'
+  pull_request:
+    paths:
+      - 'oracle-poc/keeper/**'
+      - '.github/workflows/oracle-poc-keeper-ci.yml'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: oracle-poc/keeper
+
+jobs:
+  typecheck:
+    name: Install + typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: oracle-poc/keeper/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Build (tsc emit)
+        run: npm run build

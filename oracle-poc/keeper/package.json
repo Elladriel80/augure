@@ -1,0 +1,27 @@
+{
+    "name": "aratea-oracle-poc-keeper",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Aratea oracle POC keeper — polls NWS, generates a Reclaim zkFetch proof, submits to ReclaimWeatherSource on Arbitrum Sepolia",
+    "type": "module",
+    "engines": {
+        "node": ">=20"
+    },
+    "scripts": {
+        "typecheck": "tsc --noEmit",
+        "build": "tsc",
+        "start": "tsx src/index.ts",
+        "postinstall": "node node_modules/@reclaimprotocol/zk-symmetric-crypto/lib/scripts/download-files || true"
+    },
+    "dependencies": {
+        "@reclaimprotocol/js-sdk": "^4.0.0",
+        "@reclaimprotocol/zk-fetch": "^0.4.0",
+        "dotenv": "^16.4.5",
+        "viem": "^2.48.11"
+    },
+    "devDependencies": {
+        "@types/node": "^20.14.0",
+        "tsx": "^4.19.0",
+        "typescript": "^5.5.0"
+    }
+}
