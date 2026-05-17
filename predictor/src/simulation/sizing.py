@@ -1,5 +1,27 @@
-"""Calcul de taille de pari (Kelly fractionnel)."""
+"""Calcul de taille de pari (Kelly fractionnel) + caps portefeuille.
+
+Le sizing per-trade ``kelly_fractional_size`` est laissé inchangé. Au-dessus,
+``PortfolioHeat`` + ``capped_kelly_size`` appliquent deux garde-fous
+agrégés décrits dans ``research/rfc/RFC-portfolio-heat-and-correlation-caps.md`` :
+
+- portfolio heat : somme des fractions engagées sur paris non-settled
+  ≤ ``MAX_PORTFOLIO_HEAT`` (10 %).
+- correlation cap : somme par cluster spatio-temporel (région NOAA × fenêtre
+  settlement ≤ 3 jours) ≤ ``MAX_CLUSTER_EXPOSURE`` (6 %).
+
+L'ordre d'application est *strictest constraint wins* : on prend le min des
+trois caps (per-trade, heat, cluster) avant de redescendre dans le Kelly.
+"""
 from __future__ import annotations
+
+from dataclasses import dataclass, field
+from datetime import date
+
+from .clusters import BetContext, NOAARegion, same_settlement_window, spatial_cluster_for_ticker
+
+MAX_FRACTION_PER_BET = 0.05
+MAX_PORTFOLIO_HEAT = 0.10
+MAX_CLUSTER_EXPOSURE = 0.06
 
 
 def kelly_fractional_size(
@@ -43,3 +65,112 @@ def kelly_fractional_size(
 
     f = min(f_kelly * kelly_fraction, max_fraction_per_bet)
     return round(f * bankroll, 2)
+
+
+@dataclass
+class PortfolioHeat:
+    """État courant des paris non-settled, pour appliquer heat + cluster caps.
+
+    Stockage in-memory : pas de persistance disque dans cette PR (un crash
+    perd l'état). Le câblage dans ``daily_auto.py`` viendra dans une PR
+    ultérieure ; pour l'instant l'objet est utilisable depuis les tests et
+    un futur driver.
+    """
+
+    open_bets: list[BetContext] = field(default_factory=list)
+    max_portfolio_heat: float = MAX_PORTFOLIO_HEAT
+    max_cluster_exposure: float = MAX_CLUSTER_EXPOSURE
+    max_fraction_per_bet: float = MAX_FRACTION_PER_BET
+    cluster_window_days: int = 3
+
+    def total_open_fraction(self) -> float:
+        return sum(b.fraction_engaged for b in self.open_bets)
+
+    def cluster_open_fraction(
+        self, cluster: NOAARegion, around_date: date
+    ) -> float:
+        return sum(
+            b.fraction_engaged
+            for b in self.open_bets
+            if b.spatial_cluster == cluster
+            and same_settlement_window(
+                b.settlement_date, around_date, self.cluster_window_days
+            )
+        )
+
+    def remaining_capacity(
+        self, cluster: NOAARegion, around_date: date
+    ) -> float:
+        """Capacité résiduelle = min(heat_room, cluster_room, per_trade_room).
+
+        Retourne 0.0 si l'un des caps est déjà saturé.
+        """
+        heat_room = max(0.0, self.max_portfolio_heat - self.total_open_fraction())
+        cluster_room = max(
+            0.0,
+            self.max_cluster_exposure
+            - self.cluster_open_fraction(cluster, around_date),
+        )
+        per_trade_room = self.max_fraction_per_bet
+        return min(heat_room, cluster_room, per_trade_room)
+
+    def register(self, bet: BetContext) -> None:
+        self.open_bets.append(bet)
+
+    def settle(self, bet_id: str) -> None:
+        self.open_bets = [b for b in self.open_bets if b.bet_id != bet_id]
+
+
+def capped_kelly_size(
+    *,
+    prob_yes: float,
+    market_yes_price: float,
+    side: str,
+    bankroll: float,
+    market_ticker: str,
+    settlement_date: date,
+    bet_id: str,
+    portfolio: PortfolioHeat,
+    kelly_fraction: float = 0.25,
+) -> tuple[float, BetContext | None]:
+    """Wrapper sur ``kelly_fractional_size`` appliquant heat + cluster caps.
+
+    Calcule la capacité résiduelle du portefeuille (min des trois caps) puis
+    la passe en ``max_fraction_per_bet`` au sizer per-trade. Si la capacité
+    est nulle ou si le Kelly retourne 0.0, retourne ``(0.0, None)`` : refus
+    pur, **jamais** de redimensionnement à epsilon (cf. RFC §2.3).
+
+    Le caller est responsable d'appeler ``portfolio.register(ctx)`` après
+    confirmation d'envoi du pari sur Kalshi — on ne l'enregistre pas ici
+    pour éviter de gonfler la heat avec des paris jamais soumis.
+    """
+    if bankroll <= 0:
+        return 0.0, None
+
+    cluster = spatial_cluster_for_ticker(market_ticker)
+    cap_fraction = portfolio.remaining_capacity(cluster, settlement_date)
+
+    if cap_fraction <= 0.0:
+        return 0.0, None
+
+    amount = kelly_fractional_size(
+        prob_yes=prob_yes,
+        market_yes_price=market_yes_price,
+        side=side,
+        kelly_fraction=kelly_fraction,
+        bankroll=bankroll,
+        max_fraction_per_bet=cap_fraction,
+    )
+
+    if amount <= 0.0:
+        return 0.0, None
+
+    fraction = amount / bankroll
+    ctx = BetContext(
+        bet_id=bet_id,
+        market_ticker=market_ticker,
+        spatial_cluster=cluster,
+        settlement_date=settlement_date,
+        fraction_engaged=fraction,
+    )
+    return amount, ctx
