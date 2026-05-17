@@ -399,8 +399,7 @@ export const fr: Dictionary = {
       footer:
         "★ = meilleur Brier sur ce replay · B = score Brier · NAIVE = exclu de N_backtest_strict.",
       load_more: "Charger 25 de plus",
-      showing: (visible: number, total: number) =>
-        `Affiche ${visible} sur ${total}`,
+      showing_template: "Affiche {visible} sur {total}",
       naive_label: "NAIVE",
       naive_tooltip: "Exclu de N_backtest_strict (CONVENTION §6.bis)",
     },

@@ -387,8 +387,7 @@ export const en = {
       footer:
         "★ = best Brier on this replay · B = Brier score · NAIVE = excluded from N_backtest_strict.",
       load_more: "Load 25 more",
-      showing: (visible: number, total: number) =>
-        `Showing ${visible} of ${total}`,
+      showing_template: "Showing {visible} of {total}",
       naive_label: "NAIVE",
       naive_tooltip: "Excluded from N_backtest_strict (CONVENTION §6.bis)",
     },

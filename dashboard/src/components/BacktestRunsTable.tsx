@@ -60,9 +60,17 @@ interface Labels {
   loss: string;
   footer: string;
   load_more: string;
-  showing: (visible: number, total: number) => string;
+  /** Template with `{visible}` and `{total}` placeholders. Substituted at
+   *  render time inside the client component. */
+  showing_template: string;
   naive_label: string;
   naive_tooltip: string;
+}
+
+function renderShowing(template: string, visible: number, total: number): string {
+  return template
+    .replace("{visible}", String(visible))
+    .replace("{total}", String(total));
 }
 
 interface Props {
@@ -169,7 +177,7 @@ export function BacktestRunsTable({ runs, total, labels: t }: Props) {
       </div>
       <div className="border-t border-border/50 px-3 py-2 flex items-center justify-between flex-wrap gap-2">
         <span className="text-[10px] text-muted font-mono">
-          {t.showing(shown.length, effectiveTotal)}
+          {renderShowing(t.showing_template, shown.length, effectiveTotal)}
         </span>
         <div className="flex items-center gap-3">
           <span className="text-[10px] text-muted/80 font-mono">{t.footer}</span>
