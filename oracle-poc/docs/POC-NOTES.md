@@ -244,25 +244,27 @@ solution structurelle.
 
 ### 3.1 Déploiement
 
-| Métrique | Valeur |
-|---|---|
-| Init code size | 4 332 bytes |
-| Runtime size | 4 008 bytes |
-| Gas utilisé au déploiement | 944 427 |
-| Gas price observé | 0.020 gwei (Arbitrum Sepolia) |
-| Coût total | 0.0000189 ETH (≈ $0.00006 testnet) |
+| Version | Adresse | Gas | Coût (Sepolia, 0.020 gwei) | Note |
+|---|---|---|---|---|
+| v1 (orphelin) | `0x6Bf18DF23078f96d7FC035488e8C6fc68A4a502f` | 944 427 | 0.0000189 ETH | Bugué (§2.5) |
+| **v2 (live)** | `0x23eF9B17002944941712770b292B6094C97BAe76` | 927 122 | 0.0000186 ETH | Workaround §1.9 |
 
-### 3.2 `submitMeasurement` — TODO à mesurer en live
+Le delta de 17 305 gas vient du retrait de l'erreur `InvalidProof()` (devenue unreachable) et d'une simplification mineure du flow.
 
-À remplir après le premier run live du keeper (PR 2 + credentials Reclaim). Champs
-attendus :
+Tailles bytecode v2 : init code 4 250 bytes, runtime 3 926 bytes (vs v1 : 4 332 / 4 008).
 
-| Cas | Gas estimé | À mesurer |
-|---|---|---|
-| 1ère submission (storage froid) | ~150–200k | TODO |
-| Submissions suivantes (storage chaud) | ~80–120k | TODO |
-| Revert anti-replay | ~30–35k | TODO |
-| Revert window/range | ~25–30k | TODO |
+### 3.2 `submitMeasurement` — première mesure live
+
+Mesure capturée le **2026-05-17 09:23 UTC**, première submission en production sur le v2 contract :
+
+| Cas | Gas estimé spec v1 | Mesuré | Note |
+|---|---|---|---|
+| **1ère submission (storage froid)** | ~150–200k | **315 944** | Tx [`0x9cc97af9...55718`](https://sepolia.arbiscan.io/tx/0x9cc97af9ecfc45aaac22ab3365b41db8eecc8b055b1924d45d59e291cdc55718). Plus haut que la prévision parce que (a) `keccak256(abi.encode(proof))` sur ~1.3 KB calldata coûte ~10–15k, (b) l'appel cross-contract à `VERIFIER.verifyProof` exécute le recover ECDSA + lookup epoch + iteration witnesses on-chain. |
+| Submissions suivantes (storage chaud) | ~80–120k | TODO | À mesurer après 2-3 iterations, le coût SSTORE descend avec le storage chaud |
+| Revert anti-replay | ~30–35k | TODO | Soumettre la même proof 2× et observer |
+| Revert window/range | ~25–30k | TODO | Forger un timestamp hors fenêtre |
+
+Coût ETH par submission cold-storage à 0.020 gwei : ~0.0000063 ETH (~$0.00002 testnet).
 
 ### 3.3 Coût Reclaim par proof — TODO à mesurer en live
 
