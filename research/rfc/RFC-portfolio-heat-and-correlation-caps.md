@@ -2,7 +2,7 @@
 
 - **Auteur** : @Elladriel80
 - **Date initiale** : 2026-05-17
-- **Statut** : implémenté complet — caps livrés (PR #85), câblage `daily_auto` + reconstruction depuis ledger livrés (PR #<N>)
+- **Statut** : implémenté complet — caps livrés (PR #85), câblage `daily_auto` + reconstruction depuis ledger livrés (PR #94)
 - **Issu de** : exploration des skills `tradermonty/claude-trading-skills`
   ([research/external-skills/](../external-skills/README.md))
 - **Touche** : `predictor/src/simulation/sizing.py`, `predictor/src/simulation/clusters.py`, `predictor/scripts/daily_auto.py`
@@ -208,7 +208,7 @@ Arbitrage HOU → SE confirmé : cohérent avec la trajectoire Phase B
 cyclonique (NOLA / MIA / HOU = cluster Gulf monolithique). La corrélation
 Plains saisonnière est de second ordre.
 
-### PR #<N> — câblage `daily_auto` + reconstruction depuis ledger (mergée le 2026-05-<JJ>)
+### PR #94 — câblage `daily_auto` + reconstruction depuis ledger (mergée le 2026-05-17)
 
 Périmètre livré :
 
@@ -263,7 +263,7 @@ Décisions de design notables :
 Élargissement du débit de capture (11 events × 3 bins env-overridable,
 puis 16 events × 3 bins après le fix multi-series HIGHT). À noter : PR A
 avait été planifiée *après* le câblage des caps, mais a finalement mergé
-*avant* — PR #<N> remplit le rôle de safeguard rétrospectif. Le débit
+*avant* — PR #94 remplit le rôle de safeguard rétrospectif. Le débit
 théorique est passé de ~1 capture/jour à ~48 captures/jour, les caps
 arrivent juste à temps pour absorber cette accélération.
 
