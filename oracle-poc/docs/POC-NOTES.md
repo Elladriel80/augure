@@ -91,6 +91,65 @@ le hash du claim. Ce qu'il **ne fait pas** : re-fetch de l'URL upstream pour com
 les bodies. C'est exactement le comportement qu'on veut (et NWS rate-limit agressivement
 de toute façon).
 
+### 1.9 IReclaim `verifyProof` sans return value (workaround verifier déployé)
+
+Le verifier Reclaim déployé sur Arbitrum Sepolia (`0x4D1ee04EB5CeE02d4C123d4b67a86bDc7cA2E62A`, implémentation `0x7bc540e9f61edf5f5a8f7b33fd654d0055ed1979`, code vérifié) a une fonction `verifyProof(Proof memory) public returns (bool)` qui **omet le `return true;` final**. Toute la logique de validation s'exécute correctement via `require(...)` mais la fonction ne return jamais explicitement, donc Solidity retourne le default `false` même quand la proof est valide.
+
+Diagnostic capturé via `eth_call` direct sur le verifier avec une proof valide produite par `zk-fetch@0.8.0` :
+
+| Check | Résultat |
+|---|---|
+| signer recovered = witness on-chain (`0x244897...`) | OUI |
+| `keccak256(claimInfo) == claim.identifier` | OUI |
+| `verifyProof` revert | NON |
+| `verifyProof` return | **`0x00...0` (false)** |
+
+Le code source upstream `main HEAD` de `reclaim-solidity-sdk/contracts/Reclaim.sol` a bien `return true;` à la fin. Le verifier déployé en 2024 est une version antérieure incomplète, jamais corrigée upstream.
+
+**Fix appliqué côté Aratea** :
+
+- `IReclaim.sol` : `function verifyProof(Proof memory) external;` (sans `returns (bool)`)
+- `ReclaimWeatherSource.sol` : appel direct `VERIFIER.verifyProof(proof);` sans inspecter le return value
+- Source de vérité : si la call NE revert PAS, tous les `require()` ont passé → proof valide
+
+Forward-compatible : si Reclaim corrige son verifier un jour avec un vrai `return true;`, notre interface continuera de fonctionner (le compilateur ignore tout return data quand l'interface ne le déclare pas).
+
+L'erreur `InvalidProof()` du contrat est retirée — devenue unreachable. Le test Foundry `test_submit_invalidProof_bubblesUp` vérifie que le revert du verifier (modélisé via `MockReclaimVerifier.setShouldRevert(true)`) bubble correctement.
+
+À adresser en Phase 2 : upstream issue / PR sur `reclaimprotocol/reclaim-solidity-sdk` pour ajouter le `return true;` manquant et redéployer. Hors de notre contrôle, ne bloque rien côté Aratea.
+
+### 1.10 Pin SDK Reclaim via npm `overrides` (anti-drift transitive)
+
+`@reclaimprotocol/attestor-core@4.0.3` (consommé via `zk-fetch`) déclare sa dépendance
+sur `@reclaimprotocol/tls` comme `"github:reclaimprotocol/tls"` **sans aucune version
+ni commit pin**. Résultat : chaque `npm install` pioche le HEAD courant du `main`
+de github.com/reclaimprotocol/tls, qui dérive dans le temps. Le 2026-05-17, le HEAD
+ne contenait plus la fonction `strToUint8Array` que `attestor-core` utilise dans ses
+binaires compilés → crash runtime immédiat au chargement de `http-parser.js`.
+
+**Fix appliqué (fix #79)** :
+
+1. Bump direct `@reclaimprotocol/zk-fetch` `^0.4.0` → `^0.8.0` (cette version pin
+   `tls` à un commit précis : `github:reclaimprotocol/tls#8e0669a220341432673a20bb51f9339555701ef4`)
+2. Ajout d'un bloc `overrides` dans `keeper/package.json` qui force le même commit
+   au niveau racine, en défense en profondeur contre une future drift dans `zk-fetch` :
+
+   ```json
+   "overrides": {
+       "@reclaimprotocol/tls": "github:reclaimprotocol/tls#8e0669a220341432673a20bb51f9339555701ef4"
+   }
+   ```
+
+3. Smoke test CI ajouté (`oracle-poc-keeper-ci.yml`) : boote le keeper 10 s avec
+   des env dummy, grep le log pour les signatures `TypeError | MODULE_NOT_FOUND |
+   Cannot find module | is not a function`. Toute régression transitive future
+   du même type fera fail le CI.
+
+À monter à la Phase 2 (avant migration mainnet) : ouvrir un upstream issue / PR sur
+`reclaimprotocol/attestor-core` pour pin sa dep tls proprement dans le package.json
+plutôt que de compter sur notre override aval. Pas bloquant POC, mais propre pour
+la communauté.
+
 ---
 
 ## 2. Limites assumées au POC (à transformer en TODO Phase 2)
@@ -152,6 +211,32 @@ mais sale.
 le hash du `claimInfo` côté Reclaim et donc canonique) plutôt que sur la proof complète.
 Vérification supplémentaire requise : que `identifier` couvre bien tout ce qui doit être
 unique. À auditer.
+
+### 2.5 [RÉSOLU Phase 1] Verifier Reclaim Sepolia retourne `false` même sur proof valide
+
+**Découvert au premier submit on-chain (2026-05-17)** : après que le fix §2.4 ait débloqué le crash runtime, `submitMeasurement` revert systématiquement avec `InvalidProof()`. Diagnostic poussé via `eth_call` direct sur le verifier upstream avec une proof valide : tous les checks passent (signer whitelisté, identifier hash correct), mais la fonction retourne `0x00...0` (false) au lieu de revert ou retourner true.
+
+La cause : la version déployée du verifier sur Arbitrum Sepolia (impl `0x7bc540...`, vérifié sur Arbiscan) **omet le `return true;` final** dans `verifyProof`. Bug en amont jamais corrigé.
+
+**Remédiation** : voir §1.9. `IReclaim.verifyProof` redéclaré sans `returns (bool)`, `ReclaimWeatherSource` appelle sans inspecter le return value. Source de vérité = absence de revert. Forward-compatible si Reclaim corrige un jour.
+
+À adresser en Phase 2 : ouvrir un issue / PR upstream pour ajouter le `return true;` manquant. Hors de notre contrôle.
+
+### 2.4 [RÉSOLU Phase 1] Drift transitive `@reclaimprotocol/tls` non pinné
+
+**Découvert au premier `npm start` live (2026-05-17)** : `attestor-core@4.0.3` crash
+au chargement avec `TypeError: (0 , tls_1.strToUint8Array) is not a function` parce
+que sa dépendance `@reclaimprotocol/tls` est déclarée comme `github:reclaimprotocol/tls`
+sans version ni commit pin. npm pioche le HEAD du `main` qui a, entre temps, renommé
+la fonction (`strToUint8Array` → `asciiToUint8Array`).
+
+**Remédiation** : voir §1.9. Fix appliqué dans PR #79 — bump zk-fetch + bloc `overrides`
+dans `package.json` + smoke test CI. **Le TODO est traité en Phase 1**, pas reporté à
+Phase 2, parce qu'il bloquerait toute exécution live du keeper.
+
+À adresser en Phase 2 : upstream issue / PR sur `reclaimprotocol/attestor-core` pour
+pin tls proprement côté package. Notre override est un workaround aval, pas une
+solution structurelle.
 
 ---
 

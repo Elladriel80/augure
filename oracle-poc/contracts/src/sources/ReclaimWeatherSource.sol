@@ -78,7 +78,6 @@ contract ReclaimWeatherSource is IWeatherSource, ReentrancyGuard {
     error ZeroAddressVerifier();
     error ZeroLocation();
     error ZeroMeasurementType();
-    error InvalidProof();
     error ProofAlreadyConsumed();
     error FutureTimestamp(uint64 declaredTimestamp, uint256 nowTimestamp);
     error StaleMeasurement(uint64 declaredTimestamp, uint256 nowTimestamp);
@@ -157,10 +156,16 @@ contract ReclaimWeatherSource is IWeatherSource, ReentrancyGuard {
         }
 
         // ---- INTERACTION (protected by nonReentrant) ----
-        // Upstream Reclaim.sol uses require(...) for most invalid-proof cases (those
-        // bubble as reverts). The bool check covers the contractual `returns (bool)`
-        // surface even though current upstream always returns true on the non-revert path.
-        if (!VERIFIER.verifyProof(proof)) revert InvalidProof();
+        // The Reclaim verifier uses `require(...)` for every invalid-proof case (no
+        // signatures, wrong identifier hash, wrong number of witnesses, signer not in
+        // whitelist). A non-reverting call therefore means every check passed.
+        //
+        // We deliberately do NOT inspect the bool return: the deployed implementation
+        // on Arbitrum Sepolia omits the final `return true;` so it always returns the
+        // default false even when valid. See IReclaim NatSpec for full rationale.
+        // The InvalidProof() revert here is therefore reachable only via the verifier
+        // bubbling its own require-revert (which propagates naturally).
+        VERIFIER.verifyProof(proof);
 
         // ---- EFFECTS ----
         _consumedProofs[proofHash] = true;

@@ -49,14 +49,24 @@ interface IReclaim {
                                 FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    /// @notice Asserts the cryptographic validity of a Reclaim proof.
-    /// @dev    Not `view`: the upstream implementation is plain `public returns (bool)`
-    ///         to preserve forward-compatibility with future logic. Callers should expect
-    ///         a state-mutating call and budget gas accordingly.
-    /// @param  proof The proof bundle produced off-chain by the Reclaim SDK (zkFetch).
-    /// @return true if the proof is valid; the upstream reverts (rather than returning
-    ///         false) for most invalid-proof cases. Callers must still check the bool.
+    /// @notice Asserts the cryptographic validity of a Reclaim proof. Reverts on invalid.
+    /// @dev    Declared without a return value on purpose. The upstream contract is
+    ///         declared `returns (bool)` but the version deployed on Arbitrum Sepolia
+    ///         (`0x4D1ee04EB5CeE02d4C123d4b67a86bDc7cA2E62A`, impl `0x7bc540...`) has an
+    ///         incomplete implementation: it runs every `require()` check correctly but
+    ///         omits the final `return true;`, so it always returns the default `false`
+    ///         even on the success path. Treating the bool as authoritative therefore
+    ///         rejects valid proofs.
+    ///
+    ///         Truth source we rely on instead: if the call DOES NOT revert, every
+    ///         `require()` inside `verifyProof` passed (signature count, identifier hash,
+    ///         witness whitelist), which is what we actually need. Omitting the
+    ///         `returns (bool)` from this interface lets the Solidity compiler emit a
+    ///         plain external call that ignores any return data — forward-compatible
+    ///         with both the current broken implementation and any future fixed one.
+    ///
+    ///         Not `view`: implementation is plain `public`, callers should budget gas.
     function verifyProof(
         Proof memory proof
-    ) external returns (bool);
+    ) external;
 }

@@ -42,3 +42,28 @@ jobs:
 
       - name: Build (tsc emit)
         run: npm run build
+
+      - name: Smoke test (runtime SDK init)
+        # Catches transitive SDK drift like the @reclaimprotocol/tls strToUint8Array
+        # regression (see docs/POC-NOTES.md §2.4 / fix #79). Boots the keeper with
+        # dummy env so it gets past config validation; we then grep the captured
+        # output for known init-crash signatures. Other failures (network, Reclaim
+        # auth, NWS rate-limit) are accepted — CI has no live credentials.
+        env:
+          RECLAIM_APP_ID: ci-dummy
+          RECLAIM_APP_SECRET: ci-dummy
+          ARBITRUM_SEPOLIA_RPC: https://sepolia-rollup.arbitrum.io/rpc
+          RECLAIM_WEATHER_SOURCE_ADDRESS: "0x6Bf18DF23078f96d7FC035488e8C6fc68A4a502f"
+          KEEPER_PRIVATE_KEY: "0x0000000000000000000000000000000000000000000000000000000000000001"
+          POLL_INTERVAL_SECONDS: "30"
+        run: |
+          set +e
+          timeout 10 npm start > smoke.log 2>&1
+          echo "---smoke.log---"
+          cat smoke.log
+          if grep -qE "TypeError|MODULE_NOT_FOUND|Cannot find module|is not a function" smoke.log; then
+            echo "::error::Runtime SDK init crash detected in smoke test (see smoke.log above)"
+            exit 1
+          fi
+          echo "smoke test passed: no init-crash signatures matched"
+          exit 0

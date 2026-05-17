@@ -103,16 +103,11 @@ contract ReclaimWeatherSourceTest is Test {
                             SUBMIT — REVERTS
     //////////////////////////////////////////////////////////////*/
 
-    function test_submit_invalidProof_reverts() public {
-        verifier.setNextVerdict(false);
-
-        bytes memory submission = _encodeSubmission(_proofWithSalt(1), 20_000, uint64(FIXED_NOW - 30));
-
-        vm.expectRevert(ReclaimWeatherSource.InvalidProof.selector);
-        source.submitMeasurement(submission);
-    }
-
-    function test_submit_verifierReverts_bubblesUp() public {
+    function test_submit_invalidProof_bubblesUp() public {
+        // The source contract ignores the verifier's return value (deployed Reclaim
+        // verifier on Sepolia returns false even on success — see IReclaim NatSpec).
+        // The only signal of an invalid proof is the verifier reverting via its own
+        // require(...) checks; we model that with the mock's MockRevert().
         verifier.setShouldRevert(true);
 
         bytes memory submission = _encodeSubmission(_proofWithSalt(1), 20_000, uint64(FIXED_NOW - 30));
