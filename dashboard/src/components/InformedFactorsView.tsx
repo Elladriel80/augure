@@ -2,9 +2,10 @@ import type { Route } from "next";
 import Link from "next/link";
 
 import { getDict } from "@/lib/i18n";
-import type { LiveRunRecord, RunRecord } from "@/lib/manifest";
+import type { HybridSample, LiveRunRecord, RunRecord } from "@/lib/manifest";
 
 import { BrierChart } from "./BrierChart";
+import { NEffSection } from "./NEffSection";
 
 interface Props {
   /** Most recent live paper-trade run, used to surface per-component p_yes. */
@@ -13,6 +14,8 @@ interface Props {
   runs: RunRecord[];
   /** Most recent kalshi_mid Brier (chart reference line). */
   kalshiMidReference: number | null;
+  /** Hybrid effective sample for the compact N_eff badge at top. */
+  hybridSample: HybridSample | undefined;
   /** Href that takes the reader from "components" to "everything". */
   moreHref: string;
 }
@@ -51,6 +54,7 @@ export async function InformedFactorsView({
   liveRun,
   runs,
   kalshiMidReference,
+  hybridSample,
   moreHref,
 }: Props) {
   const dict = await getDict();
@@ -160,6 +164,9 @@ export async function InformedFactorsView({
         <h2 className="text-xl font-mono font-semibold mb-2">{t.heading}</h2>
         <p className="text-sm text-muted max-w-3xl">{t.intro}</p>
       </section>
+
+      <NEffSection sample={hybridSample} compact />
+
 
       {componentRows.length === 0 ? (
         <div className="rounded-md border border-border bg-panel p-4 text-sm text-muted font-mono">

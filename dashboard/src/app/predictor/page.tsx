@@ -1,20 +1,26 @@
 import type { Metadata } from "next";
 
+import { BacktestRunsTable } from "@/components/BacktestRunsTable";
 import { BrierChart } from "@/components/BrierChart";
 import { FeatureRegistryTable } from "@/components/FeatureRegistryTable";
+import { FilterBar } from "@/components/FilterBar";
 import { InformedFactorsView } from "@/components/InformedFactorsView";
 import { LatestRunCard } from "@/components/LatestRunCard";
 import { LayerToggle, type Level } from "@/components/LayerToggle";
 import { LiveRunsTable } from "@/components/LiveRunsTable";
+import { NEffSection } from "@/components/NEffSection";
 import { PublicWeatherCard } from "@/components/PublicWeatherCard";
 import { RunHistoryTable } from "@/components/RunHistoryTable";
 import { getDict } from "@/lib/i18n";
 import type {
+  BacktestRunRecord,
   FeatureRecord,
+  HybridSample,
   LiveRunRecord,
   PaperBetsSummary,
   RunRecord,
 } from "@/lib/manifest";
+import { seriesFromEventTicker } from "@/lib/manifest";
 import { loadManifest } from "@/lib/manifest.server";
 
 export const metadata: Metadata = {
@@ -30,7 +36,11 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 interface PredictorPageProps {
-  searchParams: Promise<{ level?: string }>;
+  searchParams: Promise<{
+    level?: string;
+    series?: string;
+    status?: string;
+  }>;
 }
 
 function parseLevel(raw: string | undefined): Level {
@@ -41,6 +51,52 @@ function parseLevel(raw: string | undefined): Level {
 
 function hrefForLevel(level: Level): string {
   return `/predictor?level=${level}`;
+}
+
+function parseCsvParam(raw: string | undefined): string[] {
+  if (!raw) return [];
+  return raw.split(",").filter(Boolean);
+}
+
+function filterLiveRuns(
+  runs: LiveRunRecord[],
+  series: string[],
+  status: string[],
+): LiveRunRecord[] {
+  return runs.filter((r) => {
+    if (
+      series.length > 0 &&
+      !series.includes(seriesFromEventTicker(r.event_ticker))
+    ) {
+      return false;
+    }
+    if (status.length > 0 && !status.includes(r.resolution.status)) {
+      return false;
+    }
+    return true;
+  });
+}
+
+function filterBacktestRuns(
+  runs: BacktestRunRecord[],
+  series: string[],
+  status: string[],
+): BacktestRunRecord[] {
+  return runs.filter((r) => {
+    if (series.length > 0 && !series.includes(r.series)) return false;
+    if (status.length > 0 && !status.includes(r.resolution.status)) return false;
+    return true;
+  });
+}
+
+function distinctSeries(
+  liveRuns: LiveRunRecord[],
+  backtestRuns: BacktestRunRecord[],
+): string[] {
+  const acc = new Set<string>();
+  for (const r of liveRuns) acc.add(seriesFromEventTicker(r.event_ticker));
+  for (const r of backtestRuns) acc.add(r.series);
+  return [...acc].sort();
 }
 
 export default async function PredictorPage({
@@ -64,6 +120,19 @@ export default async function PredictorPage({
 
   const { features, runs, kalshi_mid_reference } = manifest;
   const liveRuns = manifest.live_runs ?? [];
+  const backtestRuns = manifest.backtest_runs ?? [];
+  const hybridSample = manifest.hybrid_sample;
+  const seriesFilter = parseCsvParam(params.series);
+  const statusFilter = parseCsvParam(params.status);
+  const filteredLiveRuns = filterLiveRuns(liveRuns, seriesFilter, statusFilter);
+  const filteredBacktestRuns = filterBacktestRuns(
+    backtestRuns,
+    seriesFilter,
+    statusFilter,
+  );
+  const seriesOptions = distinctSeries(liveRuns, backtestRuns);
+  // Latest run pickers ignore the filters — they're "the most recent record"
+  // not "the most recent record matching this view". Same in Layer 1 / Layer 2.
   const latestRun =
     runs.length > 0 ? [...runs].sort((a, b) => b.ts.localeCompare(a.ts))[0] : null;
   const latestLiveRun =
@@ -108,6 +177,7 @@ export default async function PredictorPage({
           latestLiveRun={latestLiveRun}
           runs={runs}
           kalshiMidReference={kalshi_mid_reference}
+          hybridSample={hybridSample}
           moreHref={hrefForLevel(3)}
         />
       ) : null}
@@ -117,7 +187,11 @@ export default async function PredictorPage({
           dict={dict}
           features={features}
           runs={runs}
-          liveRuns={liveRuns}
+          liveRuns={filteredLiveRuns}
+          backtestRuns={filteredBacktestRuns}
+          backtestRunsTotal={manifest.backtest_runs_total ?? backtestRuns.length}
+          hybridSample={hybridSample}
+          seriesOptions={seriesOptions}
           latestRun={latestRun}
           kalshiMidReference={kalshi_mid_reference}
           paperBetsSummary={manifest.paper_bets_summary}
@@ -151,11 +225,13 @@ function Layer2({
   latestLiveRun,
   runs,
   kalshiMidReference,
+  hybridSample,
   moreHref,
 }: {
   latestLiveRun: LiveRunRecord | null;
   runs: RunRecord[];
   kalshiMidReference: number | null;
+  hybridSample: HybridSample | undefined;
   moreHref: string;
 }) {
   return (
@@ -163,6 +239,7 @@ function Layer2({
       liveRun={latestLiveRun}
       runs={runs}
       kalshiMidReference={kalshiMidReference}
+      hybridSample={hybridSample}
       moreHref={moreHref}
     />
   );
@@ -177,6 +254,10 @@ interface Layer3Props {
   features: FeatureRecord[];
   runs: RunRecord[];
   liveRuns: LiveRunRecord[];
+  backtestRuns: BacktestRunRecord[];
+  backtestRunsTotal: number;
+  hybridSample: HybridSample | undefined;
+  seriesOptions: string[];
   latestRun: RunRecord | null;
   kalshiMidReference: number | null;
   paperBetsSummary: PaperBetsSummary;
@@ -189,6 +270,10 @@ function Layer3({
   features,
   runs,
   liveRuns,
+  backtestRuns,
+  backtestRunsTotal,
+  hybridSample,
+  seriesOptions,
   latestRun,
   kalshiMidReference,
   paperBetsSummary,
@@ -200,6 +285,11 @@ function Layer3({
     (f) => f.current_status === "experimental",
   ).length;
   const droppedCount = features.filter((f) => f.current_status === "dropped").length;
+
+  const statusOptions = [
+    dict.predictor.filters.status_open,
+    dict.predictor.filters.status_resolved,
+  ];
 
   return (
     <div className="space-y-10">
@@ -237,6 +327,18 @@ function Layer3({
           {dict.predictor.manifest_generated(generatedAt, schemaVersion)}
         </p>
       </section>
+
+      <NEffSection sample={hybridSample} />
+
+      <FilterBar
+        seriesOptions={seriesOptions}
+        statusOptions={statusOptions}
+        labels={{
+          series_label: dict.predictor.filters.series_label,
+          status_label: dict.predictor.filters.status_label,
+          clear: dict.predictor.filters.clear,
+        }}
+      />
 
       <section>
         <h2 className="text-xl font-mono font-semibold mb-3">
@@ -303,6 +405,20 @@ function Layer3({
           {dict.predictor.sections.brier_desc}
         </p>
         <BrierChart runs={runs} kalshiReference={kalshiMidReference} />
+      </section>
+
+      <section>
+        <h2 className="text-xl font-mono font-semibold mb-3">
+          {dict.predictor.sections.backtest_title}
+        </h2>
+        <p className="text-sm text-muted mb-3 max-w-3xl">
+          {dict.predictor.sections.backtest_desc}
+        </p>
+        <BacktestRunsTable
+          runs={backtestRuns}
+          total={backtestRunsTotal}
+          labels={dict.components.backtest_table}
+        />
       </section>
     </div>
   );
