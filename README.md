@@ -7,6 +7,15 @@
 Aratea is in early-stage development. Its first phase validates a predictive edge on Kalshi weather markets before building the DAO infrastructure for a mutualization-pool-backed parametric mutual.
 
 > **Important note** — Aratea is not insurance in the meaning of the French Code des assurances or of Solvency II. It is a **decentralized discretionary mutual**: members pool capital, and indemnification follows automatic parametric execution backed by oracles, governed by token holders. See white paper, section 4.
+>
+> ---
+
+> **Contributors welcome.** Aratea pays contributors in tokens, valued in BTC via a public rubric, fact-only from Git.
+> - **5 good-first-issues open right now** → [`docs/contributor-starter-issues.md`](docs/contributor-starter-issues.md)
+> - **How payment works** → [`docs/value_engine.md`](docs/value_engine.md)
+> - **Current status** → [`STATUS.md`](STATUS.md)
+
+---
 
 ## Repository structure
 
@@ -44,7 +53,16 @@ A single token (AUG-POC, then ARA post-DAO). One unified mechanism: every contri
 
 ## How to participate
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md). In short: register your wallet, ship Git-observable artifacts (code, data, RFCs) on the relevant module, get evaluated monthly by the rubric, receive AUG-POC tokens.
+## How to participate
+
+Start here:
+
+1. **Pick a starter issue** → [`docs/contributor-starter-issues.md`](docs/contributor-starter-issues.md) (5 open, each scoped to one module, no credentials needed)
+2. **Understand how you're paid** → [`docs/value_engine.md`](docs/value_engine.md) (fact-only Git, BTC valuation, public rubric)
+3. **Register your wallet** when ready for the next monthly round → [`rounds/WALLETS.md`](rounds/WALLETS.md)
+4. **Full process** → [`CONTRIBUTING.md`](CONTRIBUTING.md)
+
+DMs open on X: [@jsl_augure](https://x.com/jsl_augure) (handle migrating to @jsl_aratea).
 
 ## License
 
