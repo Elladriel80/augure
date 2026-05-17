@@ -83,9 +83,65 @@ Plafond par *cluster spatio-temporel* de paris météo corrélés.
   perd l'état des paris ouverts. Sérialisation disque viendra avec le
   câblage `daily_auto.py`.
 
+## Reconstruction au démarrage
+
+`PortfolioHeat` est in-memory uniquement — il n'y a **pas** de fichier
+d'état `state.json` à côté du ledger. À chaque run de `daily_auto`,
+`PortfolioHeat.from_ledger(LEDGER_PATH, current_bankroll)` régénère l'état
+des paris non-settled depuis `paper_bets.csv`. Le ledger est la source de
+vérité unique : pas de risque de désync entre deux fichiers, et la
+reconstruction est idempotente.
+
+### Bankroll marqué-au-market
+
+```python
+current_bankroll = SIMULATION["starting_bankroll"] + sum(
+    bet.pnl_usd for bet in ledger.read_all() if bet.pnl_usd is not None
+)
+```
+
+Les paris non-settled ont `pnl_usd is None` et n'entrent pas dans le calcul.
+Le bankroll alimenté à `capped_kelly_size` reflète donc le capital
+effectivement disponible — la fraction 5 % per-trade s'y ajuste
+automatiquement.
+
+**Fail-fast** : si `current_bankroll < 200 USD`, `_compute_current_bankroll`
+lève `RuntimeError`. C'est un signal de corruption du ledger ou de bug du
+settlement worker, pas un état normal en Phase 1. Mieux vaut arrêter le
+cron et investiguer que de continuer à trader sur capital dégradé.
+
+### Politique sur ville inconnue
+
+`PortfolioHeat.from_ledger(..., on_unknown_ticker=...)` :
+
+- `"warn"` (défaut) : `print` un warning + skip la ligne. Tolérant : ne
+  crashe pas le driver si un env-override pointe sur un ticker dont la
+  ville n'a pas encore été ajoutée à `CITY_TO_NOAA`.
+- `"raise"` : propage le `ValueError`. À utiliser pour détecter les drifts
+  en hard fail (CI, tests).
+- `"skip"` : silencieux, déconseillé hors tests.
+
+Symétriquement dans `daily_auto._capture_one_bin`, l'appel à
+`_size_with_caps` est protégé par `try/except ValueError` qui log la ville
+extraite + skip si le clustering échoue mid-loop.
+
+### Guard `bet_id` unique
+
+`PortfolioHeat.register(bet)` lève `ValueError` si `bet.bet_id` est déjà
+ouvert. Le ledger étant append-only et les `bet_id` étant générés par
+timestamp microsecond, les doublons ne devraient jamais arriver — mais le
+fail-fast protège contre un bug futur du driver.
+
 ## Tests
 
 - `predictor/tests/test_clusters.py` — parser daily/monthly, mapping NOAA,
   bornes de fenêtre.
 - `predictor/tests/test_portfolio_heat.py` — heat cap, cluster cap,
-  clusters indépendants, settle, refus pur, strictest-wins (3 cas).
+  clusters indépendants, settle, refus pur, strictest-wins (3 cas),
+  register duplicate.
+- `predictor/tests/test_portfolio_from_ledger.py` — reconstruction depuis
+  CSV, garde-fou event_ticker vs market_ticker, fraction = stake/bankroll,
+  politique `on_unknown_ticker`.
+- `predictor/tests/test_daily_auto_caps_wiring.py` — `_compute_current_bankroll`
+  (somme P&L, fail-fast), `_size_with_caps`, `_capture_one_bin` skip+log
+  sur `cap_atteint`.
