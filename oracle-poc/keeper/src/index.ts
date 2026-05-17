@@ -117,17 +117,38 @@ async function runIteration(config: KeeperConfig, submitter: ChainSubmitter): Pr
         throw err;
     }
 
-    logEvent("info", "proof_built", {encodedBytes: (submission.encodedSubmission.length - 2) / 2});
-
-    const result = await submitter.submit(submission.encodedSubmission);
-    logEvent("info", "measurement_submitted", {
-        txHash: result.txHash,
-        blockNumber: result.blockNumber.toString(),
-        gasUsed: result.gasUsed.toString(),
-        value: result.value.toString(),
-        timestamp: result.timestamp.toString(),
-        submitter: result.submitter,
+    const claim = submission.onchainProof.signedClaim.claim;
+    logEvent("info", "proof_built", {
+        encodedBytes: (submission.encodedSubmission.length - 2) / 2,
+        // Diagnostic fields — if the verifier rejects a proof at submit time, the
+        // recovered signers can be cross-checked against the verifier's whitelisted
+        // witnesses for this epoch:
+        //   cast call $VERIFIER "fetchEpoch(uint32)(...)" $epoch --rpc-url $RPC
+        epoch: claim.epoch,
+        signers: submission.recoveredSigners,
     });
+
+    try {
+        const result = await submitter.submit(submission.encodedSubmission);
+        logEvent("info", "measurement_submitted", {
+            txHash: result.txHash,
+            blockNumber: result.blockNumber.toString(),
+            gasUsed: result.gasUsed.toString(),
+            value: result.value.toString(),
+            timestamp: result.timestamp.toString(),
+            submitter: result.submitter,
+        });
+    } catch (err) {
+        // On revert (e.g. InvalidProof()), surface the diagnostic fields again at error
+        // level so a single grep on level=error gives the full mismatch picture.
+        const message = err instanceof Error ? err.message : String(err);
+        logEvent("error", "submit_failed", {
+            message,
+            epoch: claim.epoch,
+            signers: submission.recoveredSigners,
+        });
+        throw err;
+    }
 }
 
 async function sleepInterruptible(seconds: number, shutdown: ShutdownState): Promise<void> {

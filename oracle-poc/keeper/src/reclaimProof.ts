@@ -21,7 +21,7 @@
 
 import {ReclaimClient} from "@reclaimprotocol/zk-fetch";
 import {transformForOnchain, verifyProof} from "@reclaimprotocol/js-sdk";
-import {type Hex, encodeAbiParameters, parseAbiParameters} from "viem";
+import {type Hex, encodeAbiParameters, parseAbiParameters, recoverMessageAddress} from "viem";
 
 import {NWS_REQUEST_HEADERS} from "./nwsClient.js";
 
@@ -70,6 +70,14 @@ export interface BuildSubmissionResult {
     onchainProof: OnchainProof;
     /** ABI-encoded blob ready to pass to `submitMeasurement(bytes)`. */
     encodedSubmission: Hex;
+    /**
+     * Witness EOAs that signed the proof, recovered from `signedClaim.signatures`.
+     * Surfaced for diagnostic logging — if the on-chain `submitMeasurement` reverts
+     * with `InvalidProof()`, cross-check these against the verifier's whitelisted
+     * witnesses for the claim's epoch:
+     *   `cast call $VERIFIER "fetchEpoch(uint32)(...)" $epoch --rpc-url $RPC`
+     */
+    recoveredSigners: Hex[];
 }
 
 /** Pre-parsed ABI shape used to encode the submission payload. */
@@ -133,13 +141,45 @@ export async function buildSubmission(input: BuildSubmissionInput): Promise<Buil
         });
     }
 
+    const recoveredSigners = await recoverProofSigners(onchainProof);
+
     const encodedSubmission = encodeAbiParameters(SUBMISSION_ABI_PARAMS, [
         onchainProof,
         BigInt(input.declaredValueMc),
         BigInt(input.declaredTimestampSeconds),
     ]);
 
-    return {onchainProof, encodedSubmission};
+    return {onchainProof, encodedSubmission, recoveredSigners};
+}
+
+/**
+ * Reproduce the canonical serialisation that Reclaim's on-chain verifier expects
+ * (`Claims.sol::serialise` + `verifySignature` in reclaimprotocol/reclaim-solidity-sdk)
+ * and recover each signer EOA. Lets the keeper log who actually signed a proof, so
+ * any mismatch against the verifier's whitelisted witness set is diagnosable in one
+ * grep.
+ *
+ * Canonical message format (Solidity StringUtils):
+ *   "{lowercase 0x-prefixed identifier hex}\n{lowercase 0x-prefixed owner hex}\n{timestampS}\n{epoch}"
+ *
+ * `recoverMessageAddress` adds the `\x19Ethereum Signed Message:\n{len}` prefix
+ * automatically — matching `verifySignature`.
+ */
+async function recoverProofSigners(proof: OnchainProof): Promise<Hex[]> {
+    const c = proof.signedClaim.claim;
+    const message = [c.identifier.toLowerCase(), c.owner.toLowerCase(), String(c.timestampS), String(c.epoch)].join(
+        "\n",
+    );
+    const signers: Hex[] = [];
+    for (const sig of proof.signedClaim.signatures) {
+        try {
+            const addr = await recoverMessageAddress({message, signature: sig});
+            signers.push(addr);
+        } catch (err) {
+            signers.push(`0xRECOVER_FAILED:${err instanceof Error ? err.message : String(err)}` as Hex);
+        }
+    }
+    return signers;
 }
 
 export type ReclaimRejectionReason =

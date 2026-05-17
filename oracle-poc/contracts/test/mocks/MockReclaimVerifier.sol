@@ -8,16 +8,14 @@ import {IReclaim} from "../../src/interfaces/IReclaim.sol";
 ///         contract require a live attestor and a freshly-generated proof; that is the
 ///         keeper's job (PR 2) and is exercised end-to-end on Arbitrum Sepolia, not in
 ///         Foundry CI.
-/// @dev    Behaviour is controllable per-test:
-///         - `setNextVerdict(true)`  : next verifyProof() returns true
-///         - `setNextVerdict(false)` : next verifyProof() returns false
+/// @dev    Behaviour is controllable per-test. The mock matches the IReclaim contract:
+///         a non-reverting call is treated as "valid proof". Settings:
 ///         - `setShouldRevert(true)` : next verifyProof() reverts with MockRevert()
 ///         - `setShouldReenter(target, encodedSubmission)` : next verifyProof() calls
 ///           submitMeasurement on `target` BEFORE returning. Used to assert that the
 ///           ReentrancyGuard on the source contract holds.
-///         Verdict/revert/reenter are sticky until explicitly reset.
+///         Revert / reenter are sticky until explicitly reset.
 contract MockReclaimVerifier is IReclaim {
-    bool public nextVerdict = true;
     bool public shouldRevert;
 
     address public reentrancyTarget;
@@ -26,12 +24,6 @@ contract MockReclaimVerifier is IReclaim {
     uint256 public verifyProofCallCount;
 
     error MockRevert();
-
-    function setNextVerdict(
-        bool verdict
-    ) external {
-        nextVerdict = verdict;
-    }
 
     function setShouldRevert(
         bool revertOnCall
@@ -55,7 +47,7 @@ contract MockReclaimVerifier is IReclaim {
     /// @inheritdoc IReclaim
     function verifyProof(
         IReclaim.Proof memory /* proof */
-    ) external returns (bool) {
+    ) external {
         verifyProofCallCount += 1;
 
         if (reentrancyTarget != address(0)) {
@@ -72,6 +64,6 @@ contract MockReclaimVerifier is IReclaim {
         }
 
         if (shouldRevert) revert MockRevert();
-        return nextVerdict;
+        // Non-reverting return = valid proof, matching the deployed verifier behaviour.
     }
 }
