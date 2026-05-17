@@ -257,6 +257,34 @@ export const fr: Dictionary = {
       intro:
         "Tout ce que porte le manifest : facteurs nommés avec leur delta leave-one-out, ledger des paper trades, runs d’entraînement et trajectoire Brier. C’est la vue météorologiste / actuaire — pas d’arrondi, pas de pédagogie.",
     },
+    n_eff_section: {
+      title: "Échantillon hybride N_eff",
+      n_live: "N_live (paper trades réels)",
+      n_backtest_strict: "N_backtest_strict (replay point-in-time)",
+      n_backtest_naive_excluded: "Exclus NAIVE (informatif)",
+      decomposition: (
+        nLive: number,
+        alpha: number,
+        nBacktest: number,
+        nEff: number,
+      ) =>
+        `= ${nLive} + ${alpha} × ${nBacktest} = ${nEff.toFixed(1)}`,
+      compact_hint: (nLive: number, alpha: number, nBacktest: number) =>
+        `= ${nLive} live + ${alpha} × ${nBacktest} backtest. Décisions secondaires seulement — le gate Phase 1 reste sur le live.`,
+      phase_1_gate: (nLive: number, gate: number) =>
+        `Gate Phase 1 (strict, live seul) : N_live ≥ ${gate}. Actuellement ${nLive}/${gate}.`,
+      phase_1_reached: "Gate Phase 1 atteint (live seul) ✓",
+      methodology_note:
+        "N_eff sert aux décisions secondaires — sélection de feature set, courbes de calibration, check de promotion complémentaire. Le gate Phase 1 go/no-go reste strictement sur N_live ; le volume backtest ne s’y substitue jamais.",
+      convention_link: "Lire CONVENTION §6.bis",
+    },
+    filters: {
+      series_label: "Série",
+      status_label: "Statut",
+      clear: "Effacer",
+      status_open: "ouvert",
+      status_resolved: "résolu",
+    },
     counters: {
       features_tracked: "Features suivies",
       active: "Actives",
@@ -307,6 +335,9 @@ export const fr: Dictionary = {
       brier_title: "E. Trajectoire du Brier d’entraînement",
       brier_desc:
         "Modèle appris (test) vs kalshi_mid (mêmes rows de test) sur tous les runs d’entraînement. La ligne horizontale en pointillé est le Brier kalshi_mid le plus récent comme référence absolue ; les marqueurs verticaux en pointillé signalent un bump de feature set (v0 → v1 → v2 …).",
+      backtest_title: "F. Runs backtest (replay)",
+      backtest_desc:
+        "Records replayés par backtest.py sur des events Kalshi déjà résolus. Seuls les records strict point-in-time comptent dans N_backtest_strict ; les runs NAIVE sont flagués et exclus de l’échantillon hybride. Les filtres ci-dessus s’appliquent à la fois ici et à la section live.",
     },
   },
 
@@ -352,6 +383,26 @@ export const fr: Dictionary = {
       header_gap: "Gap",
       header_verdict: "Verdict",
       header_notes: "Notes",
+    },
+    backtest_table: {
+      empty:
+        "Aucun replay backtest dans le manifest. Le compteur agrégé peut rester non-nul — le builder du manifest tronque le détail par-record quand le ledger dépasse le budget inline.",
+      header_run: "Run",
+      header_when: "As-of → cible",
+      header_event: "Série / Bin",
+      header_mode: "Mode",
+      header_model: "Modèle p / Brier",
+      header_outcome: "Résultat",
+      pending: "EN ATTENTE",
+      win: "GAGNÉ",
+      loss: "PERDU",
+      footer:
+        "★ = meilleur Brier sur ce replay · B = score Brier · NAIVE = exclu de N_backtest_strict.",
+      load_more: "Charger 25 de plus",
+      showing: (visible: number, total: number) =>
+        `Affiche ${visible} sur ${total}`,
+      naive_label: "NAIVE",
+      naive_tooltip: "Exclu de N_backtest_strict (CONVENTION §6.bis)",
     },
     feature_table: {
       header_name: "Nom",

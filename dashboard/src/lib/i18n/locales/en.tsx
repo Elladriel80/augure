@@ -247,6 +247,34 @@ export const en = {
       intro:
         "Everything the manifest carries: named factors with their leave-one-out delta, paper-trade ledger, training runs and Brier trajectory. This is the meteorologist / actuary view — no rounding, no sugar-coating.",
     },
+    n_eff_section: {
+      title: "Hybrid effective sample (N_eff)",
+      n_live: "N_live (real paper trades)",
+      n_backtest_strict: "N_backtest_strict (replay, point-in-time)",
+      n_backtest_naive_excluded: "NAIVE-excluded (informational)",
+      decomposition: (
+        nLive: number,
+        alpha: number,
+        nBacktest: number,
+        nEff: number,
+      ) =>
+        `= ${nLive} + ${alpha} × ${nBacktest} = ${nEff.toFixed(1)}`,
+      compact_hint: (nLive: number, alpha: number, nBacktest: number) =>
+        `= ${nLive} live + ${alpha} × ${nBacktest} backtest. Secondary decisions only — the Phase 1 gate uses live only.`,
+      phase_1_gate: (nLive: number, gate: number) =>
+        `Phase 1 gate (strict, live only): N_live ≥ ${gate}. Currently ${nLive}/${gate}.`,
+      phase_1_reached: "Phase 1 gate reached (live only) ✓",
+      methodology_note:
+        "N_eff drives secondary decisions only — feature-set selection, reliability plots, complementary promotion check. The Phase 1 go/no-go gate stays strictly on N_live; backtest volume never substitutes for live trades there.",
+      convention_link: "Read CONVENTION §6.bis",
+    },
+    filters: {
+      series_label: "Series",
+      status_label: "Status",
+      clear: "Clear",
+      status_open: "open",
+      status_resolved: "resolved",
+    },
     counters: {
       features_tracked: "Features tracked",
       active: "Active",
@@ -295,6 +323,9 @@ export const en = {
       brier_title: "E. Training Brier trajectory",
       brier_desc:
         "Learned model (test) vs kalshi_mid (same test rows) across all training runs. Dashed horizontal line is the most recent kalshi_mid Brier as all-time reference; vertical dashed markers flag a feature-set bump (v0 → v1 → v2 …).",
+      backtest_title: "F. Backtest replays",
+      backtest_desc:
+        "Replayed records produced by backtest.py against settled Kalshi events. Only strict point-in-time records count toward N_backtest_strict; NAIVE-mode rows are flagged and excluded from the hybrid sample. Filters above narrow both this table and the live runs section.",
     },
   },
 
@@ -340,6 +371,26 @@ export const en = {
       header_gap: "Gap",
       header_verdict: "Verdict",
       header_notes: "Notes",
+    },
+    backtest_table: {
+      empty:
+        "No backtest replays in the manifest. The aggregate count may still be non-zero — per-record detail is omitted by the manifest builder when the ledger exceeds the inline budget.",
+      header_run: "Run",
+      header_when: "As-of → target",
+      header_event: "Series / Bin",
+      header_mode: "Mode",
+      header_model: "Model p / Brier",
+      header_outcome: "Outcome",
+      pending: "PENDING",
+      win: "WIN",
+      loss: "LOSS",
+      footer:
+        "★ = best Brier on this replay · B = Brier score · NAIVE = excluded from N_backtest_strict.",
+      load_more: "Load 25 more",
+      showing: (visible: number, total: number) =>
+        `Showing ${visible} of ${total}`,
+      naive_label: "NAIVE",
+      naive_tooltip: "Excluded from N_backtest_strict (CONVENTION §6.bis)",
     },
     feature_table: {
       header_name: "Name",
