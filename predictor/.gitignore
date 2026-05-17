@@ -10,7 +10,20 @@ data/ledger/*.csv
 # the dashboard's paper_bets_summary and for daily_auto.py's open-runs
 # scan. No PII or secret data: just contract tickers, sizes, P&L.
 !data/ledger/paper_bets.csv
+# Same logic for the backtest ledger: source of truth for the dashboard's
+# hybrid N_effective = N_live + alpha * N_backtest aggregate. Per-record
+# report.json files under runs_backtest/<as_of>/<seq>/ are intentionally
+# NOT tracked (too verbose, regenerable from the ledger + code).
+!data/ledger/paper_bets_backtest.csv
 data/geographic/ne_*.geojson
 !data/**/.gitkeep
+
+# Backtest per-record reports — local artifacts, regenerable.
+# Only the README.md at the root of runs_backtest/ stays tracked
+# (documents the schema). Date-prefixed subfolders are ignored.
+runs_backtest/20*/
+# Global backtest aggregate reports — local artifacts.
+data/backtests/*.json
+
 .env
 .DS_Store
