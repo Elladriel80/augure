@@ -16,8 +16,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date
+from pathlib import Path
 
 from .clusters import BetContext, NOAARegion, same_settlement_window, spatial_cluster_for_ticker
+from .ledger import Ledger, PaperBet
 
 MAX_FRACTION_PER_BET = 0.05
 MAX_PORTFOLIO_HEAT = 0.10
@@ -67,14 +69,42 @@ def kelly_fractional_size(
     return round(f * bankroll, 2)
 
 
+def _bet_context_from_paper_bet(
+    bet: PaperBet, bankroll: float
+) -> BetContext | None:
+    """Construit un ``BetContext`` depuis une ligne de ledger paper-bet.
+
+    Retourne ``None`` si le pari est settled (``resolved_at_utc`` non vide).
+    Lève ``ValueError`` si :
+      - le ``event_ticker`` n'est pas parseable,
+      - la ville extraite n'est pas dans ``CITY_TO_NOAA``.
+
+    Utilise ``event_ticker`` (sans strike) pour le clustering, **pas**
+    ``market_ticker`` qui inclut le strike (ex. ``…-B50.5``) et n'est pas
+    parseable par ``parse_city_from_ticker``.
+    """
+    if bet.resolved_at_utc:
+        return None
+    cluster = spatial_cluster_for_ticker(bet.event_ticker)
+    fraction = bet.stake_usd / bankroll
+    settlement_date = date.fromisoformat(bet.target_date)
+    return BetContext(
+        bet_id=bet.bet_id,
+        market_ticker=bet.event_ticker,
+        spatial_cluster=cluster,
+        settlement_date=settlement_date,
+        fraction_engaged=fraction,
+    )
+
+
 @dataclass
 class PortfolioHeat:
     """État courant des paris non-settled, pour appliquer heat + cluster caps.
 
-    Stockage in-memory : pas de persistance disque dans cette PR (un crash
-    perd l'état). Le câblage dans ``daily_auto.py`` viendra dans une PR
-    ultérieure ; pour l'instant l'objet est utilisable depuis les tests et
-    un futur driver.
+    Reconstruction au démarrage via ``from_ledger(ledger_path, bankroll)`` :
+    pas de persistance disque séparée, le ledger paper-bet est la source de
+    vérité unique. L'état in-memory est régénéré à chaque run de
+    ``daily_auto`` depuis le CSV.
     """
 
     open_bets: list[BetContext] = field(default_factory=list)
@@ -82,6 +112,61 @@ class PortfolioHeat:
     max_cluster_exposure: float = MAX_CLUSTER_EXPOSURE
     max_fraction_per_bet: float = MAX_FRACTION_PER_BET
     cluster_window_days: int = 3
+
+    @classmethod
+    def from_ledger(
+        cls,
+        ledger_path: Path,
+        bankroll: float,
+        *,
+        on_unknown_ticker: str = "warn",
+        max_portfolio_heat: float = MAX_PORTFOLIO_HEAT,
+        max_cluster_exposure: float = MAX_CLUSTER_EXPOSURE,
+        max_fraction_per_bet: float = MAX_FRACTION_PER_BET,
+        cluster_window_days: int = 3,
+    ) -> PortfolioHeat:
+        """Reconstruit l'état des paris non-settled depuis le ledger.
+
+        ``on_unknown_ticker`` choisit la politique sur ville hors mapping :
+
+        - ``"warn"`` (défaut) : ``print`` un warning + skip la ligne. Tolérant,
+          ne crashe pas le driver si un env-override drift inject un ticker
+          dont la ville n'a pas encore été ajoutée à ``CITY_TO_NOAA``.
+        - ``"raise"`` : propage le ``ValueError``. À utiliser quand on veut
+          détecter les drifts en hard fail (CI, tests).
+        - ``"skip"`` : skip silencieusement. Déconseillé hors tests.
+
+        Lève ``ValueError`` si ``on_unknown_ticker`` n'est pas reconnu.
+        """
+        if on_unknown_ticker not in ("warn", "raise", "skip"):
+            raise ValueError(
+                f"on_unknown_ticker doit être warn|raise|skip, reçu : "
+                f"{on_unknown_ticker!r}"
+            )
+        portfolio = cls(
+            max_portfolio_heat=max_portfolio_heat,
+            max_cluster_exposure=max_cluster_exposure,
+            max_fraction_per_bet=max_fraction_per_bet,
+            cluster_window_days=cluster_window_days,
+        )
+        ledger = Ledger(ledger_path)
+        for bet in ledger.read_all():
+            try:
+                ctx = _bet_context_from_paper_bet(bet, bankroll)
+            except ValueError as e:
+                if on_unknown_ticker == "raise":
+                    raise
+                if on_unknown_ticker == "warn":
+                    print(
+                        f"[warn] PortfolioHeat.from_ledger : ticker "
+                        f"{bet.event_ticker!r} non clusterisable ({e}) — "
+                        f"ligne skippée."
+                    )
+                continue
+            if ctx is None:
+                continue
+            portfolio.register(ctx)
+        return portfolio
 
     def total_open_fraction(self) -> float:
         return sum(b.fraction_engaged for b in self.open_bets)
@@ -115,6 +200,8 @@ class PortfolioHeat:
         return min(heat_room, cluster_room, per_trade_room)
 
     def register(self, bet: BetContext) -> None:
+        if any(b.bet_id == bet.bet_id for b in self.open_bets):
+            raise ValueError(f"bet_id déjà ouvert : {bet.bet_id!r}")
         self.open_bets.append(bet)
 
     def settle(self, bet_id: str) -> None:

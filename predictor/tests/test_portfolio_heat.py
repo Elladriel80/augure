@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from datetime import date
 
+import pytest
+
 from src.simulation.clusters import BetContext
 from src.simulation.sizing import (
     MAX_CLUSTER_EXPOSURE,
@@ -254,3 +256,17 @@ def test_caller_must_register_ctx_explicitly() -> None:
     assert portfolio.open_bets == []  # pas auto-registered
     portfolio.register(ctx)
     assert portfolio.open_bets == [ctx]
+
+
+def test_register_duplicate_bet_id_raises() -> None:
+    """Garde-fou append-only : un même ``bet_id`` enregistré deux fois est
+    un bug du driver — fail-fast plutôt qu'accepter silencieusement."""
+    portfolio = PortfolioHeat()
+    bet = _open_bet("a", "KXLOWTNYC-26MAY17", "NE", TODAY, 0.03)
+    portfolio.register(bet)
+    with pytest.raises(ValueError, match="déjà ouvert"):
+        portfolio.register(bet)
+    # Aussi : un nouveau BetContext avec le même bet_id mais autres champs.
+    duplicate = _open_bet("a", "KXLOWTLAX-26MAY18", "SW", TODAY, 0.02)
+    with pytest.raises(ValueError, match="déjà ouvert"):
+        portfolio.register(duplicate)
