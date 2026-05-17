@@ -341,6 +341,20 @@ def main():
             for market in ev.markets:
                 if market.result not in ("yes", "no"):
                     continue
+                # Align with daily_auto._select_target_bins: only consider central
+                # bins (strike_type == "between"). Tail bins ("X° or below",
+                # "X° or above") represent cumulative probability mass and would
+                # dominate the per-event mutual-exclusivity normalization below —
+                # collapsing top-1 onto a tail and exploding the Brier on central
+                # outcomes (observed BSS = -0.31 on 2026-05-17 smoke before this
+                # filter was added).
+                raw = next(
+                    (r for r in (ev.raw.get("markets") or [])
+                     if r.get("ticker") == market.ticker),
+                    None,
+                )
+                if raw is None or raw.get("strike_type") != "between":
+                    continue
                 spec = parse_market(market)
                 if spec is None:
                     continue
