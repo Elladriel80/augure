@@ -30,17 +30,24 @@ _CACHE_KEY_SAFE_RE = re.compile(r"[^A-Za-z0-9._-]")
 # Stations Kalshi mappées vers (lat, lon, timezone, station officielle)
 # Les coordonnées correspondent aux stations NWS référencées dans les rules Kalshi.
 CITIES: dict[str, dict] = {
-    "AUSTIN":       {"lat": 30.1945, "lon": -97.6699, "tz": "America/Chicago",  "label": "Austin Bergstrom"},
-    "BOSTON":       {"lat": 42.3656, "lon": -71.0096, "tz": "America/New_York", "label": "Boston Logan"},
-    "CHICAGO":      {"lat": 41.9803, "lon": -87.9090, "tz": "America/Chicago",  "label": "Chicago O'Hare"},
-    "DENVER":       {"lat": 39.8561, "lon": -104.6737, "tz": "America/Denver",  "label": "Denver International"},
-    "HOUSTON":      {"lat": 29.9844, "lon": -95.3414, "tz": "America/Chicago",  "label": "Houston Intercontinental"},
+    "ATLANTA":      {"lat": 33.6367, "lon":  -84.4281, "tz": "America/New_York",    "label": "Atlanta Hartsfield-Jackson"},
+    "AUSTIN":       {"lat": 30.1945, "lon":  -97.6699, "tz": "America/Chicago",     "label": "Austin Bergstrom"},
+    "BOSTON":       {"lat": 42.3656, "lon":  -71.0096, "tz": "America/New_York",    "label": "Boston Logan"},
+    "CHICAGO":      {"lat": 41.9803, "lon":  -87.9090, "tz": "America/Chicago",     "label": "Chicago O'Hare"},
+    "DALLAS":       {"lat": 32.8470, "lon":  -96.8517, "tz": "America/Chicago",     "label": "Dallas Love Field"},
+    "DENVER":       {"lat": 39.8561, "lon": -104.6737, "tz": "America/Denver",      "label": "Denver International"},
+    "HOUSTON":      {"lat": 29.9844, "lon":  -95.3414, "tz": "America/Chicago",     "label": "Houston Intercontinental"},
+    "LASVEGAS":     {"lat": 36.0840, "lon": -115.1537, "tz": "America/Los_Angeles", "label": "Las Vegas Harry Reid"},
     "LOSANGELES":   {"lat": 33.9416, "lon": -118.4085, "tz": "America/Los_Angeles", "label": "LAX"},
-    "MIAMI":        {"lat": 25.7959, "lon": -80.2870,  "tz": "America/New_York", "label": "Miami International"},
-    "NYC":          {"lat": 40.6413, "lon": -73.7781,  "tz": "America/New_York", "label": "JFK Airport"},
-    "PHILADELPHIA": {"lat": 39.8729, "lon": -75.2437,  "tz": "America/New_York", "label": "Philadelphia International"},
-    "SANANTONIO":   {"lat": 29.5337, "lon": -98.4698,  "tz": "America/Chicago",  "label": "San Antonio International"},
+    "MIAMI":        {"lat": 25.7959, "lon":  -80.2870, "tz": "America/New_York",    "label": "Miami International"},
+    "MINNEAPOLIS":  {"lat": 44.8819, "lon":  -93.2218, "tz": "America/Chicago",     "label": "Minneapolis-St Paul"},
+    "NYC":          {"lat": 40.6413, "lon":  -73.7781, "tz": "America/New_York",    "label": "JFK Airport"},
+    "PHILADELPHIA": {"lat": 39.8729, "lon":  -75.2437, "tz": "America/New_York",    "label": "Philadelphia International"},
+    "PHOENIX":      {"lat": 33.4373, "lon": -112.0078, "tz": "America/Phoenix",     "label": "Phoenix Sky Harbor"},
+    "SANANTONIO":   {"lat": 29.5337, "lon":  -98.4698, "tz": "America/Chicago",     "label": "San Antonio International"},
     "SANFRANCISCO": {"lat": 37.6189, "lon": -122.3750, "tz": "America/Los_Angeles", "label": "SFO"},
+    "SEATTLE":      {"lat": 47.4444, "lon": -122.3139, "tz": "America/Los_Angeles", "label": "Seattle-Tacoma"},
+    "WASHINGTON":   {"lat": 38.8521, "lon":  -77.0377, "tz": "America/New_York",    "label": "Washington Reagan National"},
 }
 
 

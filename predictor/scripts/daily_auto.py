@@ -68,6 +68,7 @@ from src.predictors import (  # noqa: E402
     LearnedPredictor,
     parse_market,
 )
+from src.predictors.parsers import SERIES_MAP  # noqa: E402
 from src.weather import OpenMeteoClient  # noqa: E402
 
 # Reuse the live_run helpers so we don't duplicate position math.
@@ -98,13 +99,23 @@ SIZE_USD_BASE = float(os.environ.get("ARATEA_SIZE_USD", "100.0"))
 # gives the theoretical upper bound on daily captures.
 MAX_BINS_PER_EVENT = int(os.environ.get("ARATEA_MAX_BINS_PER_EVENT", "3"))
 
-# Multi-event scan: ~10-25 captures/day vs the legacy 0-1/day.
+# Multi-event scan. Selected from the 29 Kalshi series confirmed valid by
+# the 2026-05-17 audit (see SERIES_MAP in src/predictors/parsers.py). Chosen
+# to maximize geographic diversity and to include both HIGH and LOW where
+# Kalshi has them. 16 series × MAX_BINS_PER_EVENT (default 3) = up to ~48
+# captures/day. All tickers below MUST exist in SERIES_MAP; the validation
+# at the start of step_capture warns loudly if any drift in.
 EVENT_SERIES_LIST = [
     s.strip() for s in os.environ.get(
         "ARATEA_EVENT_SERIES",
-        "KXLOWTNYC,KXHIGHNY,KXLOWTLAX,KXHIGHTSFO,"
-        "KXLOWTCHI,KXHIGHCHI,KXLOWTPHIL,KXLOWTDC,"
-        "KXLOWTSEA,KXHIGHDEN,KXHIGHTPHX",
+        # LOW temperature — 10 cities, broad regional coverage
+        "KXLOWTNYC,KXLOWTLAX,KXLOWTSFO,KXLOWTCHI,"
+        "KXLOWTDC,KXLOWTBOS,KXLOWTMIA,KXLOWTPHX,"
+        "KXLOWTDEN,KXLOWTSEA,"
+        # HIGH temperature — 6 most liquid HIGH series (also covers
+        # additional geography: Atlanta is HIGH-only in our selection)
+        "KXHIGHTSFO,KXHIGHTDC,KXHIGHTBOS,KXHIGHTPHX,"
+        "KXHIGHTSEA,KXHIGHTATL",
     ).split(",") if s.strip()
 ]
 
@@ -459,6 +470,21 @@ def step_capture(dry_run: bool) -> dict:
     capture each into its own run. Dedupe per (event_ticker, market_ticker).
     """
     print(">> step 2: auto-capture new runs (multi-event)")
+
+    # Validate that every series in EVENT_SERIES_LIST is mapped to a city in
+    # SERIES_MAP. Unmapped series will silently produce 0 captures because
+    # parse_market returns None for them. The check is loud (printed warning),
+    # not fatal — env-override use cases may legitimately point at new series
+    # while the SERIES_MAP catches up.
+    unknown_series = [s for s in EVENT_SERIES_LIST if s not in SERIES_MAP]
+    if unknown_series:
+        print(f"   [WARN] {len(unknown_series)} of {len(EVENT_SERIES_LIST)} "
+              f"series in EVENT_SERIES_LIST are NOT in SERIES_MAP; they will "
+              f"produce 0 captures (silent skip in parse_market):")
+        for s in unknown_series:
+            print(f"          - {s}")
+        print(f"          To fix, add the missing prefix(es) to "
+              f"src/predictors/parsers.py SERIES_MAP.")
 
     tomorrow = date.today() + timedelta(days=1)
     print(f"   target date : {tomorrow.isoformat()}")
