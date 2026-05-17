@@ -10,29 +10,50 @@ from .base import ContractSpec, WeatherVar
 
 # Mapping series_prefix → (variable, city_key)
 # Le prefix est l'en-tête du ticker avant le '-'.
+#
+# Rebuilt 2026-05-17 from an exhaustive Kalshi API probe. Kalshi uses:
+#   - KXHIGHT<code>  for daily HIGH temperature (NOT KXHIGH — the trailing T
+#                    matters; the legacy KXHIGH<code> form returned 0 events
+#                    for every city since the origin of this repo, which is
+#                    why no run had ever resolved on a HIGH before this fix)
+#   - KXLOWT<code>   for daily LOW temperature
+# City codes are NOT always the obvious abbreviation:
+#   - Los Angeles = LAX  (not LA)
+#   - San Francisco = SFO  (not SF)
+# Coverage is asymmetric: 11 cities have HIGH+LOW, 7 have LOW only,
+# Detroit has neither.
 SERIES_MAP: dict[str, tuple[WeatherVar, str]] = {
-    "KXHIGHAUS":  ("temp_max", "AUSTIN"),
-    "KXLOWTAUS":  ("temp_min", "AUSTIN"),
-    "KXHIGHCHI":  ("temp_max", "CHICAGO"),
-    "KXLOWTCHI":  ("temp_min", "CHICAGO"),
-    "KXHIGHHOU":  ("temp_max", "HOUSTON"),
-    "KXLOWTHOU":  ("temp_min", "HOUSTON"),
-    "KXHIGHNYC":  ("temp_max", "NYC"),
-    "KXLOWTNYC":  ("temp_min", "NYC"),
-    "KXHIGHMIA":  ("temp_max", "MIAMI"),
-    "KXLOWTMIA":  ("temp_min", "MIAMI"),
-    "KXHIGHLA":   ("temp_max", "LOSANGELES"),
-    "KXLOWTLA":   ("temp_min", "LOSANGELES"),
-    "KXHIGHSATX": ("temp_max", "SANANTONIO"),
-    "KXLOWTSATX": ("temp_min", "SANANTONIO"),
-    "KXHIGHSF":   ("temp_max", "SANFRANCISCO"),
-    "KXLOWTSF":   ("temp_min", "SANFRANCISCO"),
-    "KXHIGHBOS":  ("temp_max", "BOSTON"),
-    "KXLOWTBOS":  ("temp_min", "BOSTON"),
-    "KXHIGHDEN":  ("temp_max", "DENVER"),
-    "KXLOWTDEN":  ("temp_min", "DENVER"),
-    "KXHIGHPHIL": ("temp_max", "PHILADELPHIA"),
-    "KXLOWTPHIL": ("temp_min", "PHILADELPHIA"),
+    # HIGH temperature — 11 cities
+    "KXHIGHTATL":  ("temp_max", "ATLANTA"),
+    "KXHIGHTBOS":  ("temp_max", "BOSTON"),
+    "KXHIGHTDAL":  ("temp_max", "DALLAS"),
+    "KXHIGHTDC":   ("temp_max", "WASHINGTON"),
+    "KXHIGHTHOU":  ("temp_max", "HOUSTON"),
+    "KXHIGHTLV":   ("temp_max", "LASVEGAS"),
+    "KXHIGHTMIN":  ("temp_max", "MINNEAPOLIS"),
+    "KXHIGHTPHX":  ("temp_max", "PHOENIX"),
+    "KXHIGHTSATX": ("temp_max", "SANANTONIO"),
+    "KXHIGHTSEA":  ("temp_max", "SEATTLE"),
+    "KXHIGHTSFO":  ("temp_max", "SANFRANCISCO"),
+    # LOW temperature — 18 cities (the 11 above plus 7 LOW-only)
+    "KXLOWTATL":   ("temp_min", "ATLANTA"),
+    "KXLOWTAUS":   ("temp_min", "AUSTIN"),
+    "KXLOWTBOS":   ("temp_min", "BOSTON"),
+    "KXLOWTCHI":   ("temp_min", "CHICAGO"),
+    "KXLOWTDAL":   ("temp_min", "DALLAS"),
+    "KXLOWTDC":    ("temp_min", "WASHINGTON"),
+    "KXLOWTDEN":   ("temp_min", "DENVER"),
+    "KXLOWTHOU":   ("temp_min", "HOUSTON"),
+    "KXLOWTLAX":   ("temp_min", "LOSANGELES"),
+    "KXLOWTLV":    ("temp_min", "LASVEGAS"),
+    "KXLOWTMIA":   ("temp_min", "MIAMI"),
+    "KXLOWTMIN":   ("temp_min", "MINNEAPOLIS"),
+    "KXLOWTNYC":   ("temp_min", "NYC"),
+    "KXLOWTPHIL":  ("temp_min", "PHILADELPHIA"),
+    "KXLOWTPHX":   ("temp_min", "PHOENIX"),
+    "KXLOWTSATX":  ("temp_min", "SANANTONIO"),
+    "KXLOWTSEA":   ("temp_min", "SEATTLE"),
+    "KXLOWTSFO":   ("temp_min", "SANFRANCISCO"),
 }
 
 
