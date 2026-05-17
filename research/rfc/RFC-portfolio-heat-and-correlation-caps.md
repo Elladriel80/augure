@@ -1,11 +1,12 @@
 # RFC — Portfolio heat & correlation caps pour Aratea Phase 1
 
 - **Auteur** : @Elladriel80
-- **Date** : 2026-05-17
-- **Statut** : draft, à discuter
+- **Date initiale** : 2026-05-17
+- **Statut** : implémenté complet — caps livrés (PR #85), câblage `daily_auto` + reconstruction depuis ledger livrés (PR #<N>)
 - **Issu de** : exploration des skills `tradermonty/claude-trading-skills`
   ([research/external-skills/](../external-skills/README.md))
-- **Touche** : `predictor/src/simulation/sizing.py`, `predictor/scripts/daily_auto.py`
+- **Touche** : `predictor/src/simulation/sizing.py`, `predictor/src/simulation/clusters.py`, `predictor/scripts/daily_auto.py`
+- **Voir aussi** : §7 « Historique d'implémentation »
 
 ## TL;DR
 
@@ -180,3 +181,94 @@ def test_strictest_wins():
 - Memo `project_financial_model_v04.md` (sizing 5 %/pari, full collat 1:1)
 - Memo `project_predictor_infra_mature.md` (goulot daily_auto, PR A widen)
 - Memo `project_seasonal_phase_b.md` (Tier 1 / Tier 2 saisonnier)
+
+## 7. Historique d'implémentation
+
+Le RFC original a été rédigé avant toute implémentation. Cette section trace
+les PRs qui le réalisent, dans l'ordre.
+
+### PR #85 — caps in-memory (mergée le 2026-05-17)
+
+Périmètre livré :
+
+- Module `predictor/src/simulation/clusters.py` (parser ticker Kalshi +
+  mapping NOAA 8-régions + `BetContext`)
+- Classe `PortfolioHeat` in-memory dans `sizing.py` avec `MAX_PORTFOLIO_HEAT=0.10`,
+  `MAX_CLUSTER_EXPOSURE=0.06`, fenêtre 3 jours
+- Wrapper `capped_kelly_size()` qui applique l'ordre d'application décrit §2.3
+- 36 tests verts (20 sur `clusters`, 11 sur `portfolio_heat`, 5 ajoutés au
+  passage sur `sizing.py`)
+- Documentation `predictor/docs/sizing.md`
+
+Trois pièges du format ticker Kalshi documentés au passage dans la mémoire
+projet (HIGHT vs HIGH par longueur de préfixe, LV ≠ TLV via le `T` du
+market type, MIA vs MIAM via longueur du segment date 7 vs 5).
+
+Arbitrage HOU → SE confirmé : cohérent avec la trajectoire Phase B
+cyclonique (NOLA / MIA / HOU = cluster Gulf monolithique). La corrélation
+Plains saisonnière est de second ordre.
+
+### PR #<N> — câblage `daily_auto` + reconstruction depuis ledger (mergée le 2026-05-<JJ>)
+
+Périmètre livré :
+
+- `PortfolioHeat.from_ledger(ledger_path, bankroll, *, on_unknown_ticker)` :
+  reconstruit l'état des paris non-settled depuis `paper_bets.csv` à chaque
+  run. Utilise `Ledger.read_all()` existant — une seule source de parsing CSV.
+- Helper privé `_bet_context_from_paper_bet` : skip si settled, ValueError
+  si ville non mappée, utilise `event_ticker` (sans strike) pour le
+  clustering — pas `market_ticker`.
+- Guard `bet_id` unique sur `register()` — `ValueError` sur duplicate.
+  Idempotent sur un ledger append-only, mais protège contre un bug futur.
+- Dans `daily_auto.py` :
+  - `_compute_current_bankroll()` : marqué-au-market =
+    `SIMULATION["starting_bankroll"] + sum(P&L settled)`. **Fail-fast**
+    `RuntimeError` si `< $200` (signal de corruption ledger / bug settle).
+  - `_size_with_caps()` : wrapper testable autour de `capped_kelly_size`.
+  - Suppression pure de `_adaptive_size_usd` + `SIZE_USD_BASE` +
+    `ARATEA_SIZE_USD` (sizing edge-based remplacé par Kelly capé, refus
+    pur si caps saturés, aucun redimensionnement à epsilon).
+  - `portfolio.register(bet_ctx)` APRÈS confirmation d'écriture au ledger :
+    invariant "registered = écrit au disque" préservé.
+  - `try/except ValueError` defensive autour de `_size_with_caps` :
+    symétrique au validateur `unknown_series` existant, log la ville
+    extraite + skip si clustering échoue mid-loop.
+  - `report.json` notes incluent `Kelly capped size=$X` +
+    `portfolio_heat_after_register=X.X%` (heat prédictive).
+- 17 tests supplémentaires (9 `test_portfolio_from_ledger.py` + 1 register
+  duplicate + 7 `test_daily_auto_caps_wiring.py`). 53 tests verts au total.
+
+Décisions de design notables :
+
+- **Pas de persistance disque séparée** : la PR « persistance `state.json`
+  versionné » envisagée initialement est **abandonnée**. Le ledger
+  `paper_bets.csv` est déjà la source de vérité du workflow paper-trade ;
+  maintenir un fichier d'état séparé dupliquerait l'information et
+  ouvrirait la porte à des désync sans bénéfice net. Reconstruction
+  depuis ledger = ~30 lignes, idempotente, pas de versioning de schéma à
+  maintenir.
+- **Bankroll marqué-au-market** plutôt que statique : la fraction 5 %
+  per-trade s'ajuste au capital réel. La fraction des paris pré-câblage
+  reflète l'engagement comptable réel (stake_usd / current_bankroll), pas
+  une fiction re-sizée. Conséquence assumée : si l'historique sature la
+  heat (ex. 2 paris à $100 sur bankroll $909 = 22 %), aucun nouveau pari
+  ne sera pris tant que les anciens n'auront pas settle. Gel temporaire =
+  comportement correct des caps.
+- **Refus pur** non-négociable : `amount_usd == 0` → skip, jamais de
+  mini-bet à epsilon, pour ne pas polluer l'évaluation du tournoi
+  predictor avec du bruit de remplissage partiel.
+
+### PR A — widen `daily_auto` (déjà mergée en amont, PR #82 + PR #93)
+
+Élargissement du débit de capture (11 events × 3 bins env-overridable,
+puis 16 events × 3 bins après le fix multi-series HIGHT). À noter : PR A
+avait été planifiée *après* le câblage des caps, mais a finalement mergé
+*avant* — PR #<N> remplit le rôle de safeguard rétrospectif. Le débit
+théorique est passé de ~1 capture/jour à ~48 captures/jour, les caps
+arrivent juste à temps pour absorber cette accélération.
+
+### Évolutions différées hors RFC
+
+Cf. §6 — promotion α 0.25 → 0.5 et migration Bâle-3 risk-weighted restent
+conditionnées aux gates statistiques (N≥100 settled / N≥30 par catégorie).
+À ré-arbitrer dans un RFC dédié quand les données seront là.
