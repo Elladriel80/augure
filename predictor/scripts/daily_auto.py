@@ -7,33 +7,44 @@ workflow never fails on missing data (e.g. event not yet published).
 Workflow per invocation:
   1. Auto-finalize: for every run with a not-yet-resolved report.json,
      check Kalshi. If settled, run finalize_run.finalize().
-  2. Auto-capture: pick tomorrow's NYC LOWT event, score every parseable
-     median bin with the champion (vendor_ensemble), select the bin with
-     |edge vs kalshi_mid| > EDGE_THRESHOLD and spread <= SPREAD_THRESHOLD.
-     If a winner is found, capture a run (write report.json + append
-     ledger). If not, log the reason and skip.
+  2. Auto-capture (multi-event): for each series in EVENT_SERIES_LIST, fetch
+     tomorrow's event, score every parseable median bin with the champion
+     (vendor_ensemble), select up to MAX_BINS_PER_EVENT bins that clear
+     |edge vs kalshi_mid| >= EDGE_THRESHOLD and spread <= SPREAD_THRESHOLD.
+     Capture each into its own run (write report.json + append ledger).
+     Stake per run scales with |edge| via _adaptive_size_usd (base
+     SIZE_USD_BASE, clamped [0.5x, 3.0x]).
   3. Rebuild dashboard manifest.
 
 The workflow then commits + pushes the result.
 
-Idempotent. Safe to re-run within the same day — the bin-selection step
-overwrites the day's open run if no resolution has been logged yet (the
-report.json is rewritten in place). Set --no-overwrite to opt out.
+Idempotent: dedupe is per (event_ticker, market_ticker). With
+MAX_BINS_PER_EVENT > 1 multiple open runs on the same event are legitimate;
+only the same bin is suppressed if already open.
+
+All thresholds and the event list are env-overridable for rollback:
+  ARATEA_EDGE_THRESHOLD, ARATEA_SPREAD_THRESHOLD, ARATEA_SIZE_USD,
+  ARATEA_MAX_BINS_PER_EVENT, ARATEA_EVENT_SERIES (comma-separated).
 
 Skip conditions (auto-capture exits clean):
-  - tomorrow's KXLOWTNYC event is not yet published on Kalshi
-  - no median bin has |edge| > EDGE_THRESHOLD
-  - all candidate bins have spread > SPREAD_THRESHOLD
+  - event not yet published on Kalshi (per series, others still scanned)
+  - no parseable market could be scored
+  - no median bin clears the thresholds
 
 Usage:
     python predictor/scripts/daily_auto.py
     python predictor/scripts/daily_auto.py --dry-run
+    # legacy single-event NYC-only behavior:
+    ARATEA_EVENT_SERIES=KXLOWTNYC ARATEA_MAX_BINS_PER_EVENT=1 \\
+        ARATEA_EDGE_THRESHOLD=0.10 ARATEA_SPREAD_THRESHOLD=0.05 \\
+        python predictor/scripts/daily_auto.py
 """
 from __future__ import annotations
 
 import argparse
 import csv
 import json
+import os
 import subprocess
 import sys
 from datetime import date, datetime, timedelta, timezone
@@ -74,12 +85,41 @@ from finalize_run import finalize  # noqa: E402
 
 
 # ---- decision thresholds --------------------------------------------------
-EDGE_THRESHOLD = 0.10       # |p_champion - kalshi_mid| must be at least 10 pts
-SPREAD_THRESHOLD = 0.05     # yes_ask - yes_bid must be <= 5 cents
-SIZE_USD = 100.0            # paper stake per run
+# All thresholds are env-overridable for a safe rollback path. To revert to the
+# legacy single-event NYC-only behavior, set:
+#   ARATEA_EDGE_THRESHOLD=0.10
+#   ARATEA_SPREAD_THRESHOLD=0.05
+#   ARATEA_EVENT_SERIES=KXLOWTNYC
+#   ARATEA_MAX_BINS_PER_EVENT=1
+EDGE_THRESHOLD = float(os.environ.get("ARATEA_EDGE_THRESHOLD", "0.05"))
+SPREAD_THRESHOLD = float(os.environ.get("ARATEA_SPREAD_THRESHOLD", "0.08"))
+SIZE_USD_BASE = float(os.environ.get("ARATEA_SIZE_USD", "100.0"))
+# Cap on captures per event per day (post-dedupe). Multiplied by len(EVENT_SERIES_LIST)
+# gives the theoretical upper bound on daily captures.
+MAX_BINS_PER_EVENT = int(os.environ.get("ARATEA_MAX_BINS_PER_EVENT", "3"))
 
-# Hardcoded event class for now: NYC daily low temperature.
-EVENT_SERIES = "KXLOWTNYC"
+# Multi-event scan: ~10-25 captures/day vs the legacy 0-1/day.
+EVENT_SERIES_LIST = [
+    s.strip() for s in os.environ.get(
+        "ARATEA_EVENT_SERIES",
+        "KXLOWTNYC,KXHIGHNY,KXLOWTLAX,KXHIGHTSFO,"
+        "KXLOWTCHI,KXHIGHCHI,KXLOWTPHIL,KXLOWTDC,"
+        "KXLOWTSEA,KXHIGHDEN,KXHIGHTPHX",
+    ).split(",") if s.strip()
+]
+
+
+def _adaptive_size_usd(abs_edge: float) -> float:
+    """Scale stake by edge confidence.
+
+    With EDGE_THRESHOLD=0.05, a bin clearing the threshold by exactly 1x gets
+    SIZE_USD_BASE; 2x gets 2x stake; capped at 3x. Floored at 0.5x to keep
+    barely-qualifying bins from over-trading on a marginal edge.
+    """
+    if EDGE_THRESHOLD <= 0:
+        return SIZE_USD_BASE
+    mult = max(0.5, min(abs_edge / EDGE_THRESHOLD, 3.0))
+    return round(SIZE_USD_BASE * mult, 2)
 
 # Kalshi tickers encode the date as 26MAY13 (yy MON dd, uppercase).
 def _kalshi_date_token(d: date) -> str:
@@ -170,10 +210,10 @@ def _next_run_id() -> str:
     return f"{next_n:03d}"
 
 
-def _select_target_bin(ev, champion_p_yes_by_ticker: dict[str, float]) -> Optional[dict]:
-    """Return the chosen target bin dict, or None if no bin clears the thresholds.
+def _select_target_bins(ev, champion_p_yes_by_ticker: dict[str, float]) -> list[dict]:
+    """Return up to MAX_BINS_PER_EVENT qualifying bins, best edge first.
 
-    The chosen bin must:
+    Each bin must:
       - be parseable
       - have strike_type 'between' (median bin, not a tail T-bin)
       - have both yes_bid and yes_ask non-null (tradable)
@@ -182,7 +222,10 @@ def _select_target_bin(ev, champion_p_yes_by_ticker: dict[str, float]) -> Option
         just published, both quotes still at 0 → yes_mid 0 → can't trade)
       - spread <= SPREAD_THRESHOLD
       - |edge_vs_mid| >= EDGE_THRESHOLD
-    Among qualifying bins, the one with the largest |edge| wins.
+    Among qualifying bins, return the top MAX_BINS_PER_EVENT sorted by
+    abs_edge descending (tie-break: smaller spread).
+
+    Returns [] if no bin qualifies.
     """
     MIN_QUOTE = 0.02  # below = effectively no bid
     MAX_QUOTE = 0.98  # above = effectively no ask
@@ -228,23 +271,22 @@ def _select_target_bin(ev, champion_p_yes_by_ticker: dict[str, float]) -> Option
         })
 
     if not candidates:
-        return None
+        return []
 
     # Sort by abs_edge descending; tie-break by smaller spread (cleaner trade).
     candidates.sort(key=lambda c: (-c["abs_edge"], c["spread"]))
-    return candidates[0]
+    return candidates[:MAX_BINS_PER_EVENT]
 
 
-def _open_runs_for_event(event_ticker: str) -> list[str]:
-    """Return run_ids that are currently open AND target the same event_ticker.
+def _already_captured_bin(event_ticker: str, market_ticker: str) -> Optional[str]:
+    """Return run_id of an open run matching (event_ticker, market_ticker), or None.
 
-    Used to dedupe: if today's cron already captured a run for tomorrow's
-    event (e.g. via a manual workflow_dispatch earlier), don't capture
-    twice.
+    Dedupe is per-bin now (was per-event): with MAX_BINS_PER_EVENT > 1 we
+    legitimately want multiple open runs on the same event, just not on the
+    same bin.
     """
-    matches: list[str] = []
     if not RUNS_DIR.exists():
-        return matches
+        return None
     for run_dir in RUNS_DIR.iterdir():
         if not run_dir.is_dir():
             continue
@@ -255,96 +297,49 @@ def _open_runs_for_event(event_ticker: str) -> list[str]:
             data = json.loads(rj.read_text(encoding="utf-8"))
         except Exception:
             continue
-        ev = (data.get("event") or {}).get("ticker")
-        if ev != event_ticker:
+        ev_t = (data.get("event") or {}).get("ticker")
+        if ev_t != event_ticker:
             continue
-        # Open = at least one market with resolution.outcome == null
         for m in data.get("markets", []):
+            if m.get("ticker") != market_ticker:
+                continue
             if (m.get("resolution") or {}).get("outcome") is None:
-                matches.append(run_dir.name)
-                break
-    return matches
+                return run_dir.name
+    return None
 
 
-def step_capture(dry_run: bool) -> dict:
-    """Try to capture a new run for tomorrow's KXLOWTNYC event. Returns summary."""
-    print(">> step 2: auto-capture new run")
+def _capture_one_bin(
+    ev,
+    target: dict,
+    weather,
+    registry: dict,
+    dry_run: bool,
+) -> dict:
+    """Capture one (event, bin) into runs/<NNN>/report.json + ledger.
 
-    tomorrow = date.today() + timedelta(days=1)
-    event_ticker = f"{EVENT_SERIES}-{_kalshi_date_token(tomorrow)}"
-    print(f"   target event: {event_ticker} (tomorrow = {tomorrow.isoformat()})")
-
-    # Dedupe: skip if an open run already exists for this event ticker.
-    already = _open_runs_for_event(event_ticker)
-    if already:
-        print(f"   [skip] open run(s) already exist for {event_ticker}: {already}. "
-              "No duplicate capture.")
-        return {"captured": False, "reason": "already_open_run_for_event",
-                "event_ticker": event_ticker, "existing_runs": already}
-
-    # 1. Fetch the event from Kalshi
-    client = KalshiClient()
-    try:
-        ev = client.get_event(event_ticker)
-    except Exception as e:
-        print(f"   [skip] event not yet published or fetch error: {e}")
-        return {"captured": False, "reason": "event_not_published_or_error",
-                "event_ticker": event_ticker, "error": str(e)}
-
-    print(f"   event title: {ev.title}")
-    print(f"   markets: {len(ev.markets)}")
-
-    # 2. Score every parseable market with the champion (vendor_ensemble)
-    weather = OpenMeteoClient()
-    ensemble = EnsemblePredictor(weather)
-    champion_p_yes_by_ticker: dict[str, float] = {}
-    for m in ev.markets:
-        spec = parse_market(m)
-        if spec is None:
-            continue
-        try:
-            pred = ensemble.predict(spec)
-            champion_p_yes_by_ticker[m.ticker] = float(pred.prob_yes)
-        except Exception as e:
-            print(f"   [warn] predict error on {m.ticker}: {e}")
-
-    if not champion_p_yes_by_ticker:
-        print("   [skip] no markets could be scored.")
-        return {"captured": False, "reason": "no_markets_scored",
-                "event_ticker": event_ticker}
-
-    # 3. Select the best target bin
-    target = _select_target_bin(ev, champion_p_yes_by_ticker)
-    if target is None:
-        print(f"   [skip] no median bin clears thresholds "
-              f"(|edge|>={EDGE_THRESHOLD}, spread<={SPREAD_THRESHOLD}).")
-        return {"captured": False, "reason": "no_bin_clears_thresholds",
-                "event_ticker": event_ticker,
-                "candidates": list(champion_p_yes_by_ticker.keys())}
-
-    side = "NO" if target["edge"] < 0 else "YES"
-    print(f"   target bin: {target['ticker']}  yes_mid={target['yes_mid']:.3f}  "
-          f"p_champion={target['p_champion']:.3f}  edge={target['edge']:+.3f}  "
-          f"side={side}")
-
-    # 4. Now run all models (champion + challengers + baseline) on the chosen bin
-    registry = _load_champion_registry()
+    Extracted from the legacy single-bin step_capture so the multi-event loop
+    can call it repeatedly without duplicating report-building logic.
+    """
     target_market = next(m for m in ev.markets if m.ticker == target["ticker"])
     spec = parse_market(target_market)
     if spec is None:
-        print("   !! parse_market returned None on selected target. abort capture.")
-        return {"captured": False, "reason": "parse_market_failed_on_target"}
+        print(f"   !! parse_market returned None on {target['ticker']}. skip.")
+        return {"captured": False, "reason": "parse_market_failed_on_target",
+                "event_ticker": ev.event_ticker, "market_ticker": target["ticker"]}
+
+    side = "NO" if target["edge"] < 0 else "YES"
+    size_usd = _adaptive_size_usd(target["abs_edge"])
 
     models = _predict_all_models(registry, weather, spec, target["yes_mid"])
     for m in models:
         p = f"{m['p_yes']:.3f}" if m["p_yes"] is not None else "  -  "
         print(f"     {m['name']:<22} role={m['role']:<10}  p_yes={p}")
 
-    # 5. Build report.json + append ledger row
     run_id = _next_run_id()
-    print(f"   assigned run-id: {run_id}")
+    print(f"   assigned run-id: {run_id} (bin={target['ticker']}, side={side}, "
+          f"size=${size_usd:.2f})")
 
-    pos = _compute_position(side, SIZE_USD, target["yes_mid"])
+    pos = _compute_position(side, size_usd, target["yes_mid"])
     ts_utc = _now_iso()
     ledger_bet_id = _bet_id() if not dry_run else "DRY_RUN_NO_LEDGER"
     champion_name = registry["current_champion"]
@@ -395,7 +390,7 @@ def step_capture(dry_run: bool) -> dict:
                     {
                         "model": m["name"],
                         "method": m["method"],
-                        **_compute_position(side, SIZE_USD, target["yes_mid"]),
+                        **_compute_position(side, size_usd, target["yes_mid"]),
                         "shadow": True,
                         "note": ("Auto-captured by daily_auto.py. Same side/size as "
                                  "champion for Brier comparability."),
@@ -413,9 +408,10 @@ def step_capture(dry_run: bool) -> dict:
         "scoring": None,
         "notes": (
             f"Auto-captured by daily_auto.py on {ts_utc}. "
-            f"Selection rule: median-bin with max |edge_vs_mid| "
-            f"(threshold {EDGE_THRESHOLD}), spread<={SPREAD_THRESHOLD}. "
-            f"Champion {champion_name} edge={target['edge']:+.3f}, side={side}."
+            f"Selection rule: top-{MAX_BINS_PER_EVENT} median bin(s) per event "
+            f"with |edge_vs_mid|>={EDGE_THRESHOLD}, spread<={SPREAD_THRESHOLD}. "
+            f"Champion {champion_name} edge={target['edge']:+.3f}, side={side}, "
+            f"adaptive size=${size_usd:.2f} (base ${SIZE_USD_BASE:.0f})."
         ),
     }
 
@@ -423,7 +419,8 @@ def step_capture(dry_run: bool) -> dict:
         print(f"   [DRY RUN] would write runs/{run_id}/report.json")
         print(f"   [DRY RUN] would append ledger row (bet_id={ledger_bet_id})")
         return {"captured": True, "dry_run": True, "run_id": run_id,
-                "event_ticker": event_ticker, "target": target}
+                "event_ticker": ev.event_ticker, "market_ticker": target["ticker"],
+                "side": side, "size_usd": size_usd}
 
     run_dir = RUNS_DIR / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -439,7 +436,7 @@ def step_capture(dry_run: bool) -> dict:
         "event_ticker": ev.event_ticker,
         "target_date": spec.target_date.isoformat(),
         "side": side,
-        "stake_usd": SIZE_USD,
+        "stake_usd": size_usd,
         "entry_price": target["yes_mid"],
         "prob_model": champion_p_yes,
         "prob_market_implied": target["yes_mid"],
@@ -450,8 +447,111 @@ def step_capture(dry_run: bool) -> dict:
     print(f"   appended ledger row (bet_id={ledger_bet_id})")
 
     return {"captured": True, "dry_run": False, "run_id": run_id,
-            "event_ticker": event_ticker, "target_market": target["ticker"],
-            "side": side, "n_contracts": pos["n_contracts"]}
+            "event_ticker": ev.event_ticker, "market_ticker": target["ticker"],
+            "side": side, "n_contracts": pos["n_contracts"], "size_usd": size_usd}
+
+
+def step_capture(dry_run: bool) -> dict:
+    """Try to capture new runs across all EVENT_SERIES_LIST for tomorrow's events.
+
+    For each event series, fetch tomorrow's event, score every parseable bin
+    with the champion, select up to MAX_BINS_PER_EVENT qualifying bins, and
+    capture each into its own run. Dedupe per (event_ticker, market_ticker).
+    """
+    print(">> step 2: auto-capture new runs (multi-event)")
+
+    tomorrow = date.today() + timedelta(days=1)
+    print(f"   target date : {tomorrow.isoformat()}")
+    print(f"   event series: {len(EVENT_SERIES_LIST)} "
+          f"({', '.join(EVENT_SERIES_LIST[:5])}"
+          + (', ...' if len(EVENT_SERIES_LIST) > 5 else '') + ")")
+    print(f"   thresholds  : |edge|>={EDGE_THRESHOLD}, spread<={SPREAD_THRESHOLD}, "
+          f"max_bins/event={MAX_BINS_PER_EVENT}")
+
+    client = KalshiClient()
+    weather = OpenMeteoClient()
+    ensemble = EnsemblePredictor(weather)
+    registry = _load_champion_registry()
+
+    per_event_summaries: list[dict] = []
+    captures: list[dict] = []
+
+    for series in EVENT_SERIES_LIST:
+        event_ticker = f"{series}-{_kalshi_date_token(tomorrow)}"
+        print(f"\n   ---- {event_ticker} ----")
+
+        try:
+            ev = client.get_event(event_ticker)
+        except Exception as e:
+            print(f"   [skip] event not yet published or fetch error: {e}")
+            per_event_summaries.append({
+                "event_ticker": event_ticker, "skipped": True,
+                "reason": "event_not_published_or_error", "error": str(e),
+            })
+            continue
+
+        print(f"   event title : {ev.title}  | markets: {len(ev.markets)}")
+
+        champion_p_yes_by_ticker: dict[str, float] = {}
+        for m in ev.markets:
+            spec = parse_market(m)
+            if spec is None:
+                continue
+            try:
+                pred = ensemble.predict(spec)
+                champion_p_yes_by_ticker[m.ticker] = float(pred.prob_yes)
+            except Exception as e:
+                print(f"   [warn] predict error on {m.ticker}: {e}")
+
+        if not champion_p_yes_by_ticker:
+            print("   [skip] no markets could be scored.")
+            per_event_summaries.append({
+                "event_ticker": event_ticker, "skipped": True,
+                "reason": "no_markets_scored",
+            })
+            continue
+
+        targets = _select_target_bins(ev, champion_p_yes_by_ticker)
+        if not targets:
+            print(f"   [skip] no bin clears thresholds.")
+            per_event_summaries.append({
+                "event_ticker": event_ticker, "skipped": True,
+                "reason": "no_bin_clears_thresholds",
+            })
+            continue
+
+        print(f"   {len(targets)} qualifying bin(s) (cap {MAX_BINS_PER_EVENT})")
+
+        event_captured = 0
+        for target in targets:
+            existing = _already_captured_bin(event_ticker, target["ticker"])
+            if existing:
+                print(f"   [dedupe] {target['ticker']} already open in run {existing}, skip.")
+                continue
+            side = "NO" if target["edge"] < 0 else "YES"
+            print(f"   capture: {target['ticker']}  yes_mid={target['yes_mid']:.3f}  "
+                  f"p_champion={target['p_champion']:.3f}  edge={target['edge']:+.3f}  "
+                  f"side={side}")
+            result = _capture_one_bin(ev, target, weather, registry, dry_run)
+            captures.append(result)
+            if result.get("captured"):
+                event_captured += 1
+
+        per_event_summaries.append({
+            "event_ticker": event_ticker, "skipped": False,
+            "qualifying_bins": len(targets),
+            "captured_count": event_captured,
+        })
+
+    n_captured = sum(1 for c in captures if c.get("captured"))
+    print(f"\n   TOTAL: {n_captured} captures across "
+          f"{len(EVENT_SERIES_LIST)} events scanned")
+
+    return {
+        "captured_count": n_captured,
+        "captures": captures,
+        "per_event": per_event_summaries,
+    }
 
 
 # ---- step 3: rebuild manifest ---------------------------------------------
