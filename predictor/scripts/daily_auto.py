@@ -12,8 +12,9 @@ Workflow per invocation:
      (vendor_ensemble), select up to MAX_BINS_PER_EVENT bins that clear
      |edge vs kalshi_mid| >= EDGE_THRESHOLD and spread <= SPREAD_THRESHOLD.
      Capture each into its own run (write report.json + append ledger).
-     Stake per run scales with |edge| via _adaptive_size_usd (base
-     SIZE_USD_BASE, clamped [0.5x, 3.0x]).
+     Stake per run is sized via capped_kelly_size (quart-Kelly + 3 caps :
+     per-trade 5 %, portfolio heat 10 %, cluster exposure 6 %). See RFC
+     research/rfc/RFC-portfolio-heat-and-correlation-caps.md.
   3. Rebuild dashboard manifest.
 
 The workflow then commits + pushes the result.
@@ -23,13 +24,15 @@ MAX_BINS_PER_EVENT > 1 multiple open runs on the same event are legitimate;
 only the same bin is suppressed if already open.
 
 All thresholds and the event list are env-overridable for rollback:
-  ARATEA_EDGE_THRESHOLD, ARATEA_SPREAD_THRESHOLD, ARATEA_SIZE_USD,
+  ARATEA_EDGE_THRESHOLD, ARATEA_SPREAD_THRESHOLD,
   ARATEA_MAX_BINS_PER_EVENT, ARATEA_EVENT_SERIES (comma-separated).
 
 Skip conditions (auto-capture exits clean):
   - event not yet published on Kalshi (per series, others still scanned)
   - no parseable market could be scored
   - no median bin clears the thresholds
+  - portfolio heat / cluster cap saturated (refusé strict, pas de redim.)
+  - event_ticker dont la ville n'est pas dans CITY_TO_NOAA (warn + skip)
 
 Usage:
     python predictor/scripts/daily_auto.py
@@ -69,6 +72,13 @@ from src.predictors import (  # noqa: E402
     parse_market,
 )
 from src.predictors.parsers import SERIES_MAP  # noqa: E402
+from src.config import SIMULATION  # noqa: E402
+from src.simulation.clusters import BetContext, parse_city_from_ticker  # noqa: E402
+from src.simulation.ledger import Ledger  # noqa: E402
+from src.simulation.sizing import (  # noqa: E402
+    PortfolioHeat,
+    capped_kelly_size,
+)
 from src.weather import OpenMeteoClient  # noqa: E402
 
 # Reuse the live_run helpers so we don't duplicate position math.
@@ -94,10 +104,14 @@ from finalize_run import finalize  # noqa: E402
 #   ARATEA_MAX_BINS_PER_EVENT=1
 EDGE_THRESHOLD = float(os.environ.get("ARATEA_EDGE_THRESHOLD", "0.05"))
 SPREAD_THRESHOLD = float(os.environ.get("ARATEA_SPREAD_THRESHOLD", "0.08"))
-SIZE_USD_BASE = float(os.environ.get("ARATEA_SIZE_USD", "100.0"))
 # Cap on captures per event per day (post-dedupe). Multiplied by len(EVENT_SERIES_LIST)
 # gives the theoretical upper bound on daily captures.
 MAX_BINS_PER_EVENT = int(os.environ.get("ARATEA_MAX_BINS_PER_EVENT", "3"))
+
+# Bankroll minimum viable. En dessous, on raise plutôt que continuer à
+# trader sur capital dégradé : c'est un signal de corruption du ledger ou
+# de bug du settlement worker, pas un état normal de fonctionnement.
+MIN_VIABLE_BANKROLL_USD = 200.0
 
 # Multi-event scan. Selected from the 29 Kalshi series confirmed valid by
 # the 2026-05-17 audit (see SERIES_MAP in src/predictors/parsers.py). Chosen
@@ -120,18 +134,6 @@ EVENT_SERIES_LIST = [
 ]
 
 
-def _adaptive_size_usd(abs_edge: float) -> float:
-    """Scale stake by edge confidence.
-
-    With EDGE_THRESHOLD=0.05, a bin clearing the threshold by exactly 1x gets
-    SIZE_USD_BASE; 2x gets 2x stake; capped at 3x. Floored at 0.5x to keep
-    barely-qualifying bins from over-trading on a marginal edge.
-    """
-    if EDGE_THRESHOLD <= 0:
-        return SIZE_USD_BASE
-    mult = max(0.5, min(abs_edge / EDGE_THRESHOLD, 3.0))
-    return round(SIZE_USD_BASE * mult, 2)
-
 # Kalshi tickers encode the date as 26MAY13 (yy MON dd, uppercase).
 def _kalshi_date_token(d: date) -> str:
     return d.strftime("%y%b%d").upper()
@@ -139,6 +141,65 @@ def _kalshi_date_token(d: date) -> str:
 
 RUNS_DIR = ROOT / "runs"
 LEDGER_PATH = ROOT / "data" / "ledger" / "paper_bets.csv"
+
+
+def _compute_current_bankroll() -> float:
+    """Bankroll virtuel courant = starting + P&L des paris settled.
+
+    Marqué-au-market sur le ledger paper-bet. Les paris non-settled ne
+    contribuent pas (leur P&L est ``None``). Le résultat alimente
+    ``capped_kelly_size`` : la fraction 5 % per-trade s'ajuste donc au
+    capital effectivement disponible.
+
+    Lève ``RuntimeError`` si le bankroll tombe sous ``MIN_VIABLE_BANKROLL_USD``
+    — fail-fast pour ne pas trader sur capital dégradé (signal de
+    corruption du ledger ou bug du settlement worker, pas un état normal).
+    """
+    ledger = Ledger(LEDGER_PATH)
+    bets = ledger.read_all()
+    realized_pnl = sum(b.pnl_usd for b in bets if b.pnl_usd is not None)
+    bankroll = SIMULATION["starting_bankroll"] + realized_pnl
+    if bankroll < MIN_VIABLE_BANKROLL_USD:
+        raise RuntimeError(
+            f"Bankroll dégradé sous seuil viable : ${bankroll:.2f} < "
+            f"${MIN_VIABLE_BANKROLL_USD:.2f}. Signal de corruption du "
+            f"ledger ou bug settlement — investiguer avant de relancer."
+        )
+    return bankroll
+
+
+def _size_with_caps(
+    *,
+    target: dict,
+    event_ticker: str,
+    current_bankroll: float,
+    portfolio: PortfolioHeat,
+    settlement_date: date,
+    bet_id: str,
+) -> tuple[float, BetContext | None]:
+    """Wrapper testable autour de ``capped_kelly_size``.
+
+    Extrait du flow ``_capture_one_bin`` pour pouvoir tester la décision de
+    sizing sans monter tous les mocks (KalshiClient, OpenMeteoClient,
+    EnsemblePredictor, registry). Le caller reste responsable du
+    ``portfolio.register(ctx)`` après confirmation d'écriture au ledger.
+
+    Passe ``event_ticker`` (sans strike) à ``capped_kelly_size`` —
+    ``target['ticker']`` est le ``market_ticker`` (avec strike ``-B50.5``)
+    que ``parse_city_from_ticker`` ne saurait pas décoder.
+    """
+    side = "NO" if target["edge"] < 0 else "YES"
+    return capped_kelly_size(
+        prob_yes=target["p_champion"],
+        market_yes_price=target["yes_mid"],
+        side=side,
+        bankroll=current_bankroll,
+        market_ticker=event_ticker,
+        settlement_date=settlement_date,
+        bet_id=bet_id,
+        portfolio=portfolio,
+        kelly_fraction=SIMULATION["kelly_fraction"],
+    )
 
 
 # ---- step 1: auto-finalize -----------------------------------------------
@@ -324,12 +385,22 @@ def _capture_one_bin(
     target: dict,
     weather,
     registry: dict,
+    portfolio: PortfolioHeat,
+    current_bankroll: float,
     dry_run: bool,
 ) -> dict:
     """Capture one (event, bin) into runs/<NNN>/report.json + ledger.
 
     Extracted from the legacy single-bin step_capture so the multi-event loop
     can call it repeatedly without duplicating report-building logic.
+
+    Sizing via ``_size_with_caps`` (Kelly fractionnel + 3 caps portfolio).
+    Skip strict si :
+      - parse_market échoue ;
+      - la ville extraite de event_ticker n'est pas dans CITY_TO_NOAA
+        (defensive : symétrique au validateur unknown_series de step_capture) ;
+      - les caps portefeuille saturent (amount = 0 → refus pur, aucun
+        redimensionnement à epsilon).
     """
     target_market = next(m for m in ev.markets if m.ticker == target["ticker"])
     spec = parse_market(target_market)
@@ -339,7 +410,42 @@ def _capture_one_bin(
                 "event_ticker": ev.event_ticker, "market_ticker": target["ticker"]}
 
     side = "NO" if target["edge"] < 0 else "YES"
-    size_usd = _adaptive_size_usd(target["abs_edge"])
+    ledger_bet_id = _bet_id() if not dry_run else "DRY_RUN_NO_LEDGER"
+
+    try:
+        size_usd, bet_ctx = _size_with_caps(
+            target=target,
+            event_ticker=ev.event_ticker,
+            current_bankroll=current_bankroll,
+            portfolio=portfolio,
+            settlement_date=spec.target_date,
+            bet_id=ledger_bet_id,
+        )
+    except ValueError as e:
+        # Defensive : capped_kelly_size → spatial_cluster_for_ticker peut
+        # lever si event_ticker pointe sur une ville absente de CITY_TO_NOAA
+        # (cas drift env-override). On log + skip, on ne crashe pas le run.
+        try:
+            offending_city = parse_city_from_ticker(ev.event_ticker)
+        except Exception:
+            offending_city = "<parse échec>"
+        print(f"   [skip] cluster inconnu pour event_ticker={ev.event_ticker} "
+              f"(ville extraite='{offending_city}') : {e}")
+        return {"captured": False, "reason": "unknown_cluster",
+                "event_ticker": ev.event_ticker, "market_ticker": target["ticker"]}
+
+    if size_usd == 0.0:
+        heat_pct = portfolio.total_open_fraction() * 100
+        print(f"   [skip] cap atteint pour {target['ticker']} side={side} "
+              f"(heat={heat_pct:.1f}%, bankroll=${current_bankroll:.2f})")
+        return {"captured": False, "reason": "cap_atteint",
+                "event_ticker": ev.event_ticker, "market_ticker": target["ticker"],
+                "heat_pct": heat_pct}
+
+    # bet_ctx est garanti non-None puisque size_usd > 0 (cf. capped_kelly_size).
+    assert bet_ctx is not None
+    # Heat prédictive : ce que ce pari ajoutera une fois registered.
+    heat_after_pct = (portfolio.total_open_fraction() + bet_ctx.fraction_engaged) * 100
 
     models = _predict_all_models(registry, weather, spec, target["yes_mid"])
     for m in models:
@@ -352,7 +458,6 @@ def _capture_one_bin(
 
     pos = _compute_position(side, size_usd, target["yes_mid"])
     ts_utc = _now_iso()
-    ledger_bet_id = _bet_id() if not dry_run else "DRY_RUN_NO_LEDGER"
     champion_name = registry["current_champion"]
     champion_method = next(
         (m["method"] for m in models if m["name"] == champion_name), "unknown"
@@ -422,13 +527,16 @@ def _capture_one_bin(
             f"Selection rule: top-{MAX_BINS_PER_EVENT} median bin(s) per event "
             f"with |edge_vs_mid|>={EDGE_THRESHOLD}, spread<={SPREAD_THRESHOLD}. "
             f"Champion {champion_name} edge={target['edge']:+.3f}, side={side}, "
-            f"adaptive size=${size_usd:.2f} (base ${SIZE_USD_BASE:.0f})."
+            f"Kelly capped size=${size_usd:.2f} (bankroll=${current_bankroll:.2f}, "
+            f"portfolio_heat_after_register={heat_after_pct:.1f}%)."
         ),
     }
 
     if dry_run:
         print(f"   [DRY RUN] would write runs/{run_id}/report.json")
         print(f"   [DRY RUN] would append ledger row (bet_id={ledger_bet_id})")
+        print(f"   [DRY RUN] would register bet in portfolio "
+              f"(heat: {portfolio.total_open_fraction()*100:.1f}% → {heat_after_pct:.1f}%)")
         return {"captured": True, "dry_run": True, "run_id": run_id,
                 "event_ticker": ev.event_ticker, "market_ticker": target["ticker"],
                 "side": side, "size_usd": size_usd}
@@ -457,9 +565,17 @@ def _capture_one_bin(
     })
     print(f"   appended ledger row (bet_id={ledger_bet_id})")
 
+    # Register dans le portefeuille APRÈS confirmation d'écriture au ledger :
+    # invariant "registered = écrit au disque" préservé. Le ledger reste la
+    # source de vérité ; portfolio.register est juste la mise à jour
+    # in-memory du cumul de heat pour le bin suivant dans la même boucle.
+    portfolio.register(bet_ctx)
+    print(f"   registered bet in portfolio (heat now {heat_after_pct:.1f}%)")
+
     return {"captured": True, "dry_run": False, "run_id": run_id,
             "event_ticker": ev.event_ticker, "market_ticker": target["ticker"],
-            "side": side, "n_contracts": pos["n_contracts"], "size_usd": size_usd}
+            "side": side, "n_contracts": pos["n_contracts"], "size_usd": size_usd,
+            "heat_after_pct": heat_after_pct}
 
 
 def step_capture(dry_run: bool) -> dict:
@@ -493,6 +609,22 @@ def step_capture(dry_run: bool) -> dict:
           + (', ...' if len(EVENT_SERIES_LIST) > 5 else '') + ")")
     print(f"   thresholds  : |edge|>={EDGE_THRESHOLD}, spread<={SPREAD_THRESHOLD}, "
           f"max_bins/event={MAX_BINS_PER_EVENT}")
+
+    # Bankroll courant + reconstruction du portefeuille AVANT toute capture.
+    # step_finalize() a déjà tourné en step 1, donc le ledger reflète l'état
+    # post-settlement le plus récent : reconstruct ici voit la heat actuelle.
+    current_bankroll = _compute_current_bankroll()
+    portfolio = PortfolioHeat.from_ledger(LEDGER_PATH, current_bankroll)
+    print(f"   bankroll    : ${current_bankroll:.2f} (starting "
+          f"${SIMULATION['starting_bankroll']:.2f} + P&L réalisé)")
+    print(f"   portfolio   : {len(portfolio.open_bets)} pari(s) non-settled, "
+          f"heat={portfolio.total_open_fraction()*100:.1f}% / "
+          f"{portfolio.max_portfolio_heat*100:.0f}% cap")
+    if portfolio.open_bets:
+        for b in portfolio.open_bets:
+            print(f"                 - {b.bet_id[:16]}  {b.market_ticker}  "
+                  f"cluster={b.spatial_cluster}  fraction="
+                  f"{b.fraction_engaged*100:.2f}%")
 
     client = KalshiClient()
     weather = OpenMeteoClient()
@@ -558,7 +690,11 @@ def step_capture(dry_run: bool) -> dict:
             print(f"   capture: {target['ticker']}  yes_mid={target['yes_mid']:.3f}  "
                   f"p_champion={target['p_champion']:.3f}  edge={target['edge']:+.3f}  "
                   f"side={side}")
-            result = _capture_one_bin(ev, target, weather, registry, dry_run)
+            result = _capture_one_bin(
+                ev=ev, target=target, weather=weather, registry=registry,
+                portfolio=portfolio, current_bankroll=current_bankroll,
+                dry_run=dry_run,
+            )
             captures.append(result)
             if result.get("captured"):
                 event_captured += 1
