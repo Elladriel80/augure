@@ -91,6 +91,38 @@ le hash du claim. Ce qu'il **ne fait pas** : re-fetch de l'URL upstream pour com
 les bodies. C'est exactement le comportement qu'on veut (et NWS rate-limit agressivement
 de toute façon).
 
+### 1.9 Pin SDK Reclaim via npm `overrides` (anti-drift transitive)
+
+`@reclaimprotocol/attestor-core@4.0.3` (consommé via `zk-fetch`) déclare sa dépendance
+sur `@reclaimprotocol/tls` comme `"github:reclaimprotocol/tls"` **sans aucune version
+ni commit pin**. Résultat : chaque `npm install` pioche le HEAD courant du `main`
+de github.com/reclaimprotocol/tls, qui dérive dans le temps. Le 2026-05-17, le HEAD
+ne contenait plus la fonction `strToUint8Array` que `attestor-core` utilise dans ses
+binaires compilés → crash runtime immédiat au chargement de `http-parser.js`.
+
+**Fix appliqué (fix #79)** :
+
+1. Bump direct `@reclaimprotocol/zk-fetch` `^0.4.0` → `^0.8.0` (cette version pin
+   `tls` à un commit précis : `github:reclaimprotocol/tls#8e0669a220341432673a20bb51f9339555701ef4`)
+2. Ajout d'un bloc `overrides` dans `keeper/package.json` qui force le même commit
+   au niveau racine, en défense en profondeur contre une future drift dans `zk-fetch` :
+
+   ```json
+   "overrides": {
+       "@reclaimprotocol/tls": "github:reclaimprotocol/tls#8e0669a220341432673a20bb51f9339555701ef4"
+   }
+   ```
+
+3. Smoke test CI ajouté (`oracle-poc-keeper-ci.yml`) : boote le keeper 10 s avec
+   des env dummy, grep le log pour les signatures `TypeError | MODULE_NOT_FOUND |
+   Cannot find module | is not a function`. Toute régression transitive future
+   du même type fera fail le CI.
+
+À monter à la Phase 2 (avant migration mainnet) : ouvrir un upstream issue / PR sur
+`reclaimprotocol/attestor-core` pour pin sa dep tls proprement dans le package.json
+plutôt que de compter sur notre override aval. Pas bloquant POC, mais propre pour
+la communauté.
+
 ---
 
 ## 2. Limites assumées au POC (à transformer en TODO Phase 2)
@@ -152,6 +184,22 @@ mais sale.
 le hash du `claimInfo` côté Reclaim et donc canonique) plutôt que sur la proof complète.
 Vérification supplémentaire requise : que `identifier` couvre bien tout ce qui doit être
 unique. À auditer.
+
+### 2.4 [RÉSOLU Phase 1] Drift transitive `@reclaimprotocol/tls` non pinné
+
+**Découvert au premier `npm start` live (2026-05-17)** : `attestor-core@4.0.3` crash
+au chargement avec `TypeError: (0 , tls_1.strToUint8Array) is not a function` parce
+que sa dépendance `@reclaimprotocol/tls` est déclarée comme `github:reclaimprotocol/tls`
+sans version ni commit pin. npm pioche le HEAD du `main` qui a, entre temps, renommé
+la fonction (`strToUint8Array` → `asciiToUint8Array`).
+
+**Remédiation** : voir §1.9. Fix appliqué dans PR #79 — bump zk-fetch + bloc `overrides`
+dans `package.json` + smoke test CI. **Le TODO est traité en Phase 1**, pas reporté à
+Phase 2, parce qu'il bloquerait toute exécution live du keeper.
+
+À adresser en Phase 2 : upstream issue / PR sur `reclaimprotocol/attestor-core` pour
+pin tls proprement côté package. Notre override est un workaround aval, pas une
+solution structurelle.
 
 ---
 
