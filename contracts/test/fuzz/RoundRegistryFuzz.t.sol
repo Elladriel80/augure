@@ -47,7 +47,12 @@ contract RoundRegistryFuzzTest is Test {
         amts = new uint256[](nBeneficiaries);
         for (uint256 i = 0; i < nBeneficiaries; i++) {
             // Mix the seed with the index to derive distinct addresses and bounded amounts.
-            bens[i] = address(uint160(uint256(keccak256(abi.encode(seed, i, "ben"))) | 1));
+            // Map the hash to [1, type(uint160).max - 1] without forcing the
+            // low bit on (the previous `| 1` made every fuzzed address odd,
+            // halving the explored mint surface — cf. audit P4-11).
+            bens[i] = address(
+                uint160(uint256(keccak256(abi.encode(seed, i, "ben"))) % (type(uint160).max - 1) + 1)
+            );
             amts[i] = (uint256(keccak256(abi.encode(seed, i, "amt"))) % maxAmount) + 1;
         }
     }

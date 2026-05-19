@@ -20,7 +20,12 @@ remappings = [
     "forge-std/=lib/forge-std/src/",
 ]
 
-fs_permissions = [{ access = "read", path = "./" }]
+# Restrict foundry cheatcode FS access to test/fixtures only (cf. audit P4-8).
+# Aucun test n'utilise vm.readFile / vm.readDir aujourd'hui (grep confirmé) ;
+# ce sous-dossier est un emplacement réservé pour de futures fixtures.
+# Foundry refuse tout autre chemin par défaut, ce qui élimine la classe
+# d'attaque « lecture arbitraire du repo depuis un test ».
+fs_permissions = [{ access = "read", path = "./test/fixtures" }]
 
 [fuzz]
 runs = 10000
