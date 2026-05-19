@@ -50,6 +50,7 @@ import json
 import os
 import subprocess
 import sys
+import traceback
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
@@ -720,18 +721,23 @@ def step_capture(dry_run: bool) -> dict:
 
 
 def step_manifest() -> dict:
-    """Re-generate dashboard manifest. Subprocess-call so we use the existing script verbatim."""
+    """Re-generate dashboard manifest. Subprocess-call so we use the existing script verbatim.
+
+    Raises ``RuntimeError`` si le sous-script échoue (rc != 0) : un manifest
+    cassé ou stale ne doit jamais être pushé sur main. L'exception remonte
+    jusqu'au try/except de ``main()`` qui transforme le run en exit 2.
+    """
     print(">> step 3: rebuild dashboard manifest")
     cmd = [sys.executable, str(SCRIPTS / "build_dashboard_manifest.py")]
-    try:
-        result = subprocess.run(cmd, cwd=str(ROOT), check=False, capture_output=True, text=True)
-    except Exception as e:
-        print(f"   !! build_dashboard_manifest exception: {e}")
-        return {"ok": False, "error": str(e)}
+    result = subprocess.run(cmd, cwd=str(ROOT), check=False, capture_output=True, text=True)
     print(result.stdout.strip() or "   (no stdout)")
     if result.stderr.strip():
         print("   stderr:", result.stderr.strip())
-    return {"ok": result.returncode == 0, "rc": result.returncode}
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"build_dashboard_manifest.py failed with rc={result.returncode}"
+        )
+    return {"ok": True, "rc": 0}
 
 
 # ---- main -----------------------------------------------------------------
@@ -754,22 +760,41 @@ def main() -> int:
         "dry_run": args.dry_run,
     }
 
-    summary["finalize"] = step_finalize()
+    # Chaque step est wrappé : une exception ne doit pas faire passer le
+    # workflow vert (sinon un ledger corrompu peut être pushé sur main sans
+    # signal). Les steps qui finissent sans exception sont notés rc=0 ;
+    # ceux qui lèvent sont notés rc=99 et le run termine sur exit 2.
+    step_results: dict[str, int] = {}
+
+    def _run_step(name: str, fn) -> None:
+        try:
+            summary[name] = fn()
+            step_results[name] = 0
+        except Exception:
+            step_results[name] = 99
+            print(f"   !! step '{name}' a levé une exception :")
+            traceback.print_exc()
+
+    _run_step("finalize", step_finalize)
     print()
-    summary["capture"] = step_capture(args.dry_run)
+    _run_step("capture", lambda: step_capture(args.dry_run))
     print()
     if not args.dry_run:
-        summary["manifest"] = step_manifest()
+        _run_step("manifest", step_manifest)
     print()
 
     finished = datetime.now(timezone.utc)
     print("=" * 70)
     print(f"daily_auto.py done @ {finished.isoformat()} "
           f"(duration {(finished - started).total_seconds():.1f}s)")
+    print(f"step results: {step_results}")
     print("=" * 70)
 
-    # Always exit 0. The workflow should not fail on missing data — it will retry
-    # tomorrow. The summary is printed for the workflow log.
+    # rc 0 = ok, rc 1 = no-op acceptable (cf. finalize_run.finalize). Tout
+    # autre code (notamment 99 = exception capturée) doit faire échouer le
+    # workflow pour qu'un humain investigue avant la prochaine fenêtre cron.
+    if any(rc not in (0, 1) for rc in step_results.values()):
+        return 2
     return 0
 
 
