@@ -4,6 +4,15 @@
 
 *Version 0.1 — 2026-05-09*
 
+> ⚠️ **Statut Phase 1 — avertissement.** Ce threat model décrit l'état CIBLE
+> post-Safe. En production Phase 1 (Arbitrum Sepolia testnet), une seule
+> EOA solo détient tous les rôles admin / minter / pauser / round-*. Les
+> mitigations mentionnées en §5.1, §5.3 et §5.5 (seuil Safe, contrôle
+> multisig des opérations privilégiées) ne deviennent effectives qu'après
+> la migration Safe multisig prévue avant tout déploiement mainnet. En
+> attendant, **toute compromission de cette EOA doit être considérée comme
+> une compromission TOTALE du protocole**.
+
 ## 1. Périmètre
 
 Ce document couvre la surface d'attaque on-chain des contracts Phase 1 (`AugPocToken`, `RoundRegistry`) déployés sur Arbitrum Sepolia.
@@ -49,7 +58,7 @@ Il **ne couvre pas** : l'intégrité de l'agent off-chain, la durabilité du pin
 |---|---|
 | `MINTER_ROLE` accordé à autre chose que `RoundRegistry` | Le script de déploiement + le test d'invariant post-deploy vérifient que l'ensemble des détenteurs du rôle est exactement `{RoundRegistry}`. |
 | `proposeRound` accepté avec bénéficiaires / montants arbitraires contournant la ratification off-chain | Engagement par hash : `roundHash == keccak256(abi.encode(beneficiaries, amounts, ipfsUri))`. Le hash ratifié off-chain est le seul qui puisse être exécuté. Toute manipulation des arrays ou de l'URI produit un hash différent, que le proposeur doit avoir publiquement engagé. |
-| Inflation au-delà de ce que le rubric justifie | Hors-périmètre on-chain par design — le token Aratea n'a pas vocation à être tradé sur marché secondaire, donc un cap référencé au supply pour protéger un prix est sans objet. Les contrôles qualité sont off-chain : vote pondéré des holders sur toute valuation > 0,01 BTC, cooldown nouveaux entrants, slashing, audit annuel (white paper §7.7 ; statuts art. 32 et art. 31). |
+| Inflation au-delà de ce que le rubric justifie | Hors-périmètre on-chain par design — le token Aratea n'a pas vocation à être tradé sur marché secondaire, donc un cap référencé au supply pour protéger un prix est sans objet. Les contrôles qualité sont off-chain : vote pondéré des holders sur toute valuation > 0,01 BTC, cooldown nouveaux entrants, slashing, audit annuel (white paper §7.7 ; statuts art. 32 et art. 31). La promesse de couverture bornée (statuts art. 4 bis : plafond des engagements de couverture rapportés au capital, avec le ratio engagements/capital lisible on-chain en temps réel) discipline l'enveloppe de risque globale du protocole — pas un cap par mint. |
 
 ### 5.3 Abus du cycle de vie d'un round
 
@@ -60,7 +69,7 @@ Il **ne couvre pas** : l'intégrité de l'agent off-chain, la durabilité du pin
 | `executeRound` appelé sur un round `Cancelled` | Même check de status. |
 | `proposeRound` avec arrays beneficiaries / amounts non alignés | Check de longueur + chaque amount > 0 imposé. |
 | `proposeRound` avec URI IPFS arbitraire | L'URI est informationnelle ; la confiance vient du processus de ratification off-chain, pas du fait que l'URI soit sur un provider spécifique. |
-| Abus de `cancelRound` | Restreint au Safe (`DEFAULT_ADMIN_ROLE` ou rôle admin dédié). Documenté comme un break-glass pour les rounds invalides (ex. typo dans une adresse de bénéficiaire). |
+| Abus de `cancelRound` | Restreint à `ROUND_CANCELLER_ROLE` (rôle dédié, distinct de `DEFAULT_ADMIN_ROLE`). Détenu par le Safe en état cible, détenu par l'EOA solo en Phase 1 (cf. avertissement ci-dessus). Documenté comme un break-glass pour les rounds invalides (ex. typo dans une adresse de bénéficiaire). |
 | Reentrancy via `mint(beneficiary, amount)` si `beneficiary` est un contract malveillant | `ERC20.mint` d'OZ ne callback pas le receveur. Pas de reentrancy possible. `ReentrancyGuard` quand même appliqué à `executeRound` en défense en profondeur. |
 
 ### 5.4 Abus de signature / permit sur `AugPocToken`
