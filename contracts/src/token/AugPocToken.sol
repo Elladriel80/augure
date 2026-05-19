@@ -3,7 +3,7 @@ pragma solidity 0.8.24;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
-import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {AccessControlEnumerable} from "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 
 /// @title  AugPocToken — Aratea Phase 1 labor-value token (AUG-POC)
@@ -29,7 +29,7 @@ import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 ///         Pause semantics: pause blocks user-to-user transfers only. Mint and burn paths remain
 ///         operational so an in-flight round execution or a critical conversion cannot be frozen
 ///         by a defensive pause. See contracts/docs/SECURITY.md §5.5.
-contract AugPocToken is ERC20, ERC20Permit, AccessControl, Pausable {
+contract AugPocToken is ERC20, ERC20Permit, AccessControlEnumerable, Pausable {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");

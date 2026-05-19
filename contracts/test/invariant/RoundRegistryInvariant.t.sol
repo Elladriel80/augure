@@ -177,12 +177,22 @@ contract RoundRegistryInvariantTest is StdInvariant, Test {
         assertEq(token.totalSupply(), handler.ghost_totalExecutedAmount());
     }
 
-    /// @dev MINTER_ROLE is never granted to anyone other than the registry itself.
+    /// @dev MINTER_ROLE is held by exactly one address and that address is the
+    ///      registry. Uses AccessControlEnumerable.getRoleMemberCount / getRoleMember
+    ///      to enumerate the whole role set instead of asserting on a hardcoded
+    ///      list of "known bad" addresses (cf. audit P4-4: the previous check
+    ///      passed silently if the admin EOA granted MINTER_ROLE to a 6th
+    ///      attacker address not in the list).
     function invariant_RegistryIsSoleMinter() public view {
-        assertTrue(token.hasRole(token.MINTER_ROLE(), address(registry)));
-        assertFalse(token.hasRole(token.MINTER_ROLE(), proposer));
-        assertFalse(token.hasRole(token.MINTER_ROLE(), executor));
-        assertFalse(token.hasRole(token.MINTER_ROLE(), canceller));
-        assertFalse(token.hasRole(token.MINTER_ROLE(), admin));
+        assertEq(
+            token.getRoleMemberCount(token.MINTER_ROLE()),
+            1,
+            "MINTER_ROLE held by exactly 1 address"
+        );
+        assertEq(
+            token.getRoleMember(token.MINTER_ROLE(), 0),
+            address(registry),
+            "Holder must be registry"
+        );
     }
 }
