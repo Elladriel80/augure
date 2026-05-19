@@ -24,7 +24,7 @@
  * Status file: `recap.empty` (presence signals "skip Discord post").
  */
 
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { writeFileSync, appendFileSync, existsSync, readFileSync } from 'node:fs';
 
 const PROJECT_NAME = process.env.PROJECT_NAME || 'Aratea';
@@ -45,9 +45,13 @@ const SKIP_IF_EMPTY = (process.env.RECAP_SKIP_IF_EMPTY ?? 'true') === 'true';
 
 // ---------- Helpers ----------
 
-function sh(cmd) {
+// Run `git` with arguments as an explicit argv array. execFileSync does NOT
+// invoke a shell, so RECAP_LOOKBACK_DAYS (already clamped to [1, 365] above,
+// but better safe than sorry) cannot reach a shell substitution. Uniformise
+// with build-announcement.mjs (cf. audit P4-9 / P2-F).
+function git(...args) {
   try {
-    return execSync(cmd, { encoding: 'utf8' });
+    return execFileSync('git', args, { encoding: 'utf8' });
   } catch {
     return '';
   }
@@ -75,9 +79,12 @@ const since = `${LOOKBACK_DAYS} days ago`;
 const SEP = '<<<COMMIT_SEP>>>';
 const FIELD = '<<<F>>>';
 
-const raw = sh(
-  `git log --since="${since}" --no-merges --name-only ` +
-    `--pretty=format:"${SEP}%H${FIELD}%s${FIELD}%an${FIELD}%cs"`
+const raw = git(
+  'log',
+  `--since=${since}`,
+  '--no-merges',
+  '--name-only',
+  `--pretty=format:${SEP}%H${FIELD}%s${FIELD}%an${FIELD}%cs`,
 );
 
 if (!raw.trim()) {
@@ -181,9 +188,10 @@ for (const c of commits) {
 
 // ---------- Tags / releases this week ----------
 
-const tagsThisWeek = sh(
-  `git tag --sort=-creatordate ` +
-    `--format='%(refname:short)|%(creatordate:short)|%(contents:subject)'`
+const tagsThisWeek = git(
+  'tag',
+  '--sort=-creatordate',
+  '--format=%(refname:short)|%(creatordate:short)|%(contents:subject)',
 )
   .split('\n')
   .filter(Boolean)

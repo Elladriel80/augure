@@ -41,7 +41,7 @@ Procédure détaillée : [`docs/SECURITY-rotation-procedure.md`](SECURITY-rotati
       (`DISCORD_WEBHOOK_BUILD_LOG`, `DISCORD_WEBHOOK_PREDICTIONS`,
       `DISCORD_WEBHOOK_PNL_TRACKER`) **et** du repo secret
       `DISCORD_WEBHOOK_URL` côté CI.
-- [ ] **Etherscan V2** : régénérer la clé (`BDAWPH3WGZHU5CB94UVPHSHNS3UWRAN2SH`) depuis [etherscan.io/myapikey](https://etherscan.io/myapikey). Optionnel : utiliser deux clés distinctes pour Etherscan et Arbiscan (P3-2).
+- [ ] **Etherscan V2** : régénérer la clé (`<ancienne clé, révoquée le 2026-05-12>`) depuis [etherscan.io/myapikey](https://etherscan.io/myapikey). Optionnel : utiliser deux clés distinctes pour Etherscan et Arbiscan (P3-2).
 
 ---
 
