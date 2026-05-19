@@ -74,12 +74,15 @@ jobs:
 
       - name: Install dependencies
         working-directory: predictor
+        # requirements.lock pinne toutes les transitives avec --generate-hashes.
+        # --require-hashes refuse silencieusement toute dep sans hash : une
+        # supply-chain compromise sur PyPI (typosquat, mirror malveillant) ne
+        # peut pas faire glisser un package non listé dans le run quotidien.
+        # Regen procedure : pip-compile --generate-hashes --output-file=
+        # predictor/requirements.lock predictor/requirements.txt
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          # Defensive: ensure sklearn + numpy + requests are present even if
-          # requirements.txt is incomplete or absent.
-          pip install scikit-learn numpy requests
+          pip install -r requirements.lock --require-hashes
 
       - name: Run daily_auto
         id: auto
