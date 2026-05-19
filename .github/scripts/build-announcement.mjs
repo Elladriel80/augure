@@ -20,7 +20,7 @@
  * No external npm dependencies. Pure Node 20+ stdlib.
  */
 
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { writeFileSync, existsSync, readFileSync, appendFileSync } from 'node:fs';
 
 const TAG = process.env.GIT_TAG;
@@ -35,9 +35,14 @@ if (!TAG) {
 
 // ---------- Helpers ----------
 
-function sh(cmd) {
+// Run `git` with arguments as an explicit argv array. execFileSync does NOT
+// invoke a shell, so values like the GIT_TAG env var (which feeds %{tag}
+// substitutions below) cannot be parsed as multiple tokens, redirections,
+// or metacharacters. Adresses CodeQL alert #4 (Command injection via
+// execSync template interpolation) and audit P2-F.
+function git(...args) {
   try {
-    return execSync(cmd, { encoding: 'utf8' }).trim();
+    return execFileSync('git', args, { encoding: 'utf8' }).trim();
   } catch (e) {
     return '';
   }
@@ -50,7 +55,7 @@ function escapeForX(s) {
 
 function previousTag(currentTag) {
   // List all tags reachable from HEAD ordered by version, find the one before current
-  const tags = sh('git tag --sort=-v:refname').split('\n').filter(Boolean);
+  const tags = git('tag', '--sort=-v:refname').split('\n').filter(Boolean);
   const idx = tags.indexOf(currentTag);
   if (idx === -1 || idx === tags.length - 1) return '';
   return tags[idx + 1];
@@ -63,10 +68,10 @@ function previousTag(currentTag) {
  */
 function readTagMessage(tag) {
   // Variant 1: for-each-ref returns just the contents body, cleanly.
-  let out = sh(`git for-each-ref --format=%(contents) refs/tags/${tag}`);
+  let out = git('for-each-ref', '--format=%(contents)', `refs/tags/${tag}`);
   if (!out) {
     // Variant 2: tag -l with a format string (older fallback).
-    out = sh(`git tag -l --format=%(contents) ${tag}`);
+    out = git('tag', '-l', '--format=%(contents)', tag);
   }
   if (!out) {
     // Variant 3: cat-file. For an annotated tag the output is:
@@ -77,7 +82,7 @@ function readTagMessage(tag) {
     //
     //   <message body>
     // For a lightweight tag, this errors out on the tag and we get nothing.
-    const raw = sh(`git cat-file -p ${tag}`);
+    const raw = git('cat-file', '-p', tag);
     if (raw) {
       const blank = raw.indexOf('\n\n');
       if (blank !== -1) out = raw.slice(blank + 2);
@@ -107,7 +112,7 @@ function readChangelogSection(tag) {
 
 function commitListBetween(prevTag, currentTag) {
   const range = prevTag ? `${prevTag}..${currentTag}` : currentTag;
-  const log = sh(`git log ${range} --no-merges --pretty=format:%s`);
+  const log = git('log', range, '--no-merges', '--pretty=format:%s');
   if (!log) return [];
   return log
     .split('\n')
@@ -200,7 +205,7 @@ const changelogSection = readChangelogSection(TAG);
 const commits = commitListBetween(prevTag, TAG);
 const buckets = categorizeCommits(commits);
 
-const tagDate = sh(`git log -1 --format=%cs ${TAG}`) || new Date().toISOString().slice(0, 10);
+const tagDate = git('log', '-1', '--format=%cs', TAG) || new Date().toISOString().slice(0, 10);
 const releaseUrl = REPO_URL ? `${REPO_URL}/releases/tag/${TAG}` : '';
 const compareUrl = REPO_URL && prevTag ? `${REPO_URL}/compare/${prevTag}...${TAG}` : '';
 
