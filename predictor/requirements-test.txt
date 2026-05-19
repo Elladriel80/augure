@@ -2,4 +2,4 @@
 # Test-only dependencies. Kept out of the runtime requirements so the
 # learning pipeline doesn't pull pytest in production. Run the suite with:
 #   python -m pytest predictor/tests
-pytest>=8.0
+pytest>=9.0.3
