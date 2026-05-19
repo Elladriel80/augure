@@ -354,9 +354,8 @@
     };
 
     /* ============================================================
-       Detection — IP first, browser language fallback
+       Detection — saved pref > navigator (RGPD : pas de geo-IP tiers)
        ============================================================ */
-    const FR_COUNTRIES = ['FR','BE','CH','LU','MC','CA','SN','CI','CM','MA','TN','DZ','BF','ML','NE','TG','BJ','MG','GA','CG','CD','GN','HT','RE','MU','NC','PF','GP','MQ','GF','YT'];
 
     function applyLang(lang) {
       if (lang !== 'fr' && lang !== 'en') lang = 'en';
@@ -383,20 +382,14 @@
         if (saved === 'fr' || saved === 'en') return Promise.resolve(saved);
       } catch(e) {}
 
-      // 2. IP-based geo lookup (free, no key)
-      const ipPromise = fetch('https://ipapi.co/json/', { cache: 'no-store' })
-        .then(r => r.ok ? r.json() : Promise.reject(new Error('ipapi http ' + r.status)))
-        .then(d => FR_COUNTRIES.includes((d.country_code || '').toUpperCase()) ? 'fr' : 'en');
-
-      // 3. fallback: navigator.language
+      // 2. navigator.language — pas de geo-IP. Pas de fetch tiers, donc pas
+      // de fuite d'IP visiteur vers un sous-traitant non-EU sans base
+      // légale documentée (cf. audit P4-7 / RGPD). En pratique
+      // navigator.language est alignée avec la géo du visiteur dans la
+      // quasi-totalité des cas. Fallback par défaut sur 'en' (langue
+      // internationale Aratea) si la string est absente ou inattendue.
       const navLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-      const navFallback = navLang.startsWith('fr') ? 'fr' : 'en';
-
-      // race ipapi against a 1.5s timeout — if API is slow, use navigator
-      return Promise.race([
-        ipPromise,
-        new Promise(res => setTimeout(() => res(navFallback), 1500))
-      ]).catch(() => navFallback);
+      return Promise.resolve(navLang.startsWith('fr') ? 'fr' : 'en');
     }
 
     /* ============================================================

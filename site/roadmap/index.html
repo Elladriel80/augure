@@ -866,27 +866,20 @@
     }
 
     /* ============================================================
-       Detection — saved pref > IP > navigator
+       Detection — saved pref > navigator (RGPD : pas de geo-IP tiers)
        ============================================================ */
-    const FR_COUNTRIES = ['FR','BE','CH','LU','MC','CA','SN','CI','CM','MA','TN','DZ','BF','ML','NE','TG','BJ','MG','GA','CG','CD','GN','HT','RE','MU','NC','PF','GP','MQ','GF','YT'];
-
     function detectLang() {
       try {
         const saved = localStorage.getItem('aratea_lang');
         if (saved === 'fr' || saved === 'en') return Promise.resolve(saved);
       } catch(e) {}
 
-      const ipPromise = fetch('https://ipapi.co/json/', { cache: 'no-store' })
-        .then(r => r.ok ? r.json() : Promise.reject())
-        .then(d => FR_COUNTRIES.includes((d.country_code || '').toUpperCase()) ? 'fr' : 'en');
-
+      // navigator.language uniquement (cf. site/index.html). Aucun fetch
+      // vers un service de geo-IP tiers — pas de fuite d'IP visiteur, pas
+      // de sous-traitant non-EU à documenter dans le registre RGPD.
+      // Fallback 'en' si navigator.language est absent/inattendu.
       const navLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-      const navFallback = navLang.startsWith('fr') ? 'fr' : 'en';
-
-      return Promise.race([
-        ipPromise,
-        new Promise(res => setTimeout(() => res(navFallback), 1500))
-      ]).catch(() => navFallback);
+      return Promise.resolve(navLang.startsWith('fr') ? 'fr' : 'en');
     }
 
     /* init */
