@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-19T19:54:07Z",
+  "generated_at": "2026-05-21T09:59:06Z",
   "schema_version": 3,
   "features": [
     {
@@ -862,40 +862,43 @@
           "role": "champion",
           "method": "ensemble",
           "p_yes": 0.062175656463315604,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.0039,
+          "won": true,
+          "pnl_usd": 34.0,
+          "pnl_type": "actual"
         },
         {
           "name": "learned_v2",
           "role": "challenger",
           "method": "learned_v2",
           "p_yes": 0.1702199361740609,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.029,
+          "won": true,
+          "pnl_usd": 34.0,
+          "pnl_type": "theoretical"
         },
         {
           "name": "kalshi_mid_baseline",
           "role": "baseline",
           "method": "kalshi_mid",
           "p_yes": 0.4,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.16,
+          "won": true,
+          "pnl_usd": 34.0,
+          "pnl_type": "theoretical"
         }
       ],
       "resolution": {
-        "status": "open",
-        "outcome": null,
-        "observed_range_f": null,
-        "winning_bin_ticker": null,
-        "ts_utc": null,
-        "champion_pnl_usd": null,
-        "champion_won": null
+        "status": "resolved",
+        "outcome": "no",
+        "observed_range_f": [
+          72.0,
+          null
+        ],
+        "winning_bin_ticker": "KXLOWTNYC-26MAY19-T72",
+        "ts_utc": "2026-05-21T09:57:08Z",
+        "champion_pnl_usd": 34.0,
+        "champion_won": true
       }
     },
     {
@@ -921,40 +924,43 @@
           "role": "champion",
           "method": "ensemble",
           "p_yes": 0.07639886194158091,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.0058,
+          "won": true,
+          "pnl_usd": 1.74,
+          "pnl_type": "actual"
         },
         {
           "name": "learned_v2",
           "role": "challenger",
           "method": "learned_v2",
           "p_yes": 0.17228426262785848,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.0297,
+          "won": true,
+          "pnl_usd": 1.74,
+          "pnl_type": "theoretical"
         },
         {
           "name": "kalshi_mid_baseline",
           "role": "baseline",
           "method": "kalshi_mid",
           "p_yes": 0.14500000000000002,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.021,
+          "won": true,
+          "pnl_usd": 1.74,
+          "pnl_type": "theoretical"
         }
       ],
       "resolution": {
-        "status": "open",
-        "outcome": null,
-        "observed_range_f": null,
-        "winning_bin_ticker": null,
-        "ts_utc": null,
-        "champion_pnl_usd": null,
-        "champion_won": null
+        "status": "resolved",
+        "outcome": "no",
+        "observed_range_f": [
+          72.0,
+          null
+        ],
+        "winning_bin_ticker": "KXLOWTNYC-26MAY19-T72",
+        "ts_utc": "2026-05-21T09:57:08Z",
+        "champion_pnl_usd": 1.74,
+        "champion_won": true
       }
     },
     {
@@ -980,40 +986,43 @@
           "role": "champion",
           "method": "ensemble",
           "p_yes": 0.25588235427074457,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.5537,
+          "won": false,
+          "pnl_usd": -40.88,
+          "pnl_type": "actual"
         },
         {
           "name": "learned_v2",
           "role": "challenger",
           "method": "learned_v2",
           "p_yes": 0.14445608971287918,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.732,
+          "won": false,
+          "pnl_usd": -40.88,
+          "pnl_type": "theoretical"
         },
         {
           "name": "kalshi_mid_baseline",
           "role": "baseline",
           "method": "kalshi_mid",
           "p_yes": 0.45499999999999996,
-          "brier": null,
-          "won": null,
-          "pnl_usd": null,
-          "pnl_type": null
+          "brier": 0.297,
+          "won": false,
+          "pnl_usd": -40.88,
+          "pnl_type": "theoretical"
         }
       ],
       "resolution": {
-        "status": "open",
-        "outcome": null,
-        "observed_range_f": null,
-        "winning_bin_ticker": null,
-        "ts_utc": null,
-        "champion_pnl_usd": null,
-        "champion_won": null
+        "status": "resolved",
+        "outcome": "yes",
+        "observed_range_f": [
+          57.0,
+          58.0
+        ],
+        "winning_bin_ticker": "KXLOWTLAX-26MAY19-B57.5",
+        "ts_utc": "2026-05-21T09:57:08Z",
+        "champion_pnl_usd": -40.88,
+        "champion_won": false
       }
     }
   ],
@@ -1021,9 +1030,9 @@
   "backtest_runs": [],
   "backtest_runs_total": 0,
   "paper_bets_summary": {
-    "n_open": 3,
-    "n_resolved": 6,
-    "pnl_usd_cumulative": 29.27,
+    "n_open": 0,
+    "n_resolved": 9,
+    "pnl_usd_cumulative": 24.13,
     "phase_1_counter": "9/50"
   },
   "backtest_summary": {
@@ -1036,12 +1045,12 @@
   },
   "hybrid_sample": {
     "alpha_backtest": 0.3,
-    "n_live": 6,
+    "n_live": 9,
     "n_backtest_strict": 268,
     "n_backtest_naive_excluded": 0,
-    "n_effective": 86.4,
+    "n_effective": 89.4,
     "phase_1_target": 50,
-    "phase_1_progress_live_only": "6/50",
+    "phase_1_progress_live_only": "9/50",
     "convention_ref": "predictor/runs/CONVENTION.md sec.6.bis",
     "note": "N_effective is for SECONDARY decisions only (feature-set selection, reliability plots, complementary promotion check). The Phase 1 go/no-go gate (CONVENTION.md sec.6) uses n_live exclusively and ignores n_backtest_strict."
   },
