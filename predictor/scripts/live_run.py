@@ -63,7 +63,14 @@ def _now_iso() -> str:
 
 
 def _bet_id() -> str:
-    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ000000")
+    # %f = microsecondes (6 digits) → empêche la collision quand deux paris
+    # sont capturés dans la même seconde (cf. daily-trading run #13 du
+    # 2026-05-20 : runs 012 et 013 ont reçu le même bet_id
+    # "20260520T201419Z000000" parce que le suffixe était hardcodé). Le Z reste
+    # au milieu pour préserver la compatibilité visuelle avec les anciennes
+    # lignes du CSV (qui finissent en Z000000) et avec le slice bet_id[:16]
+    # utilisé par daily_auto.py pour l'affichage.
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ%f")
 
 
 def _load_champion_registry() -> dict:
