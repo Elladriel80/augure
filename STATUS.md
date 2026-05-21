@@ -124,7 +124,7 @@ Detail and threat model in [`contracts/README.md`](contracts/README.md) and
 |---|---|---|
 | **M0** | Foundry scaffold, CI, threat model, bilingual docs | ✅ done |
 | **M1** | `AugPocToken` — ERC-20 + Permit + AccessControl + Pausable + 4 roles | ✅ done |
-| **M2** | `MonthlyMintCap` — pure 10 %-monthly-cap library + fuzzing | ✅ done |
+| **M2** | ~~`MonthlyMintCap` library~~ — removed 2026-05-17 (no on-chain emission cap; quality gated off-chain — see `contracts/docs/ROUND-LIFECYCLE.md` §5 and white paper §7.7) | — |
 | **M3** | `RoundRegistry` — propose / challenge / execute / cancel lifecycle | ✅ done |
 | **M4** | Deployment scripts on Arbitrum Sepolia + Safe calldata helpers | ✅ done |
 | **M5** | Read-only dashboard (Next.js + viem) | 🟡 in progress |
@@ -132,10 +132,11 @@ Detail and threat model in [`contracts/README.md`](contracts/README.md) and
 ### Test coverage discipline
 
 Unit tests target ≥ 95 % line coverage on business logic, fuzz tests run
-10 000 iterations by default, and invariant tests cover the three
-properties that must never break: supply ≤ monthly cap, no mint before
-the challenge window expires, and `MINTER_ROLE` held only by the Safe
-multisig. Toolchain: Foundry, Solidity 0.8.24, OpenZeppelin v5.1.0,
+10 000 iterations by default, and invariant tests cover the two
+properties that must never break: no mint before the challenge window
+expires, and `MINTER_ROLE` held only by the `RoundRegistry` (granted to
+the Safe multisig at the admin level). No on-chain emission cap is
+enforced — quality is guaranteed off-chain (white paper §7.7). Toolchain: Foundry, Solidity 0.8.24, OpenZeppelin v5.1.0,
 `forge-std` v1.9.4, Slither 0.10.4 (CI fails on `medium`).
 
 ### Deployment state
@@ -162,7 +163,7 @@ scripts in [`contracts/script/`](contracts/script/), not this UI.
 
 | Page | What it shows |
 |---|---|
-| `/` (Token) | Name, symbol, decimals, total supply, pause state, current month's 10 % mint cap with consumption %, Arbiscan links. |
+| `/` (Token) | Name, symbol, decimals, total supply, pause state, emission-policy note (no on-chain cap — quality gated off-chain per white paper §7.7), Arbiscan links. |
 | `/rounds` | Every round committed to the registry, ordered by proposal date. Status pill + challenge-window end + total amount + beneficiary count. |
 | `/round/[hash]` | Full per-round metadata, live countdown to challenge-window end, IPFS link to the pinned `valuation_report.md`, per-beneficiary allocation breakdown. |
 | `/predictor` | Latest training run summary card with Brier vs `kalshi_mid`, feature registry with per-run Brier deltas, run history table, Brier trajectory chart. |

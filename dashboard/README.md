@@ -14,8 +14,11 @@ for the on-chain pieces this dashboard reads.
 
 ## What it shows
 
-- **Token page** (`/`): name, symbol, decimals, total supply, pause state, current
-  month's 10% mint cap with consumption %, links to the contracts on Arbiscan.
+- **Token page** (`/`): name, symbol, decimals, total supply, pause state, the
+  emission policy note (no on-chain cap — quality is gated off-chain by the
+  valuation rubric, the token-weighted vote above 0.01 BTC, the new-entrant
+  cooldown, slashing, and the annual audit), and links to the contracts on
+  Arbiscan.
 - **Rounds page** (`/rounds`): every round committed to the registry, ordered by
   proposal date. Status pill (Proposed / Challenged / Executed / Cancelled),
   challenge window end, total amount, number of beneficiaries.

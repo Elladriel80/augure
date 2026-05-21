@@ -71,10 +71,11 @@ Tu produis :
 
 1. **Tableau récapitulatif** par apporteur avec valeur totale (sats et BTC).
 2. **Total round** en sats et BTC, plus tokens à mint (= total / NAV courante).
-3. **Vérification garde-fous** :
-   - Cap mensuel respecté ? (≤ 10 % du supply circulant)
-   - Cap par apporteur respecté ? (≤ 30 % du mint mensuel)
-   - Une valuation individuelle > 0,01 BTC déclenchant un vote panel automatique ?
+3. **Vérification garde-fous** (aucun cap d'émission on-chain — qualité gated off-chain, white paper §7.7) :
+   - Promesse de couverture bornée respectée ? (ratio engagements/capital lisible on-chain en temps réel — statuts art. 4 bis)
+   - Une valuation individuelle > 0,01 BTC déclenchant un vote pondéré automatique ? (statuts art. 31)
+   - Cooldown nouveaux entrants respecté ? (première contribution < 30 jours → flag `NOT_YET_ELIGIBLE`)
+   - Une dérogation à la grille RUBRIC qui nécessite review explicite du ratificateur ?
 4. **Liste des incertitudes** que tu signales explicitement au ratificateur :
    - Artefacts ambigus où tu as hésité.
    - Cas non couverts par le RUBRIC.

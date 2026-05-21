@@ -110,20 +110,6 @@ export const roundRegistryAbi = [
   },
   {
     type: "function",
-    name: "supplyAtMonthStart",
-    stateMutability: "view",
-    inputs: [{ name: "monthId", type: "uint256" }],
-    outputs: [{ type: "uint256" }],
-  },
-  {
-    type: "function",
-    name: "mintedInMonth",
-    stateMutability: "view",
-    inputs: [{ name: "monthId", type: "uint256" }],
-    outputs: [{ type: "uint256" }],
-  },
-  {
-    type: "function",
     name: "getRound",
     stateMutability: "view",
     inputs: [{ name: "roundHash", type: "bytes32" }],

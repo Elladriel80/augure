@@ -71,10 +71,11 @@ You produce:
 
 1. **Recap table** by contributor with total value (sats and BTC).
 2. **Round total** in sats and BTC, plus tokens minted (= total / current NAV).
-3. **Guardrail check**:
-   - Monthly cap respected? (≤ 10 % of circulating supply)
-   - Per-contributor cap respected? (≤ 30 % of monthly mint)
-   - Any individual valuation > 0.01 BTC requiring automatic panel vote?
+3. **Guardrail check** (no on-chain emission cap — quality gated off-chain per white paper §7.7):
+   - Bounded-coverage promise honoured? (engagements/capital ratio readable on-chain in real time — statuts art. 4 bis)
+   - Any individual valuation > 0.01 BTC requiring automatic token-weighted vote? (statuts art. 31)
+   - New-entrant cooldown respected? (first contribution < 30 days → flag `NOT_YET_ELIGIBLE`)
+   - Any deviation from the RUBRIC pricing grid that requires explicit ratifier review?
 4. **Uncertainties list** that you flag explicitly to the ratifier:
    - Ambiguous artifacts where you hesitated.
    - Cases not covered by the RUBRIC.

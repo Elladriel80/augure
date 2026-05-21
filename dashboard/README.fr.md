@@ -14,8 +14,11 @@ pour les pièces on-chain que ce dashboard lit.
 
 ## Ce qu'il affiche
 
-- **Page token** (`/`) : nom, symbol, décimales, total supply, état pause, cap
-  mensuel 10 % avec % consommé, liens vers les contracts sur Arbiscan.
+- **Page token** (`/`) : nom, symbol, décimales, total supply, état pause, la
+  note de politique d'émission (aucun cap on-chain — la qualité est garantie
+  off-chain par le rubric de valuation, le vote pondéré au-delà de 0,01 BTC,
+  le cooldown nouveaux entrants, le slashing et l'audit annuel), et les liens
+  vers les contracts sur Arbiscan.
 - **Page rounds** (`/rounds`) : tous les rounds enregistrés, triés par date de
   proposition. Pastille de statut (Proposed / Challenged / Executed / Cancelled),
   fin de fenêtre de challenge, total à minter, nombre de bénéficiaires.

@@ -28,8 +28,8 @@ settlement layer                      (risk pool, pricing  layer
    │                                   on-chain, oracle    (weather
    ├── predictor: Kalshi POC          settlement)          stations)
    └── contracts: AugPocToken +
-       RoundRegistry +
-       MonthlyMintCap
+       RoundRegistry
+       (no on-chain emission cap)
 ```
 
 ---
@@ -146,7 +146,7 @@ Roadmap mirrored from [`contracts/README.md`](contracts/README.md):
 |---|---|---|
 | **M0** | Foundry scaffold, CI, threat model, bilingual docs | ✅ done |
 | **M1** | `AugPocToken` (ERC-20 + Permit + AccessControl + Pausable + 4 roles) | ✅ done |
-| **M2** | `MonthlyMintCap` library + exhaustive fuzzing | ✅ done |
+| **M2** | ~~`MonthlyMintCap` library~~ — removed 2026-05-17 (no on-chain emission cap; quality gated off-chain — white paper §7.7) | — |
 | **M3** | `RoundRegistry` (propose / challenge / execute / cancel) | ✅ done |
 | **M4** | Deployment scripts on Arbitrum Sepolia + Safe calldata helpers | ✅ done |
 | **M5** | Read-only dashboard (Next.js + viem) | 🟡 in progress |

@@ -57,24 +57,3 @@ export function ipfsHttpUrl(ipfsUri: string): string {
   return ipfsUri;
 }
 
-/**
- * Compute the canonical month id `year * 12 + (month - 1)` for a UTC timestamp,
- * matching the on-chain MonthlyMintCap library.
- */
-export function monthIdOf(unixSeconds: bigint | number): bigint {
-  const ms = Number(unixSeconds) * 1000;
-  const d = new Date(ms);
-  return BigInt(d.getUTCFullYear() * 12 + d.getUTCMonth());
-}
-
-/** UTC label for a month id (e.g. 24316 → "May 2026"). */
-export function monthIdLabel(monthId: bigint): string {
-  const m = Number(monthId);
-  const year = Math.floor(m / 12);
-  const month = m % 12;
-  return new Date(Date.UTC(year, month, 1)).toLocaleString("en-US", {
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}

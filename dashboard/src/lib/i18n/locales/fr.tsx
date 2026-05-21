@@ -42,20 +42,12 @@ export const fr: Dictionary = {
       contract_hint:
         "Vérifié sur l’explorateur si `forge verify-contract` a été lancé.",
     },
-    cap: {
-      heading: (month: string) => `Cap mensuel — ${month}`,
-      supply_at_month_start: "Supply au début du mois",
-      supply_at_month_start_hint_bound:
-        "Snapshot pris au premier executeRound du mois.",
-      supply_at_month_start_hint_genesis:
-        "Exception genesis — pas encore de snapshot.",
-      minted_this_month: "Minté ce mois",
-      minted_hint_bound: (pct: string) => `${pct} du cap 10%`,
-      minted_hint_unbound: "Cap non contraignant ce mois.",
-      remaining_margin: "Marge restante",
-      remaining_unconstrained: "non contraint",
-      remaining_hint_bound: (cap: string) => `Cap = ${cap}`,
-      remaining_hint_unbound: "Exception genesis",
+    emission: {
+      heading: "Politique d'émission",
+      body:
+        "Aucun cap d'émission n'est appliqué on-chain. Le token Aratea représente une part patrimoniale et un droit de gouvernance ; il n'a pas vocation à être tradé sur marché secondaire, donc un cap référencé au supply pour protéger un prix de marché est sans objet. La qualité de l'émission est garantie off-chain par le rubric de valuation, le vote pondéré des holders sur toute valuation individuelle > 0,01 BTC, le cooldown nouveaux entrants, le slashing et l'audit annuel.",
+      reference:
+        "Références : white paper §7.7, statuts art. 31 et art. 32, et la promesse de couverture bornée (statuts art. 4 bis) — le ratio engagements/capital est lisible on-chain en temps réel.",
     },
     rounds: {
       heading: "Rounds",

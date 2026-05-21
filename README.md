@@ -33,7 +33,7 @@ aratea/
 The prediction engine. Currently the Kalshi POC: meta-ensemble IA combining ECMWF, GraphCast, GFS, JMA forecasts; NWS resolution rules; microstructure analysis; backtest infrastructure.
 
 ### `contracts/`
-Solidity smart contracts. **Phase 1 in progress** (May 2026): on-chain settlement layer for the labor-value mint mechanism — `AugPocToken` (ERC-20 + AccessControl + Pausable), `RoundRegistry` (propose / challenge / execute / cancel lifecycle), `MonthlyMintCap` (10 % monthly cap library). Foundry, Solidity 0.8.24, OpenZeppelin v5, Arbitrum Sepolia testnet target. See [`contracts/README.md`](contracts/README.md) for status and milestones.
+Solidity smart contracts. **Phase 1 in progress** (May 2026): on-chain settlement layer for the labor-value mint mechanism — `AugPocToken` (ERC-20 + AccessControl + Pausable) and `RoundRegistry` (propose / challenge / execute / cancel lifecycle). No on-chain emission cap is enforced; quality is gated off-chain by the valuation rubric, the token-weighted vote above 0.01 BTC, the new-entrant cooldown, slashing, and the annual audit (white paper §7.7). Foundry, Solidity 0.8.24, OpenZeppelin v5, Arbitrum Sepolia testnet target. See [`contracts/README.md`](contracts/README.md) for status and milestones.
 
 ### `rounds/`
 The live mechanics for issuing AUG-POC tokens to anyone bringing labor value to the project (code, research, data, design, capital). Contains the public rubric, hourly rate sheet, valuation agent prompt, automation scripts, and historical valuation reports.
