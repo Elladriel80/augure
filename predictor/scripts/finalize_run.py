@@ -571,10 +571,22 @@ def _render_post_run_v2(
     title = report["event"].get("title", "?")
     champ_name = report["champion_at_time_of_run"]
     outcome_label = "YES" if outcome == 1 else "NO"
-    range_s = (
-        f"{observed_range[0]:.0f}-{observed_range[1]:.0f}°F"
-        if observed_range[0] is not None else "?"
-    )
+    # Kalshi bin conventions : 'B' = bounded bin (floor + cap), 'T' = tail bin
+    # (floor only, cap=None, signifie "≥ floor"). Il existe aussi le cas
+    # symétrique théorique d'un tail-bas (cap only, floor=None, "≤ cap") même
+    # si pas observé sur les events Low/High actuels. Sans ce guard, le format
+    # f"{None:.0f}" plante avec NoneType.__format__ — cf. daily-trading run #13
+    # du 2026-05-20 où runs 008/009 résolus sur KXLOWTNYC-26MAY19-T72 (≥72°F)
+    # ont produit rc=99 "unsupported format string passed to NoneType.__format__".
+    lo, hi = observed_range[0], observed_range[1]
+    if lo is None and hi is None:
+        range_s = "?"
+    elif hi is None:
+        range_s = f"≥{lo:.0f}°F"
+    elif lo is None:
+        range_s = f"≤{hi:.0f}°F"
+    else:
+        range_s = f"{lo:.0f}-{hi:.0f}°F"
 
     # Per-model lines
     rows = []
